@@ -20,27 +20,9 @@ Break : 'break';
 Continue : 'continue';
 Return : 'return';
 
-//elements
-SmallLetter : [a-z];
-CapitalLetter : [A-Z];
-Number : [0-9];
-Interger : [1-9] [0-9]* | '0';
-Identifier : (SmallLetter | CapitalLetter )(SmallLetter | CapitalLetter | Number| '_' )*;
 
-ConstString : '"' ( ~["\r\n\\] | '\\"' | '\\n' | '\\\\' )* '"';
-F_PREFIX : 'f'; 
-QUOTE : '"'; 
-FormatChar : DoubleLeftBrace
-    | DoubleRightBrace
-		| ~[{}];
-//this is the normal string, without format string
-ConstArray : '{' (ConstElement)? (',' ConstElement)* '}';
-
-ConstElement : Interger | Identifier | ConstString| ConstArray | True | False | This;
-
-Comment : '//' ~[\r\n]* -> skip;
-BlockComment : '/*' .*? '*/' -> skip;
-Whitespace : [ \t\r\n]+ -> skip;
+// DoubleLeftBrace : '{{';
+// DoubleRightBrace : '}}';
 
 //operators
 
@@ -69,37 +51,48 @@ XorBit : '^';
 NotBit : '~';
 
 Assign : '=';
-AddAssign : '+=';
-SubAssign : '-=';
-MulAssign : '*=';
-DivAssign : '/=';
-ModAssign : '%=';
-LeftMoveAssign : '<<=';
-RightMoveAssign : '>>=';
-AndAssign : '&=';
-OrAssign : '|=';
-XorAssign : '^=';
-AssignType :Assign|AddAssign|SubAssign|MulAssign|DivAssign|ModAssign|LeftMoveAssign|RightMoveAssign|AndAssign|OrAssign|XorAssign;
+
 
 SelfPlus : '++';
 SelfMinus : '--';
 
 Member : '.';
-LeftBracket : '(';
-RightBracket : ')';
-LeftSquareBracket : '[';
-RightSquareBracket : ']';
-LeftBrace : '{';
-RightBrace : '}';
+// LeftBracket : '(';
+// RightBracket : ')';
+// LeftSquareBracket : '[';
+// RightSquareBracket : ']';
+// LeftBrace : '{';
+// RightBrace : '}';
 Comma : ',';
 Semicolon : ';';
 Colon : ':';
 QestionMark : '?';
-DoubleLeftBrace : '{{';
-DoubleRightBrace : '}}';
 
+Comment : '//' ~[\r\n]* -> skip;
+BlockComment : '/*' .*? '*/' -> skip;
+Whitespace : [ \t\r\n]+ -> skip;
 
+//elements
+Interger : [1-9] [0-9]* | '0';
+Identifier : ([a-zA-Z] )([a-zA-Z0-9_])*;
+fragment SringChar: ~["\r\n\\] | '\\"' | '\\n' |'\\r' | '\\\\' ;
+FormatStringChar : '{{'|'}}'| ~[{}\n\\\r] | '\\"' | '\\n'|'\\r' | '\\\\';
+ConstString : '"' ( ~["\r\n\\] | '\\"' | '\\n' |'\\r' | '\\\\' )* '"';
+FormatStringI: 
+	'f"' (FormatStringChar)* '"';
 
+FormatStringL: 
+	'f"' (FormatStringChar)* '{';
+FormatStringM: 
+	'}' (FormatStringChar)* '{';
+FormatStringR: 
+	'}' (FormatStringChar)* '"';
+// FormatChar : DoubleLeftBrace
+//     | DoubleRightBrace
+// 		| ~[{}];
+//this is the normal string, without format string
+
+// f" { f"{ }  }"
 
 
 
