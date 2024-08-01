@@ -4,6 +4,7 @@ lexer grammar Mxlexer;
 //reserved word
 
 Void : 'void';
+Null : 'null';
 Bool : 'bool';
 Int : 'int';
 String : 'string';
@@ -65,8 +66,6 @@ Member : '.';
 // RightBrace : '}';
 Comma : ',';
 Semicolon : ';';
-Colon : ':';
-QestionMark : '?';
 
 Comment : '//' ~[\r\n]* -> skip;
 BlockComment : '/*' .*? '*/' -> skip;
@@ -76,7 +75,7 @@ Whitespace : [ \t\r\n]+ -> skip;
 Interger : [1-9] [0-9]* | '0';
 Identifier : ([a-zA-Z] )([a-zA-Z0-9_])*;
 fragment SringChar: ~["\r\n\\] | '\\"' | '\\n' |'\\r' | '\\\\' ;
-FormatStringChar : '{{'|'}}'| ~[{}\n\\\r] | '\\"' | '\\n'|'\\r' | '\\\\';
+FormatStringChar : '{{'|'}}'| ~[{}\n\\\r"] | '\\"' | '\\n'|'\\r' | '\\\\';
 ConstString : '"' ( ~["\r\n\\] | '\\"' | '\\n' |'\\r' | '\\\\' )* '"';
 FormatStringI: 
 	'f"' (FormatStringChar)* '"';

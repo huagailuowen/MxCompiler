@@ -2,25 +2,30 @@ grammar Mxparser;
 import Mxlexer;
 // program
 //int[][] a={2,4,{6,7,0},{8} };
-// int a=f"{a+b}hello{c+d}world{e+f+f"eqw{a}we"}}}";
+//int a=f"{a+b}hello{c+d}world{e+f+f"eqw{a}we"}}}";
+//int a=f"{f"{{}}" == "{}"}" == "true";
+/*dfakldfj */
+//int a=f"{a+b}hello{c+d}world{e+f+f"eqw{a}we"}}}";//8798458934789435"""
 program : (classDeclaration | functionDeclaration | variableDeclaration )* EOF;
 classDeclaration : Class Identifier '{'
 	(variableDeclaration
 	|functionDeclaration
 	|classConstructor)*
-	'}';
+	'}' Semicolon;
 
-functionDeclaration : type Identifier '(' parameterList? ')' block;
-parameterList : parameter (Comma parameter)*;
-parameter : type atomVariableDeclaration;
-variableDeclaration : type atomVariableDeclaration (Comma atomVariableDeclaration)*  Semicolon;
+functionDeclaration : type Identifier '(' parameterDeclarationList? ')' block;
+parameterDeclarationList : parameterDeclaration (',' parameterDeclaration)*;
+parameterDeclaration : type atomVariableDeclaration;
+
+parameterList : expression? (',' expression)*; 
+variableDeclaration : type atomVariableDeclaration (',' atomVariableDeclaration)*  Semicolon;
 atomVariableDeclaration : atom (Assign expression)?;
 
 classConstructor : Identifier '(' ')' block;
 
 statement : 
-	block
-	|ifStatement
+	ifStatement
+	|block
 	|forStatement
 	|whileStatement
 	|returnStatement
@@ -32,16 +37,16 @@ statement :
 block : ('{' statement* '}') ;
 ifStatement : 
 	If '(' expression ')' (statement) 
-	(Else (statement))?;
+	(Else statement)?;
 forStatement :
-	For '(' (initalstatement Semicolon) expression?  Semicolon expression? ')' statement;
+	For '(' (statement) expression?  Semicolon expression? ')' statement;
 whileStatement :
 	While '(' expression ')' statement;
 returnStatement : Return expression?  Semicolon;
 breakStatement : Break  Semicolon;
 continueStatement : Continue  Semicolon;
 expressionStatement : expression  Semicolon;
-initalstatement : type? expression;
+initalstatement : type? parameterList;
 
 type : (Int | Bool | String | Identifier | Void) arrayLable*;
 arrayLable : ('['expression?']');
@@ -55,8 +60,9 @@ formatStringElement:
 
 expression : 
 	'('expression')'
-	New type ('[' (expression)? ']')* atom?
-	|expression Member Identifier 
+	|New type ('[' (expression)? ']')* atom?
+	|expression Member atom
+	|expression '('parameterList ')'
 	|expression(SelfPlus|SelfMinus)
 	|<assoc = right> (SelfPlus|SelfMinus|Not|Minus|NotBit) expression
 	|expression (Multiply|Divide|Mod) expression
@@ -69,7 +75,7 @@ expression :
 	|expression (OrBit) expression
 	|expression And expression
 	|expression Or expression 
-	|<assoc = right> QestionMark expression Colon expression
+	|<assoc = right> expression '?' expression ':' expression
 	|<assoc = right> expression (Assign) expression
 	|atom;
 
@@ -84,4 +90,4 @@ array:
 	Identifier ('[' expression? ']')+;
 constArray : '{' (constElement)? (',' constElement)* '}';
 
-constElement : Interger | Identifier | ConstString| constArray | True | False | This;
+constElement : Interger | Identifier | ConstString| constArray | True | False | This | Null;
