@@ -61,7 +61,7 @@ formatStringElement:
 
 expression : 
 	'('expression')'
-	|New type ('[' (expression)? ']')* atom?
+	|New type ('[' (expression)? ']')* ('()')?     
 	|expression Member atom
 	|expression ('('parameterList ')'| (('['expression']')+))
 	|expression(SelfPlus|SelfMinus)

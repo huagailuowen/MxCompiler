@@ -24,16 +24,16 @@ atomVariableDeclaration : atom (Assign expression)?;
 classConstructor : Identifier '(' ')' block;
 
 statement : 
-	ifStatement
-	|block
-	|forStatement
-	|whileStatement
-	|returnStatement
-	|breakStatement
-	|continueStatement
-	|expressionStatement
-	|variableDeclaration
-	| Semicolon;
+	ifStatement 								# ifStmt
+	|block											# blockStmt
+	|forStatement								# forStmt
+	|whileStatement							# whileStmt
+	|returnStatement						# returnStmt
+	|breakStatement							# breakStmt
+	|continueStatement					# continueStmt
+	|expressionStatement				# expressionStmt
+	|variableDeclaration				# variableDeclarationStmt
+	|Semicolon                 	# emptyStmt;
 block : ('{' statement* '}') ;
 ifStatement : 
 	If '(' expression ')' (statement) 
@@ -48,7 +48,7 @@ continueStatement : Continue  Semicolon;
 expressionStatement : expression  Semicolon;
 initalstatement : type? parameterList;
 
-type : (Int | Bool | String | Identifier | Void) arrayLable*;
+type : typ=(Int | Bool | String | Identifier | Void) arrayLable*;
 arrayLable : ('['expression?']');
 // formatStringexpression 
 // 	: 'f"'  ( FormatChar | '{' expression '}'  )* '"'	;
@@ -59,35 +59,38 @@ formatStringElement:
 
 
 expression : 
-	'('expression')'
-	|New type ('[' (expression)? ']')* atom?
-	|expression Member atom
-  |expression ('('parameterList ')'| (('['expression']')+))
-	|expression(SelfPlus|SelfMinus)
-	|<assoc = right> (SelfPlus|SelfMinus|Not|Minus|NotBit) expression
-	|expression (Multiply|Divide|Mod) expression
-	|expression (Plus|Minus) expression
-	|expression (LeftMove|RightMove) expression
-	|expression (Greater|Less|GreaterEqual|LessEqual) expression
-	|expression (Equal|InEqual) expression
-	|expression (AndBit) expression
-	|expression (XorBit) expression
-	|expression (OrBit) expression
-	|expression And expression
-	|expression Or expression 
-	|<assoc = right> expression '?' expression ':' expression
-	|<assoc = right> expression (Assign) expression
-	|atom;
+	'('expression')'																											# childExpr
+	|New type ('[' (expression)? ']')* ('()')?                        		# newExpr
+	|expression Member atom																								# memberExpr
+  |expression ('('parameterList ')')																		# callExpr
+	|expression (('['expression']')+)																			# arrayExpr
+	|expression op=(SelfPlus|SelfMinus)																		# selfOpExpr
+	|<assoc = right> op=(SelfPlus|SelfMinus|Not|Minus|NotBit) expression	# preOpExpr
+	|expression op=(Multiply|Divide|Mod) expression												# binaryExpr
+	|expression op=(Plus|Minus) expression																# binaryExpr
+	|expression op=(LeftMove|RightMove) expression												# binaryExpr
+	|expression op=(Greater|Less|GreaterEqual|LessEqual) expression				# binaryExpr
+	|expression op=(Equal|InEqual) expression															# binaryExpr
+	|expression op=AndBit expression																			# binaryExpr
+	|expression op=XorBit expression																			# binaryExpr
+	|expression op=OrBit expression																				# binaryExpr
+	|expression op=And expression																					# binaryExpr
+	|expression op=Or expression 																					# binaryExpr
+	|<assoc = right> expression '?' expression ':' expression							# ternaryExpr
+	|<assoc = right> expression (Assign) expression												# assignExpr
+	|atom                                                                 # atomExpr;																																
 
 	
 
 atom :
-	array
-	|Identifier
-	|constElement
-	|formatStringElement;
+	array																																	# arrayAtom
+	|Identifier																														# idAtom
+	|constElement																													# constAtom
+	|formatStringElement																									# formatStringAtom;
 array:
 	Identifier ('[' expression? ']')+;
 constArray : '{' (constElement)? (',' constElement)* '}';
 
-constElement : Interger | Identifier | ConstString| constArray | True | False | This | Null;
+constElement : 
+	atomElement=(Interger | Identifier | ConstString| True | False | This | Null) # constAtomElement
+	|constArray 																																	# constArrayElement;
