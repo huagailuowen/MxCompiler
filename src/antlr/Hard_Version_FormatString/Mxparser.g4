@@ -5,13 +5,14 @@ import Mxlexer;
 //int a=f"{a+b}hello{c+d}world{e+f+f"eqw{a}we"}}}";
 //int a=f"{f"{{}}" == "{}"}" == "true";
 /*dfakldfj */
+// a[0].f(0,0)[1]
 //int a=f"{a+b}hello{c+d}world{e+f+f"eqw{a}we"}}}";//8798458934789435"""
 program : (classDeclaration | functionDeclaration | variableDeclaration )* EOF;
-classDeclaration : Class Identifier '{'
+classDeclaration : Class Identifier LeftBrace
 	(variableDeclaration
 	|functionDeclaration
 	|classConstructor)*
-	'}' Semicolon;
+	RightBrace Semicolon;
 
 functionDeclaration : type Identifier '(' parameterDeclarationList? ')' block;
 parameterDeclarationList : parameterDeclaration (',' parameterDeclaration)*;
@@ -24,8 +25,8 @@ atomVariableDeclaration : atom (Assign expression)?;
 classConstructor : Identifier '(' ')' block;
 
 statement : 
-	ifStatement
-	|block
+	block
+	|ifStatement
 	|forStatement
 	|whileStatement
 	|returnStatement
@@ -34,7 +35,7 @@ statement :
 	|expressionStatement
 	|variableDeclaration
 	| Semicolon;
-block : ('{' statement* '}') ;
+block : (LeftBrace statement* RightBrace) ;
 ifStatement : 
 	If '(' expression ')' (statement) 
 	(Else statement)?;
@@ -51,18 +52,18 @@ initalstatement : type? parameterList;
 type : (Int | Bool | String | Identifier | Void) arrayLable*;
 arrayLable : ('['expression?']');
 // formatStringexpression 
-// 	: 'f"'  ( FormatChar | '{' expression '}'  )* '"'	;
+// 	: 'f"'  ( FormatChar | LeftBrace expression RightBrace  )* '"'	;
 
 formatStringElement: 
 	FormatStringI
-	|(FormatStringL expression? (FormatStringM expression?)* FormatStringR);
+	|(FormatStringL FormatStringM? (LeftBrace expression? RightBrace (FormatStringM* LeftBrace expression? RightBrace)*)? FormatStringM? FormatStringR);
 
 
 expression : 
 	'('expression')'
 	|New type ('[' (expression)? ']')* atom?
 	|expression Member atom
-  |expression ('('parameterList ')'| (('['expression']')+))
+	|expression ('('parameterList ')'| (('['expression']')+))
 	|expression(SelfPlus|SelfMinus)
 	|<assoc = right> (SelfPlus|SelfMinus|Not|Minus|NotBit) expression
 	|expression (Multiply|Divide|Mod) expression
@@ -88,6 +89,6 @@ atom :
 	|formatStringElement;
 array:
 	Identifier ('[' expression? ']')+;
-constArray : '{' (constElement)? (',' constElement)* '}';
+constArray : LeftBrace (constElement)? (',' constElement)* RightBrace;
 
 constElement : Interger | Identifier | ConstString| constArray | True | False | This | Null;

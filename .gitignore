@@ -1,2 +1,5 @@
 /reference
 /tmp
+/bin
+/.vscode
+/pkg
