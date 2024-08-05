@@ -318,13 +318,6 @@ public class MxparserBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitArrayAtom(MxparserParser.ArrayAtomContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitIdAtom(MxparserParser.IdAtomContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

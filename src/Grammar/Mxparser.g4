@@ -60,10 +60,10 @@ formatStringElement:
 
 expression : 
 	'('expression')'																											# childExpr
-	|New type ('[' (expression)? ']')* ('()')?                        		# newExpr
+	|New type (arrayLable)* ('()')?                        		# newExpr
 	|expression Member atom																								# memberExpr
   |expression (('('parameterList ')')|'()')																		# callExpr
-	|expression (('['expression']')+)																			# arrayExpr
+	|expression ((arrayLable)+)																			# arrayExpr
 	|expression op=(SelfPlus|SelfMinus)																		# selfOpExpr
 	|<assoc = right> op=(SelfPlus|SelfMinus|Not|Minus|NotBit) expression	# preOpExpr
 	|expression op=(Multiply|Divide|Mod) expression												# binaryExpr
@@ -84,8 +84,8 @@ expression :
 	
 
 atom :
-	array																																	# arrayAtom
-	|Identifier																														# idAtom
+	// array																																	# arrayAtom
+	Identifier																														# idAtom
 	|constElement																													# constAtom;
 array:
 	Identifier ('[' expression? ']')+;

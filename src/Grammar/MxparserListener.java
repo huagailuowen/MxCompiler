@@ -481,18 +481,6 @@ public interface MxparserListener extends ParseTreeListener {
 	 */
 	void exitPreOpExpr(MxparserParser.PreOpExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code arrayAtom}
-	 * labeled alternative in {@link MxparserParser#atom}.
-	 * @param ctx the parse tree
-	 */
-	void enterArrayAtom(MxparserParser.ArrayAtomContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code arrayAtom}
-	 * labeled alternative in {@link MxparserParser#atom}.
-	 * @param ctx the parse tree
-	 */
-	void exitArrayAtom(MxparserParser.ArrayAtomContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code idAtom}
 	 * labeled alternative in {@link MxparserParser#atom}.
 	 * @param ctx the parse tree

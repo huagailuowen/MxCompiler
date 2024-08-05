@@ -290,13 +290,6 @@ public interface MxparserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPreOpExpr(MxparserParser.PreOpExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code arrayAtom}
-	 * labeled alternative in {@link MxparserParser#atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArrayAtom(MxparserParser.ArrayAtomContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code idAtom}
 	 * labeled alternative in {@link MxparserParser#atom}.
 	 * @param ctx the parse tree
