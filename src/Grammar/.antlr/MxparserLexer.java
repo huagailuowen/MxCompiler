@@ -1,4 +1,4 @@
-// Generated from Mxparser.g4 by ANTLR 4.13.1
+// Generated from /mnt/d/周宸源/大学/学习/程序/MxCompiler/src/Grammar/Mxparser.g4 by ANTLR 4.13.1
 package Grammar;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;

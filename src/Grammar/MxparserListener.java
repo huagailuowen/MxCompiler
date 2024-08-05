@@ -1,4 +1,5 @@
 // Generated from Mxparser.g4 by ANTLR 4.13.1
+package Grammar;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -493,17 +494,89 @@ public interface MxparserListener extends ParseTreeListener {
 	 */
 	void exitIdAtom(MxparserParser.IdAtomContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code constAtom}
+	 * Enter a parse tree produced by the {@code intAtom}
 	 * labeled alternative in {@link MxparserParser#atom}.
 	 * @param ctx the parse tree
 	 */
-	void enterConstAtom(MxparserParser.ConstAtomContext ctx);
+	void enterIntAtom(MxparserParser.IntAtomContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code constAtom}
+	 * Exit a parse tree produced by the {@code intAtom}
 	 * labeled alternative in {@link MxparserParser#atom}.
 	 * @param ctx the parse tree
 	 */
-	void exitConstAtom(MxparserParser.ConstAtomContext ctx);
+	void exitIntAtom(MxparserParser.IntAtomContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stringAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringAtom(MxparserParser.StringAtomContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stringAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringAtom(MxparserParser.StringAtomContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code trueAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void enterTrueAtom(MxparserParser.TrueAtomContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code trueAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void exitTrueAtom(MxparserParser.TrueAtomContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code falseAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void enterFalseAtom(MxparserParser.FalseAtomContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code falseAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void exitFalseAtom(MxparserParser.FalseAtomContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code thisAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void enterThisAtom(MxparserParser.ThisAtomContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code thisAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void exitThisAtom(MxparserParser.ThisAtomContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code nullAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void enterNullAtom(MxparserParser.NullAtomContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code nullAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void exitNullAtom(MxparserParser.NullAtomContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code arrayAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayAtom(MxparserParser.ArrayAtomContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code arrayAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayAtom(MxparserParser.ArrayAtomContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MxparserParser#array}.
 	 * @param ctx the parse tree
@@ -524,28 +597,4 @@ public interface MxparserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitConstArray(MxparserParser.ConstArrayContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code constAtomElement}
-	 * labeled alternative in {@link MxparserParser#constElement}.
-	 * @param ctx the parse tree
-	 */
-	void enterConstAtomElement(MxparserParser.ConstAtomElementContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code constAtomElement}
-	 * labeled alternative in {@link MxparserParser#constElement}.
-	 * @param ctx the parse tree
-	 */
-	void exitConstAtomElement(MxparserParser.ConstAtomElementContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code constArrayElement}
-	 * labeled alternative in {@link MxparserParser#constElement}.
-	 * @param ctx the parse tree
-	 */
-	void enterConstArrayElement(MxparserParser.ConstArrayElementContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code constArrayElement}
-	 * labeled alternative in {@link MxparserParser#constElement}.
-	 * @param ctx the parse tree
-	 */
-	void exitConstArrayElement(MxparserParser.ConstArrayElementContext ctx);
 }

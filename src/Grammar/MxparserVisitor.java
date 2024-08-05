@@ -1,4 +1,5 @@
 // Generated from Mxparser.g4 by ANTLR 4.13.1
+package Grammar;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -297,12 +298,54 @@ public interface MxparserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIdAtom(MxparserParser.IdAtomContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code constAtom}
+	 * Visit a parse tree produced by the {@code intAtom}
 	 * labeled alternative in {@link MxparserParser#atom}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitConstAtom(MxparserParser.ConstAtomContext ctx);
+	T visitIntAtom(MxparserParser.IntAtomContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stringAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringAtom(MxparserParser.StringAtomContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code trueAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTrueAtom(MxparserParser.TrueAtomContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code falseAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFalseAtom(MxparserParser.FalseAtomContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code thisAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitThisAtom(MxparserParser.ThisAtomContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code nullAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNullAtom(MxparserParser.NullAtomContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code arrayAtom}
+	 * labeled alternative in {@link MxparserParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayAtom(MxparserParser.ArrayAtomContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MxparserParser#array}.
 	 * @param ctx the parse tree
@@ -315,18 +358,4 @@ public interface MxparserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitConstArray(MxparserParser.ConstArrayContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code constAtomElement}
-	 * labeled alternative in {@link MxparserParser#constElement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitConstAtomElement(MxparserParser.ConstAtomElementContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code constArrayElement}
-	 * labeled alternative in {@link MxparserParser#constElement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitConstArrayElement(MxparserParser.ConstArrayElementContext ctx);
 }

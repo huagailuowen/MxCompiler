@@ -1,4 +1,5 @@
 grammar Mxparser;
+@header {package Grammar;}
 import Mxlexer;
 // program
 //int[][] a={2,4,{6,7,0},{8} };
@@ -60,10 +61,10 @@ formatStringElement:
 
 expression : 
 	'('expression')'																											# childExpr
-	|New type (arrayLable)* ('()')?                        		# newExpr
+	|New type ((arrayLable)* constArray? | ('()')?)                      	# newExpr
 	|expression Member atom																								# memberExpr
-  |expression (('('parameterList ')')|'()')																		# callExpr
-	|expression ((arrayLable)+)																			# arrayExpr
+  |expression (('('parameterList ')')|'()')															# callExpr
+	|expression ((arrayLable)+)																						# arrayExpr
 	|expression op=(SelfPlus|SelfMinus)																		# selfOpExpr
 	|<assoc = right> op=(SelfPlus|SelfMinus|Not|Minus|NotBit) expression	# preOpExpr
 	|expression op=(Multiply|Divide|Mod) expression												# binaryExpr
@@ -86,11 +87,18 @@ expression :
 atom :
 	// array																																	# arrayAtom
 	Identifier																														# idAtom
-	|constElement																													# constAtom;
+	|Interger																															# intAtom
+	|ConstString																													# stringAtom
+	|True																																	# trueAtom
+	|False																																# falseAtom
+	|This																																	# thisAtom
+	|Null																																	# nullAtom
+	// |constElement																													# constAtom
+	|constArray																														# arrayAtom;
 array:
 	Identifier ('[' expression? ']')+;
-constArray : '{' (constElement)? (',' constElement)* '}';
+constArray : '{' (expression)? (',' expression)* '}';
 
-constElement : 
-	atomElement=(Interger | Identifier | ConstString| True | False | This | Null) # constAtomElement
-	|constArray 																																	# constArrayElement;
+// constElement : 
+// 	atomElement=(Interger | Identifier | ConstString| True | False | This | Null) # constAtomElement
+// 	|constArray 																																	# constArrayElement;
