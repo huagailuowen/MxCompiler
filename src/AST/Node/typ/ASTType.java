@@ -1,6 +1,9 @@
 package AST.Node.typ;
 
+import java.util.ArrayList;
+
 import AST.Node.ASTNode;
+import AST.Node.expr.ASTExpr;
 import Utility.label.TypeLable;
 
 @lombok.experimental.SuperBuilder
@@ -8,5 +11,6 @@ import Utility.label.TypeLable;
 @lombok.Setter
 public class ASTType extends ASTNode{
   private final TypeLable label;
-  
+  private final ArrayList<ASTExpr> dimList;
+
 }

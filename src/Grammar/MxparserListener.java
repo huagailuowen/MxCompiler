@@ -568,16 +568,6 @@ public interface MxparserListener extends ParseTreeListener {
 	 */
 	void exitArrayAtom(MxparserParser.ArrayAtomContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MxparserParser#array}.
-	 * @param ctx the parse tree
-	 */
-	void enterArray(MxparserParser.ArrayContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MxparserParser#array}.
-	 * @param ctx the parse tree
-	 */
-	void exitArray(MxparserParser.ArrayContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link MxparserParser#constArray}.
 	 * @param ctx the parse tree
 	 */

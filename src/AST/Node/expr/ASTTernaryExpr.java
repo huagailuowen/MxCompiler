@@ -9,7 +9,7 @@ import AST.Node.typ.ASTType;
 @lombok.experimental.SuperBuilder
 @lombok.Getter
 @lombok.Setter
-public class ASTTernayExpr extends ASTExpr {
+public class ASTTernaryExpr extends ASTExpr {
   private final ASTExpr cond;
   private final ASTExpr trueExpr;
   private final ASTExpr falseExpr;

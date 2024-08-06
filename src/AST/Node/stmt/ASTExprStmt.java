@@ -9,7 +9,7 @@ import AST.Node.def.ASTVarDef;
 @lombok.experimental.SuperBuilder
 @lombok.Getter
 @lombok.Setter
-public class ASTExprDefStmt extends ASTStmt {
+public class ASTExprStmt extends ASTStmt {
   private final ArrayList<ASTExpr> exprList;
   
   

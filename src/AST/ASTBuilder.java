@@ -1,6 +1,8 @@
 package AST;
 
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.TerminalNode;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -9,7 +11,14 @@ import AST.Node.def.ASTClassDef;
 import AST.Node.def.ASTDef;
 import AST.Node.def.ASTFuncDef;
 import AST.Node.def.ASTVarDef;
+import AST.Node.expr.ASTAssignExpr;
+import AST.Node.expr.ASTAtomExpr;
+import AST.Node.expr.ASTCallExpr;
 import AST.Node.expr.ASTExpr;
+import AST.Node.expr.ASTFStrExpr;
+import AST.Node.expr.ASTNewExpr;
+import AST.Node.expr.ASTSuffixExpr;
+import AST.Node.expr.ASTTernaryExpr;
 import AST.Node.stmt.ASTBlockStmt;
 import AST.Node.stmt.ASTBreakStmt;
 import AST.Node.stmt.ASTContStmt;
@@ -404,7 +413,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
     ASTExprStmt node = ASTExprStmt.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
-      .expr(expr)
+      .exprList(expr)
       .build();
     expr.setFather(node);
     return node;
@@ -416,15 +425,15 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 
 	@Override public ASTNode visitType(MxparserParser.TypeContext ctx) {
     String name = ctx.typ.getText();
+    ArrayList<ASTExpr> dimList = new ArrayList<>();
     for(var array : ctx.arrayLable()){
-      if(array.expression()!=null){
-        throw ErrorBasic("the definition of array should have no expression", new Position(ctx.getStart()));
-      }
+      dimList.add((ASTExpr) visit(array.expression()));
     }
     ASTType node = ASTType.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
       .label(new TypeLable(name,ctx.arrayLable().size()))
+      .dimList(dimList)
       .build();
     return node;
   }
@@ -447,11 +456,11 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
         throw ErrorBasic("We will cut the useless f\", TO DO", new Position(ctx.getStart()));
       }
     }
-    ASTFormatString node = ASTFormatString.builder()
+    ASTFStrExpr node = ASTFStrExpr.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
-      .exprList(exprList)
-      .strList(strList)
+      .args(exprList)
+      .strs(strList)
       .build();
     for(var def : node.getExprList()){
       def.setFather(node);
@@ -461,112 +470,270 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 	
 
 	@Override public ASTNode visitNewExpr(MxparserParser.NewExprContext ctx) {
-    return visitChildren(ctx); 
+    ASTType type = (ASTType) visit(ctx.type());
+    ASTExpr expr = null;
+    if(ctx.constArray()!=null){
+      expr = (ASTAtomExpr) visit(ctx.constArray());
+    }
+    ASTNewExpr node = ASTNewExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .type(type)
+      .expr(expr)
+      .build();
+    type.setFather(node);
+    if(expr!=null){
+      expr.setFather(node);
+    }
+    return node;
   }
 	
 
 	@Override public ASTNode visitSelfOpExpr(MxparserParser.SelfOpExprContext ctx) {
-    return visitChildren(ctx); 
+    ASTExpr expr = (ASTExpr) visit(ctx.expression());
+    ASTSuffixExpr node = ASTSuffixExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .expr(expr)
+      .op(ctx.op.getText())
+      .build();
+    expr.setFather(node);
+    return node;
   }
 	
 
 	@Override public ASTNode visitTernaryExpr(MxparserParser.TernaryExprContext ctx) {
-    return visitChildren(ctx); 
+    if(ctx.expression().size()!=3){
+      throw ErrorBasic("Ternary expression should have 3 parts", new Position(ctx.getStart()));
+    }
+    ASTExpr cond = (ASTExpr) visit(ctx.expression(0));
+    ASTExpr then = (ASTExpr) visit(ctx.expression(1));
+    ASTExpr els = (ASTExpr) visit(ctx.expression(2));
+    ASTTernaryExpr node = ASTTernaryExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .cond(cond)
+      .trueExpr(then)
+      .falseExpr(els)
+      .build();
+    cond.setFather(node);
+    then.setFather(node);
+    els.setFather(node);
+    return node;
   }
 	
 
 	@Override public ASTNode visitArrayExpr(MxparserParser.ArrayExprContext ctx) {
-    return visitChildren(ctx); 
+    ArrayList<ASTExpr> array = new ArrayList<>();
+    ASTExpr expr = (ASTExpr) visit(ctx.expression());
+    for(var ele : ctx.array){
+      array.add((ASTExpr) visit(ele));
+    }
+    ASTArrayExpr node = ASTArrayExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .expr(expr)
+      .array(array)
+      .build();
+    expr.setFather(node);
+    for(var ele : node.getArray()){
+      ele.setFather(node);
+    }
+    return node;
   }
 	
 
 	@Override public ASTNode visitMemberExpr(MxparserParser.MemberExprContext ctx) {
-    return visitChildren(ctx); 
+    ASTExpr expr = (ASTExpr) visit(ctx.expression());
+    ASTSuffixExpr node = ASTSuffixExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .expr(expr)
+      .member(ctx.Member().getText())
+      .build();
+    expr.setFather(node);
+    return node;
   }
 	
 
 	@Override public ASTNode visitAtomExpr(MxparserParser.AtomExprContext ctx) {
-    return visitChildren(ctx); 
+    return visit(ctx.atom());
   }
 	
 
 	@Override public ASTNode visitBinaryExpr(MxparserParser.BinaryExprContext ctx) {
-    return visitChildren(ctx); 
+    if(ctx.expression().size()!=2){
+      throw ErrorBasic("Binary expression should have 2 parts", new Position(ctx.getStart()));
+    }
+    ASTExpr lhs = (ASTExpr) visit(ctx.expression(0));
+    ASTExpr rhs = (ASTExpr) visit(ctx.expression(1));
+    ASTBinaryExpr node = ASTBinaryExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .lhs(lhs)
+      .rhs(rhs)
+      .op(ctx.op.getText())
+      .build();
+    lhs.setFather(node);
+    rhs.setFather(node);
+    return node;
   }
 	
 
 	@Override public ASTNode visitFormatStringExpr(MxparserParser.FormatStringExprContext ctx) {
-    return visitChildren(ctx); 
+    return visit(ctx.formatStringElement());
   }
 	
 
 	@Override public ASTNode visitChildExpr(MxparserParser.ChildExprContext ctx) {
-    return visitChildren(ctx); 
+    return visit(ctx.expression());
   }
 	
 
 	@Override public ASTNode visitCallExpr(MxparserParser.CallExprContext ctx) {
-    return visitChildren(ctx); 
+    ASTExpr expr = (ASTExpr) visit(ctx.expression());
+    ArrayList<ASTExpr> paraList = new ArrayList<>();
+    for(var para : ctx.expressionList().expression()){
+      paraList.add((ASTExpr) visit(para));
+    }
+    ASTCallExpr node = ASTCallExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .expr(expr)
+      .args(paraList)
+      .build();
+    expr.setFather(node);
+    for(var def : node.getArgs()){
+      def.setFather(node);
+    }
+    return node;
   }
 	
 
 	@Override public ASTNode visitAssignExpr(MxparserParser.AssignExprContext ctx) {
-    return visitChildren(ctx); 
+    if(ctx.expression().size()!=2){
+      throw ErrorBasic("Assign expression should have 2 parts", new Position(ctx.getStart()));
+    }
+    ASTExpr lhs = (ASTExpr) visit(ctx.expression(0));
+    ASTExpr rhs = (ASTExpr) visit(ctx.expression(1));
+    ASTAssignExpr node = ASTAssignExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .lhs(lhs)
+      .rhs(rhs)
+      .op(ctx.op.getText())
+      .build();
+    lhs.setFather(node);
+    rhs.setFather(node);
+    return node;
   }
 	
 
 	@Override public ASTNode visitPreOpExpr(MxparserParser.PreOpExprContext ctx) {
-    return visitChildren(ctx); 
+    ASTExpr expr = (ASTExpr) visit(ctx.expression());
+    ASTSuffixExpr node = ASTSuffixExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .expr(expr)
+      .op(ctx.op.getText())
+      .build();
+    expr.setFather(node);
+    return node;
   }
 	
 
 	@Override public ASTNode visitIdAtom(MxparserParser.IdAtomContext ctx) {
-    return visitChildren(ctx); 
+    return ASTAtomExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .type(ASTAtomExpr.AtomType.IDENTIFIER)
+      .value(ctx.Identifier().getText())
+      .build();
   }
 	
 
 	@Override public ASTNode visitIntAtom(MxparserParser.IntAtomContext ctx) {
-    return visitChildren(ctx); 
+    return ASTAtomExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .type(ASTAtomExpr.AtomType.INT)
+      .value(ctx.Integer().getText())
+      .build();
   }
 	
 
 	@Override public ASTNode visitStringAtom(MxparserParser.StringAtomContext ctx) {
-    return visitChildren(ctx); 
+    return ASTAtomExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .type(ASTAtomExpr.AtomType.STRING)
+      .value(ctx.String().getText())
+      .build();
   }
 	
 
 	@Override public ASTNode visitTrueAtom(MxparserParser.TrueAtomContext ctx) {
-    return visitChildren(ctx); 
+    return ASTAtomExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .type(ASTAtomExpr.AtomType.BOOL)
+      .value("true")
+      .build();
   }
 	
 
 	@Override public ASTNode visitFalseAtom(MxparserParser.FalseAtomContext ctx) {
-    return visitChildren(ctx); 
+    return ASTAtomExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .type(ASTAtomExpr.AtomType.BOOL)
+      .value("false")
+      .build();
   }
 	
 
 	@Override public ASTNode visitThisAtom(MxparserParser.ThisAtomContext ctx) {
-    return visitChildren(ctx); 
+    return ASTAtomExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .type(ASTAtomExpr.AtomType.THIS)
+      .value("this")
+      .build();
   }
 	
 
 	@Override public ASTNode visitNullAtom(MxparserParser.NullAtomContext ctx) {
-    return visitChildren(ctx); 
+    return ASTAtomExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .type(ASTAtomExpr.AtomType.NULL)
+      .value("null")
+      .build();
   }
 	
 
 	@Override public ASTNode visitArrayAtom(MxparserParser.ArrayAtomContext ctx) {
-    return visitChildren(ctx); 
+    return visit(ctx.constArray());
   }
 	
 
-	@Override public ASTNode visitArray(MxparserParser.ArrayContext ctx) {
-    return visitChildren(ctx); 
-  }
 	
 
 	@Override public ASTNode visitConstArray(MxparserParser.ConstArrayContext ctx) {
-    return visitChildren(ctx); 
+    ArrayList<ASTExpr> array = new ArrayList<>();
+    for(var ele : ctx.expressionList().expression()){
+      array.add((ASTExpr) visit(ele));
+    }
+    ASTAtomExpr node = ASTAtomExpr.builder()
+      .position(new Position(ctx.getStart()))
+      .father(null)
+      .type(ASTAtomExpr.AtomType.ARRAY)
+      .array(array)
+      .build();
+    for(var def : node.getArray()){
+      def.setFather(node);
+    }
+    return node;
   }
   
 }

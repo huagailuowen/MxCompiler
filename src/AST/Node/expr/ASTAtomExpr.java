@@ -11,7 +11,7 @@ import AST.Node.typ.ASTType;
 @lombok.Setter
 public class ASTAtomExpr extends ASTExpr {
   enum AtomType {
-    INT, FLOAT, BOOL, STRING, NULL , VOID , THIS , IDENTIFIER ,ARRAY
+    INT , BOOL, STRING, NULL , VOID , THIS , IDENTIFIER ,ARRAY
   }
   private final AtomType type;
   private final String value;//if this is not a atom, then this is null
