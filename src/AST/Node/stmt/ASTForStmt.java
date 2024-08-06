@@ -12,7 +12,7 @@ public class ASTForStmt extends ASTStmt {
   private final ASTStmt init;
   private final ASTExpr cond;
   private final ASTStmt update;
-  private final ArrayList<ASTStmt> stmtList;
+  private final ASTStmt content;
   
   
   @Override

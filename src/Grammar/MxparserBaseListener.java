@@ -341,18 +341,6 @@ public class MxparserBaseListener implements MxparserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterInitalstatement(MxparserParser.InitalstatementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitInitalstatement(MxparserParser.InitalstatementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterType(MxparserParser.TypeContext ctx) { }
 	/**
 	 * {@inheritDoc}

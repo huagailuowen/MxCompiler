@@ -3,6 +3,7 @@ package AST.Node.stmt;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import AST.Node.stmt.ASTStmt;
+import AST.ASTVisitor;
 import AST.Node.expr.ASTExpr;
 
 @lombok.experimental.SuperBuilder
@@ -10,7 +11,7 @@ import AST.Node.expr.ASTExpr;
 @lombok.Setter
 public class ASTWhileStmt extends ASTStmt {
   private final ASTExpr condition;
-  private final ArrayList<ASTStmt> stmtList;
+  private final ASTStmt content;
   
   
   @Override

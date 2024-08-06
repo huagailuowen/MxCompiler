@@ -2,21 +2,21 @@ package Utility.error;
 
 import Utility.position.Position;
 
-public class error {
+public class ErrorBasic {
   private String message;
   private Position position;
 
-  public error(String message) {
+  public ErrorBasic(String message) {
     this.message = message;
     this.position = null;
   }
 
-  public error(String message, Position position) {
+  public ErrorBasic(String message, Position position) {
     this.message = message;
     this.position = position;
   }
   
-  public error(String mString, int row, int column) {
+  public ErrorBasic(String mString, int row, int column) {
     this.message = mString;
     this.position = new Position(row, column);
   }

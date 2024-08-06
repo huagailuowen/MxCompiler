@@ -3,6 +3,7 @@ package Utility.label;
 import java.util.ArrayList;
 
 import AST.Node.def.VarDef;
+import AST.Node.typ.ASTType;
 import Utility.label.TypeLable;
 
 @lombok.Getter
@@ -23,9 +24,9 @@ public class FuncLable extends Label {
       this.paramTypes.add(t);
     }
   }
-  public FuncLable(String name, ArrayList<VarDef> paramDefs) {
+  public FuncLable(String name, ASTType type,ArrayList<VarDef> paramDefs) {
     super(name);
-    this.returnType = null;
+    this.returnType = ((TypeLable)type.getLabel());
     this.paramTypes = new ArrayList<TypeLa ble>();
     for(VarDef v : paramDefs) {
       this.paramTypes.add(((VarLable)v.getLabel()).getType());

@@ -6,8 +6,8 @@ import Utility.position.Position;
 @lombok.Getter
 @lombok.Setter
 public class ASTNode {
-  private final Position position;
-  private final ASTNode father;
+  protected Position position;
+  protected ASTNode father;
 
   public String toString() {
     return "ASTNode at " + (position == null ? "unknown position" : position.toString());

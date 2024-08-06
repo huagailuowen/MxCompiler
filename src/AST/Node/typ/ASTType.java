@@ -8,8 +8,5 @@ import Utility.label.TypeLable;
 @lombok.Setter
 public class ASTType extends ASTNode{
   private final TypeLable label;
-  public void pic()
-  {
-    label.name;
-  }
+  
 }

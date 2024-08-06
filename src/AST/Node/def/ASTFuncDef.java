@@ -16,4 +16,8 @@ public class ASTFuncDef extends ASTDef{
   private final FuncLable label;
   private final ArrayList<ASTVarDef> paraList;
   private final ArrayList<ASTStmt> stmtList;
+  @Override 
+  public <T> T accept(ASTVisitor<T> visitor) {
+    return visitor.visit(this);
+  } 
 }

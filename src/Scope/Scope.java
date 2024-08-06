@@ -2,6 +2,7 @@ package Scope;
 
 import java.util.Map;
 import Utility.label.*;
+import Scope.*;
 
 @lombok.Getter
 @lombok.Setter
@@ -18,6 +19,10 @@ public class Scope {
     classMap = new Map<String,ClassLable>() {};
     if(!is_global)
       return;
+    for(FuncLable func : BasicFunc.BuildInFunc)
+      funcMap.put(func.getName(), func);
+    for(ClassLable cls : BasicClass.BuildInClass)
+      classMap.put(cls.getName(), cls);
     //add some default functions
   }
   public Scope(Scope parent) //this is definetely not a global scope

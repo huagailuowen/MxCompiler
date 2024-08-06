@@ -298,16 +298,6 @@ public interface MxparserListener extends ParseTreeListener {
 	 */
 	void exitExpressionStatement(MxparserParser.ExpressionStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MxparserParser#initalstatement}.
-	 * @param ctx the parse tree
-	 */
-	void enterInitalstatement(MxparserParser.InitalstatementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MxparserParser#initalstatement}.
-	 * @param ctx the parse tree
-	 */
-	void exitInitalstatement(MxparserParser.InitalstatementContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link MxparserParser#type}.
 	 * @param ctx the parse tree
 	 */

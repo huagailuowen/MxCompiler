@@ -37,17 +37,16 @@ statement :
 	|Semicolon                 	# emptyStmt;
 block : ('{' statement* '}') ;
 ifStatement : 
-	If '(' expression ')' (statement) 
-	(Else statement)?;
+	If '(' cond=expression ')' (then=statement) 
+	(Else els=statement)?;
 forStatement :
-	For '(' (statement) expression?  Semicolon expression? ')' statement;
+	For '(' (init=statement) cond=expression?  Semicolon update=expression? ')' content=statement;
 whileStatement :
-	While '(' expression ')' statement;
-returnStatement : Return expression?  Semicolon;
+	While '(' cond=expression ')' content=statement;
+returnStatement : Return res=expression?  Semicolon;
 breakStatement : Break  Semicolon;
 continueStatement : Continue  Semicolon;
 expressionStatement : expression  Semicolon;
-initalstatement : type? parameterList;
 
 type : typ=(Int | Bool | String | Identifier | Void) arrayLable*;
 arrayLable : ('['expression?']');

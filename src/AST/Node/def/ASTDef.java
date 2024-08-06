@@ -2,6 +2,7 @@ package AST.Node.def;
 
 import AST.ASTVisitor;
 import AST.Node.ASTNode;
+import Scope.Scope;
 import Utility.label.Label;
 
 @lombok.experimental.SuperBuilder
@@ -9,7 +10,7 @@ import Utility.label.Label;
 @lombok.Setter
 public abstract class ASTDef extends ASTNode {
   private Lable lable;
-  
+  private final Scope scope;
   
   @Override 
   public <T> T accept(ASTVisitor<T> visitor) {
