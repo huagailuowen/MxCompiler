@@ -14,6 +14,8 @@ public class Scope {
   Map<String, FuncLable> funcMap;
   Map<String, VarLable> varMap;
   Map<String, ClassLable> classMap;
+  boolean isLoop = false;
+  boolean isFunc = false;
   public Scope(boolean is_global=false)
   {
     this.parent = null;
@@ -35,6 +37,13 @@ public class Scope {
     varMap = new Map<String,VarLable>() {};
     classMap = new Map<String,ClassLable>() {};
   }
+  enum QueryType
+  {
+    FUNC,
+    VAR,
+    CLASS,
+    ANY
+  }
   public Label get(String name,boolean recursive=false)
   {
     if(funcMap.containsKey(name))
@@ -42,6 +51,18 @@ public class Scope {
     if(varMap.containsKey(name))
       return varMap.get(name);
     if(classMap.containsKey(name))
+      return classMap.get(name);
+    if(recursive && parent!=null)
+      return parent.get(name,recursive);
+    return null;
+  }
+  public Label get(String name, QueryType qType,boolean recursive=false)
+  {
+    if(funcMap.containsKey(name) && (QueryType.FUNC == qType || QueryType.ANY == qType))
+      return funcMap.get(name);
+    if(varMap.containsKey(name) && (QueryType.VAR == qType || QueryType.ANY == qType))
+      return varMap.get(name);
+    if(classMap.containsKey(name) && (QueryType.CLASS == qType || QueryType.ANY == qType))
       return classMap.get(name);
     if(recursive && parent!=null)
       return parent.get(name,recursive);
@@ -64,6 +85,22 @@ public class Scope {
     if(classMap.containsKey(cls.getName()))
       throw new Error("Class "+cls.getName()+" has been declared");
     classMap.put(cls.getName(), cls);
+  }
+  public Scope findLoop(Scope curScope)
+  {
+    if(curScope==null)
+      return null;
+    if(curScope.isLoop)
+      return curScope;
+    return findLoop(curScope.parent);
+  }
+  public Scope findFunc(Scope curScope)
+  {
+    if(curScope==null)
+      return null;
+    if(curScope.isFunc)
+      return curScope;
+    return findFunc(curScope.parent);
   }
   
 }

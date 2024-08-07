@@ -14,7 +14,15 @@ public class Compileinfo {
   }
   public void append(Compileinfo info)
   {
-    this.Content += '\n' + info.toString();
+    if(info == null)
+      return;
+    if(Content == null)
+      Content = new String();
+    if(!info.Content.isEmpty()&& !this.Content.isEmpty()){
+      this.Content += "\n";
+    }
+    if(!info.Content.isEmpty())
+      this.Content += info.toString();
   }
   public String toString() {
     return "Compile Error:"+Content+(pos==null?"":pos.toString());

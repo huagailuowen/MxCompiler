@@ -3,9 +3,7 @@ package AST.Node.def;
 import java.util.ArrayList;
 
 import AST.ASTVisitor;
-import AST.Node.ASTNode;
 import AST.Node.stmt.ASTStmt;
-import AST.Node.def.ASTVarDef;
 import Utility.label.FuncLable;
 
 

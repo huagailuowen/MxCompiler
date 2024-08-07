@@ -2,9 +2,8 @@ package AST.Node.def;
 
 import java.util.ArrayList;
 
-import Utility.label.ClassLable;
 import AST.ASTVisitor;
-import AST.Node.def.*;
+import Utility.label.ClassLable;
 
 @lombok.experimental.SuperBuilder
 @lombok.Getter

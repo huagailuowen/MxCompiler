@@ -1,7 +1,6 @@
 package AST.Node.def;
 
 import AST.ASTVisitor;
-import AST.Node.ASTNode;
 import AST.Node.expr.ASTExpr;
 import Utility.label.VarLable;
 

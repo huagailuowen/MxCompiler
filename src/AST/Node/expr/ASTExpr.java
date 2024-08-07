@@ -3,7 +3,7 @@ package AST.Node.expr;
 import AST.ASTVisitor;
 import AST.Node.ASTNode;
 import Scope.Scope;
-import Utility.label.*;
+import Utility.label.ExprLable;
 
 @lombok.experimental.SuperBuilder
 @lombok.Getter
