@@ -1,18 +1,19 @@
 package AST;
 
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.TerminalNode;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-import AST.Node.*;
+import org.antlr.v4.runtime.tree.TerminalNode;
+
+import AST.Node.ASTNode;
+import AST.Node.ASTRoot;
 import AST.Node.def.ASTClassDef;
 import AST.Node.def.ASTDef;
 import AST.Node.def.ASTFuncDef;
 import AST.Node.def.ASTVarDef;
+import AST.Node.expr.ASTArrayExpr;
 import AST.Node.expr.ASTAssignExpr;
 import AST.Node.expr.ASTAtomExpr;
+import AST.Node.expr.ASTBinaryExpr;
 import AST.Node.expr.ASTCallExpr;
 import AST.Node.expr.ASTExpr;
 import AST.Node.expr.ASTFStrExpr;
@@ -22,14 +23,15 @@ import AST.Node.expr.ASTTernaryExpr;
 import AST.Node.stmt.ASTBlockStmt;
 import AST.Node.stmt.ASTBreakStmt;
 import AST.Node.stmt.ASTContStmt;
+import AST.Node.stmt.ASTExprStmt;
 import AST.Node.stmt.ASTForStmt;
 import AST.Node.stmt.ASTIfStmt;
 import AST.Node.stmt.ASTStmt;
 import AST.Node.stmt.ASTVarDefStmt;
 import AST.Node.stmt.ASTWhileStmt;
 import AST.Node.typ.ASTType;
-import Grammar.*;
-import Utility.error.ErrorBasic;
+import Grammar.MxparserBaseVisitor;
+import Grammar.MxparserParser;
 import Utility.label.ClassLable;
 import Utility.label.FuncLable;
 import Utility.label.TypeLable;
@@ -156,7 +158,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 
 	@Override public ASTNode visitParameterList(MxparserParser.ParameterListContext ctx) {
     throw ErrorBasic("This should not be called", new Position(ctx.getStart()));
-    return visitChildren(ctx); 
+    return visitChildren(ctx);
   }
 	
 
@@ -448,12 +450,17 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 	@Override public ASTNode visitFormatStringElement(MxparserParser.FormatStringElementContext ctx) {
     ArrayList<ASTExpr> exprList = new ArrayList<>();
     ArrayList<String> strList = new ArrayList<>();
+    //erase the useless f","
+    fString str = "";
     for(var ele : ctx.children){
       if(ele instanceof MxparserParser.ExpressionContext){
         exprList.add((ASTExpr) visit(ele));
       }else if(ele instanceof TerminalNode){
-        strList.add(ele.getText());
-        throw ErrorBasic("We will cut the useless f\", TO DO", new Position(ctx.getStart()));
+        str = prunString(ele.getText(),true);
+        strList.add(str);
+        // throw ErrorBasic("We will cut the useless f\", TO DO", new Position(ctx.getStart()));
+        
+        
       }
     }
     ASTFStrExpr node = ASTFStrExpr.builder()
@@ -660,14 +667,70 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .value(ctx.Integer().getText())
       .build();
   }
-	
+	public String prunString(String str, boolean isFormate = false){
+    String res= new String();
+    if(isFormate){
+      int p=1;
+      if(str.charAt(0)=='f'){
+        p=2;
+      }
+      for(int i=1;i<str.length()-1;i++){
+        if(str.charAt(i)=='\\'){
+          i++;
+          if(str.charAt(i)=='n'){
+            res+='\n';
+          }else if(str.charAt(i)=='t'){
+            res+='\t';
+          }else if(str.charAt(i)=='\\'){
+            res+='\\';
+          }else if(str.charAt(i)=='"'){
+            res+='"';
+          }else{
+            throw ErrorBasic("Unknow escape character", new Position(ctx.getStart()));
+          }
+        }else if(str.charAt(i)=='$'){
+          i++;
+          if(i==str.length()-1){
+            throw ErrorBasic("Unknow escape character", new Position(ctx.getStart()));
+          }
+          if(str.charAt(i)=='$'){
+            res+="$";
+          }else {
+            throw ErrorBasic("Unknow escape character", new Position(ctx.getStart()));
+          }
+        }else{
+          res+=str.charAt(i);
+        }
+      }
+    }else{
+      for(int i=1;i<str.length()-1;i++){
+        if(str.charAt(i)=='\\'){
+          i++;
+          if(str.charAt(i)=='n'){
+            res+='\n';
+          }else if(str.charAt(i)=='t'){
+            res+='\t';
+          }else if(str.charAt(i)=='\\'){
+            res+='\\';
+          }else if(str.charAt(i)=='"'){
+            res+='"';
+          }else{
+            throw ErrorBasic("Unknow escape character", new Position(ctx.getStart()));
+          }
+        }else{
+          res+=str.charAt(i);
+        }
+      }
+    }
+    return res;
+  }
 
 	@Override public ASTNode visitStringAtom(MxparserParser.StringAtomContext ctx) {
     return ASTAtomExpr.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
       .type(ASTAtomExpr.AtomType.STRING)
-      .value(ctx.String().getText())
+      .value(prunString(ctx.String().getText(),false))
       .build();
   }
 	

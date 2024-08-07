@@ -1,5 +1,7 @@
 /reference
 /tmp
 /bin
+/lib
+/target
 /.vscode
 /pkg
