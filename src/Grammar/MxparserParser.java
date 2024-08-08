@@ -2857,11 +2857,11 @@ public class MxparserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ConstArrayContext extends ParserRuleContext {
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
+		public List<AtomContext> atom() {
+			return getRuleContexts(AtomContext.class);
 		}
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
+		public AtomContext atom(int i) {
+			return getRuleContext(AtomContext.class,i);
 		}
 		public List<TerminalNode> Comma() { return getTokens(MxparserParser.Comma); }
 		public TerminalNode Comma(int i) {
@@ -2898,10 +2898,10 @@ public class MxparserParser extends Parser {
 			setState(315);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 2234701308631091210L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 504403158266415106L) != 0)) {
 				{
 				setState(314);
-				expression(0);
+				atom();
 				}
 			}
 
@@ -2914,7 +2914,7 @@ public class MxparserParser extends Parser {
 				setState(317);
 				match(Comma);
 				setState(318);
-				expression(0);
+				atom();
 				}
 				}
 				setState(323);
@@ -3192,10 +3192,10 @@ public class MxparserParser extends Parser {
 		"\u0000\u0000\u0137\u0132\u0001\u0000\u0000\u0000\u0137\u0133\u0001\u0000"+
 		"\u0000\u0000\u0137\u0134\u0001\u0000\u0000\u0000\u0137\u0135\u0001\u0000"+
 		"\u0000\u0000\u0137\u0136\u0001\u0000\u0000\u0000\u0138-\u0001\u0000\u0000"+
-		"\u0000\u0139\u013b\u0005\u0001\u0000\u0000\u013a\u013c\u0003*\u0015\u0000"+
+		"\u0000\u0139\u013b\u0005\u0001\u0000\u0000\u013a\u013c\u0003,\u0016\u0000"+
 		"\u013b\u013a\u0001\u0000\u0000\u0000\u013b\u013c\u0001\u0000\u0000\u0000"+
 		"\u013c\u0141\u0001\u0000\u0000\u0000\u013d\u013e\u00053\u0000\u0000\u013e"+
-		"\u0140\u0003*\u0015\u0000\u013f\u013d\u0001\u0000\u0000\u0000\u0140\u0143"+
+		"\u0140\u0003,\u0016\u0000\u013f\u013d\u0001\u0000\u0000\u0000\u0140\u0143"+
 		"\u0001\u0000\u0000\u0000\u0141\u013f\u0001\u0000\u0000\u0000\u0141\u0142"+
 		"\u0001\u0000\u0000\u0000\u0142\u0144\u0001\u0000\u0000\u0000\u0143\u0141"+
 		"\u0001\u0000\u0000\u0000\u0144\u0145\u0005\u0002\u0000\u0000\u0145/\u0001"+

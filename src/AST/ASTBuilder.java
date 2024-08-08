@@ -73,14 +73,14 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       throw ErrorBasic("Multiple constructors are not allowed", new Position(ctx.getStart()));
     }else if(ctx.classConstructor().size()==1){
       constructor = (ASTFuncDef) visit(ctx.classConstructor(0));
-      constructor.setLable(new FuncLable(ctx.Identifier().getText(), new TypeLable(ctx.Identifier().getText()), new ArrayList<>()));
+      constructor.setLable(new FuncLable(ctx.Identifier().getText(), null, new ArrayList<>()));
     }else{
       //defalut constructor
       //the position may not right
       constructor = ASTFuncDef.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
-      .lable(new FuncLable(ctx.Identifier().getText(), new TypeLable(ctx.Identifier().getText()), new ArrayList<>()))
+      .lable(new FuncLable(ctx.Identifier().getText(), null, new ArrayList<>()))
       .paraList(new ArrayList<>())
       .stmtList(new ArrayList<>())
       .build();
@@ -208,8 +208,8 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
     //there is no parameter in the constructor
     stmtList.add((ASTStmt) visit(ctx.block()));
 
-    FuncLable label = new FuncLable(ctx.Identifier().getText(), null, paraList);
-
+    // FuncLable label = new FuncLable(ctx.getText(), null, paraList);
+    // lable is not set here, but in collector
     ASTFuncDef node = ASTFuncDef.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
@@ -783,9 +783,9 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 	
 
 	@Override public ASTNode visitConstArray(MxparserParser.ConstArrayContext ctx) {
-    ArrayList<ASTExpr> array = new ArrayList<>();
-    for(var ele : ctx.expressionList().expression()){
-      array.add((ASTExpr) visit(ele));
+    ArrayList<ASTAtomExpr> array = new ArrayList<>();
+    for(var ele : ctx.atom()){
+      array.add((ASTAtomExpr) visit(ele));
     }
     ASTAtomExpr node = ASTAtomExpr.builder()
       .position(new Position(ctx.getStart()))

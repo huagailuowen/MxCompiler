@@ -6,7 +6,6 @@ import Utility.label.ClassLable;
 import Utility.label.FuncLable;
 import Utility.label.Label;
 import Utility.label.VarLable;
-
 @lombok.Getter
 @lombok.Setter
 public class Scope {
@@ -16,6 +15,9 @@ public class Scope {
   Map<String, ClassLable> classMap;
   boolean isLoop = false;
   boolean isFunc = false;
+  boolean isClass = false;
+  String name=null;
+  //only func and class has name
   public Scope(boolean is_global=false)
   {
     this.parent = null;
@@ -74,11 +76,23 @@ public class Scope {
       throw new Error("Function "+func.getName()+" has been declared");
     funcMap.put(func.getName(), func);
   }
+  public void declareFunc(String name, FuncLable func)
+  {
+    if(funcMap.containsKey(name))
+      throw new Error("Function "+name+" has been declared");
+    funcMap.put(name, func);
+  }
   public void declareVar(VarLable var)
   {
     if(varMap.containsKey(var.getName()))
       throw new Error("Variable "+var.getName()+" has been declared");
     varMap.put(var.getName(), var);
+  }
+  public void declareVar(String name, VarLable var)
+  {
+    if(varMap.containsKey(name))
+      throw new Error("Variable "+name+" has been declared");
+    varMap.put(name, var);
   }
   public void declareClass(ClassLable cls)
   {
@@ -101,6 +115,14 @@ public class Scope {
     if(curScope.isFunc)
       return curScope;
     return findFunc(curScope.parent);
+  }
+  public Scope findClass(Scope curScope)
+  {
+    if(curScope==null)
+      return null;
+    if(curScope.isClass)
+      return curScope;
+    return findClass(curScope.parent);
   }
   
 }

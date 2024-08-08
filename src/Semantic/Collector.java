@@ -1,7 +1,5 @@
 package Semantic;
 
-import java.lang.classfile.Label;
-
 import AST.ASTVisitor;
 import AST.Node.ASTRoot;
 import AST.Node.def.ASTClassDef;
@@ -13,6 +11,7 @@ import AST.Node.stmt.ASTStmt;
 import AST.Node.typ.ASTType;
 import Scope.Scope;
 import Utility.label.FuncLable;
+import Utility.label.Label;
 
 public class Collector implements ASTVisitor<Compileinfo>{
   private final Scope globalScope;
@@ -77,11 +76,14 @@ public class Collector implements ASTVisitor<Compileinfo>{
   public Compileinfo visit(ASTClassDef node) {
     stepIn();
     node.setScope(currentScope);
+    currentScope.setClass(true);
+    currentScope.setName(node.getLabel().getName());
     var info = new Compileinfo();
     if(node.getConstructor()==null){
       throw ErrorBasic("class "+node.getName()+" has no constructor",node.getPosition());
     }
     info.append(node.getConstructor().accept(this));
+    node.getConstructor().getLabel().setReturnType(globalScope.get("void",Scope.QueryType.CLASS));
     //we should not visit the varDef, for it is not allowed to define variable former quote
     
     for (ASTFuncDef f : node.getFuncList()) {
@@ -89,8 +91,9 @@ public class Collector implements ASTVisitor<Compileinfo>{
       if(currentScope.get(name)!=null){
         info.append(new Compileinfo("function "+name+" has been defined",f.getPosition()));
       }else{
-        currentScope.declareFunc(f.getLabel());
         info.append(f.accept(this));
+        String funcname = new String(node.getLabel().getName()+"."+f.getLabel().getName());
+        globalScope.declareFunc(funcname,f.getLabel());
       }
     }
     stepOut();
@@ -101,6 +104,7 @@ public class Collector implements ASTVisitor<Compileinfo>{
     stepIn();
     node.setScope(currentScope);
     currentScope.setFunc(true);
+    currentScope.setName(node.getLabel().getName());
     var info = new Compileinfo();
     for (ASTVarDef v : node.getParaList()) {
       info.append(v.accept(this));
