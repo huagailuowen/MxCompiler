@@ -22,24 +22,24 @@ public class ClassLable extends Lable{
     this.funcTable = new TreeMap<String, FuncLable>();
     this.varTable = new TreeMap<String, VarLable>();
   }
-//  public ClassLable(String name, TreeMap<String, FuncLable> funcTable, TreeMap<String, VarLable> varTable) {
-//    super(name);
-//  this.type = new TypeLable(name);
-//    this.funcTable = funcTable;
-//    this.varTable = varTable;
-//  }
-  public ClassLable(String name, ArrayList<FuncLable> funcList, ArrayList<VarLable> varList) {
+  public ClassLable(String name, TreeMap<String, FuncLable> funcTable, TreeMap<String, VarLable> varTable) {
     super(name);
-    this.type = new TypeLable(name);
-    this.funcTable = new TreeMap<String, FuncLable>();
-    this.varTable = new TreeMap<String, VarLable>();
-    for(FuncLable f : funcList) {
-      this.funcTable.put(f.getName(), f);
-    }
-    for(VarLable v : varList) {
-      this.varTable.put(v.getName(), v);
-    }
+  this.type = new TypeLable(name);
+    this.funcTable = funcTable;
+    this.varTable = varTable;
   }
+//  public ClassLable(String name, ArrayList<FuncLable> funcList, ArrayList<VarLable> varList) {
+//    super(name);
+//    this.type = new TypeLable(name);
+//    this.funcTable = new TreeMap<String, FuncLable>();
+//    this.varTable = new TreeMap<String, VarLable>();
+//    for(FuncLable f : funcList) {
+//      this.funcTable.put(f.getName(), f);
+//    }
+//    for(VarLable v : varList) {
+//      this.varTable.put(v.getName(), v);
+//    }
+//  }
   public ClassLable(String name, ArrayList<ASTFuncDef> funcDefs, ArrayList<ASTVarDef> varDefs) {
     super(name);
     this.type = new TypeLable(name);
