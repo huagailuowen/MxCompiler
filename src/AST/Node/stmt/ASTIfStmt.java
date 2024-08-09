@@ -7,9 +7,9 @@ import AST.Node.expr.ASTExpr;
 @lombok.Getter
 @lombok.Setter
 public class ASTIfStmt extends ASTStmt {
-  private final ASTExpr cond;
-  private final ASTStmt thenStmt;
-  private final ASTStmt elseStmt;
+  protected ASTExpr cond;
+  protected ASTStmt thenStmt;
+  protected ASTStmt elseStmt;
   
 
   @Override

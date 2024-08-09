@@ -8,10 +8,10 @@ import AST.Node.def.ASTVarDef;
 @lombok.experimental.SuperBuilder
 @lombok.Getter
 @lombok.Setter
-public class ASTVarDefStmt {
-  // private final ASTType type;
+public class ASTVarDefStmt extends ASTStmt{
+  // protected ASTType type;
   //this line is useless because the type is already defined in the varList
-  private final ArrayList<ASTVarDef> varList;
+  protected ArrayList<ASTVarDef> varList;
   
   
   @Override

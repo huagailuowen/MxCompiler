@@ -1,3 +1,5 @@
+import Grammar.MxparserLexer;
+import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 
 import AST.ASTBuilder;
@@ -8,12 +10,20 @@ import Grammar.MxparserParser;
 import Semantic.Checker;
 import Semantic.Collector;
 import Semantic.Compileinfo;
+import org.antlr.v4.runtime.CommonTokenStream;
+
+import java.io.IOException;
 
 public class Compiler {
-  public static void main(String[] args){
+  public static void main(String[] args) throws IOException {
     var input = CharStreams.fromStream(System.in);
-    var parser = new MxparserParser(input);
-    parser.addErrorListener(new MxparserBaseListener());
+    var lexer = new MxparserLexer(input);
+    lexer.removeErrorListeners();
+    lexer.addErrorListener(new BaseErrorListener());
+    CommonTokenStream tokens = new CommonTokenStream(lexer);
+    var parser = new MxparserParser(tokens);
+    parser.removeErrorListeners();
+    parser.addErrorListener(new BaseErrorListener());
     var tree = parser.program();
     ASTNode ast = new ASTBuilder().visit(parser.program());
     System.out.println("Collector:");

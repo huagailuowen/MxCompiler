@@ -8,7 +8,7 @@ import Scope.Scope;
 @lombok.Getter
 @lombok.Setter
 public abstract class ASTStmt extends ASTNode {
-  private final Scope scope;
+  protected Scope scope;
 
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {

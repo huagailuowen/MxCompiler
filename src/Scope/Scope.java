@@ -1,52 +1,78 @@
 package Scope;
 
-import java.util.Map;
+import java.util.TreeMap;
 
-import Utility.label.ClassLable;
-import Utility.label.FuncLable;
-import Utility.label.Label;
-import Utility.label.VarLable;
+import Utility.label.*;
+
 @lombok.Getter
 @lombok.Setter
 public class Scope {
-  private final Scope parent;
-  Map<String, FuncLable> funcMap;
-  Map<String, VarLable> varMap;
-  Map<String, ClassLable> classMap;
+  protected Scope parent;
+  TreeMap<String, FuncLable> funcMap;
+  TreeMap<String, VarLable> varMap;
+  TreeMap<String, TypeLable> classMap;
   boolean isLoop = false;
   boolean isFunc = false;
   boolean isClass = false;
   String name=null;
   //only func and class has name
-  public Scope(boolean is_global=false)
+  public Scope()
   {
+    boolean is_global = false;
     this.parent = null;
-    funcMap = new Map<String,FuncLable>() {};
-    varMap = new Map<String,VarLable>() {};
-    classMap = new Map<String,ClassLable>() {};
+    funcMap = new TreeMap<String,FuncLable>() {};
+    varMap = new TreeMap<String,VarLable>() {};
+    classMap = new TreeMap<String,TypeLable>() {};
     if(!is_global)
       return;
-    for(FuncLable func : BasicFunc.BuildInFunc)
+    for(FuncLable func : BasicClassFunc.BuildInFunc)
       funcMap.put(func.getName(), func);
-    for(ClassLable cls : BasicClass.BuildInClass)
+    for(TypeLable cls : BasicClassFunc.BuildInClass)
+      classMap.put(cls.getName(), cls);
+    //add some default functions
+  }
+  public Scope(boolean is_global)
+  {
+    this.parent = null;
+    funcMap = new TreeMap<String,FuncLable>() {};
+    varMap = new TreeMap<String,VarLable>() {};
+    classMap = new TreeMap<String,TypeLable>() {};
+    if(!is_global)
+      return;
+    for(FuncLable func : BasicClassFunc.BuildInFunc)
+      funcMap.put(func.getName(), func);
+    for(TypeLable cls : BasicClassFunc.BuildInClass)
       classMap.put(cls.getName(), cls);
     //add some default functions
   }
   public Scope(Scope parent) //this is definetely not a global scope
   {
     this.parent = parent;
-    funcMap = new Map<String,FuncLable>() {};
-    varMap = new Map<String,VarLable>() {};
-    classMap = new Map<String,ClassLable>() {};
+    funcMap = new TreeMap<String,FuncLable>() {};
+    varMap = new TreeMap<String,VarLable>() {};
+    classMap = new TreeMap<String,TypeLable>() {};
   }
-  enum QueryType
+  public enum QueryType
   {
     FUNC,
     VAR,
     CLASS,
     ANY
   }
-  public Label get(String name,boolean recursive=false)
+  public Lable get(String name)
+  {
+    boolean recursive = false;
+    if(funcMap.containsKey(name))
+      return funcMap.get(name);
+    if(varMap.containsKey(name))
+      return varMap.get(name);
+    if(classMap.containsKey(name))
+      return classMap.get(name);
+    if(recursive && parent!=null)
+      return parent.get(name,recursive);
+    return null;
+  }
+  public Lable get(String name,boolean recursive)
   {
     if(funcMap.containsKey(name))
       return funcMap.get(name);
@@ -58,7 +84,20 @@ public class Scope {
       return parent.get(name,recursive);
     return null;
   }
-  public Label get(String name, QueryType qType,boolean recursive=false)
+  public Lable get(String name, QueryType qType)
+  {
+    boolean recursive = false;
+    if(funcMap.containsKey(name) && (QueryType.FUNC == qType || QueryType.ANY == qType))
+      return funcMap.get(name);
+    if(varMap.containsKey(name) && (QueryType.VAR == qType || QueryType.ANY == qType))
+      return varMap.get(name);
+    if(classMap.containsKey(name) && (QueryType.CLASS == qType || QueryType.ANY == qType))
+      return classMap.get(name);
+//    if(recursive && parent!=null)
+//      return parent.get(name,recursive);
+    return null;
+  }
+  public Lable get(String name, QueryType qType,boolean recursive)
   {
     if(funcMap.containsKey(name) && (QueryType.FUNC == qType || QueryType.ANY == qType))
       return funcMap.get(name);
@@ -94,7 +133,7 @@ public class Scope {
       throw new Error("Variable "+name+" has been declared");
     varMap.put(name, var);
   }
-  public void declareClass(ClassLable cls)
+  public void declareClass(TypeLable cls)
   {
     if(classMap.containsKey(cls.getName()))
       throw new Error("Class "+cls.getName()+" has been declared");

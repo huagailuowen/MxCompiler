@@ -2,6 +2,8 @@ package AST.Node.stmt;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+
+import AST.ASTVisitor;
 import AST.Node.stmt.ASTStmt;
 import AST.Node.expr.ASTExpr;
 
@@ -9,10 +11,10 @@ import AST.Node.expr.ASTExpr;
 @lombok.Getter
 @lombok.Setter
 public class ASTForStmt extends ASTStmt {
-  private final ASTStmt init;
-  private final ASTExpr cond;
-  private final ASTStmt update;
-  private final ASTStmt content;
+  protected ASTStmt init;
+  protected ASTExpr cond;
+  protected ASTExpr update;
+  protected ASTStmt content;
   
   
   @Override

@@ -2,33 +2,17 @@ package AST;
 
 import java.util.ArrayList;
 
+import AST.Node.expr.*;
+import AST.Node.stmt.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import Utility.error.ErrorBasic;
 import AST.Node.ASTNode;
 import AST.Node.ASTRoot;
 import AST.Node.def.ASTClassDef;
 import AST.Node.def.ASTDef;
 import AST.Node.def.ASTFuncDef;
 import AST.Node.def.ASTVarDef;
-import AST.Node.expr.ASTArrayExpr;
-import AST.Node.expr.ASTAssignExpr;
-import AST.Node.expr.ASTAtomExpr;
-import AST.Node.expr.ASTBinaryExpr;
-import AST.Node.expr.ASTCallExpr;
-import AST.Node.expr.ASTExpr;
-import AST.Node.expr.ASTFStrExpr;
-import AST.Node.expr.ASTNewExpr;
-import AST.Node.expr.ASTSuffixExpr;
-import AST.Node.expr.ASTTernaryExpr;
-import AST.Node.stmt.ASTBlockStmt;
-import AST.Node.stmt.ASTBreakStmt;
-import AST.Node.stmt.ASTContStmt;
-import AST.Node.stmt.ASTExprStmt;
-import AST.Node.stmt.ASTForStmt;
-import AST.Node.stmt.ASTIfStmt;
-import AST.Node.stmt.ASTStmt;
-import AST.Node.stmt.ASTVarDefStmt;
-import AST.Node.stmt.ASTWhileStmt;
 import AST.Node.typ.ASTType;
 import Grammar.MxparserBaseVisitor;
 import Grammar.MxparserParser;
@@ -41,13 +25,13 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
   
 
 	@Override public ASTNode visitProgram(MxparserParser.ProgramContext ctx) {
-    var defList = new ArrayList<>();
+    var defList = new ArrayList<ASTDef>();
     for (var def : ctx.children) {
       if(def instanceof MxparserParser.ClassDeclarationContext) {
-        defList.add(visitClassDeclaration((MxparserParser.ClassDeclarationContext)def));
+        defList.add((ASTDef) visit(def));
       }
       else if(def instanceof MxparserParser.FunctionDeclarationContext) {
-        defList.add(visitFunctionDeclaration((MxparserParser.FunctionDeclarationContext)def));
+        defList.add((ASTDef) visit(def));
       }
       else if (def instanceof MxparserParser.VariableDeclarationContext) {
         ASTVarDefStmt varList = (ASTVarDefStmt) visit(def);
@@ -66,21 +50,21 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 	
 
 	@Override public ASTNode visitClassDeclaration(MxparserParser.ClassDeclarationContext ctx) {
-    ArrayList<ASTFuncDef> funcDefs = new ArrayList<>();
-    ArrayList<ASTDef> varDefs = new ArrayList<>();
+    ArrayList<ASTFuncDef> funcDefs = new ArrayList<ASTFuncDef>();
+    ArrayList<ASTVarDef> varDefs = new ArrayList<ASTVarDef>();
     ASTFuncDef constructor = null;
     if(ctx.classConstructor().size()>1){
-      throw ErrorBasic("Multiple constructors are not allowed", new Position(ctx.getStart()));
+      throw new ErrorBasic("Multiple constructors are not allowed", new Position(ctx.getStart()));
     }else if(ctx.classConstructor().size()==1){
       constructor = (ASTFuncDef) visit(ctx.classConstructor(0));
-      constructor.setLable(new FuncLable(ctx.Identifier().getText(), null, new ArrayList<>()));
+      constructor.setLable(new FuncLable(ctx.Identifier().getText(), null, new ArrayList<ASTVarDef>()));
     }else{
       //defalut constructor
       //the position may not right
       constructor = ASTFuncDef.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
-      .lable(new FuncLable(ctx.Identifier().getText(), null, new ArrayList<>()))
+      .lable(new FuncLable(ctx.Identifier().getText(), null, new ArrayList<ASTVarDef>()))
       .paraList(new ArrayList<>())
       .stmtList(new ArrayList<>())
       .build();
@@ -143,8 +127,8 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 	
 
 	@Override public ASTNode visitParameterDeclarationList(MxparserParser.ParameterDeclarationListContext ctx) {
-    throw ErrorBasic("This should not be called", new Position(ctx.getStart()));
-    return visitChildren(ctx); 
+    throw new ErrorBasic("This should not be called", new Position(ctx.getStart()));
+//    return visitChildren(ctx);
   }
 	
 
@@ -157,8 +141,8 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 	
 
 	@Override public ASTNode visitParameterList(MxparserParser.ParameterListContext ctx) {
-    throw ErrorBasic("This should not be called", new Position(ctx.getStart()));
-    return visitChildren(ctx);
+    throw new ErrorBasic("This should not be called", new Position(ctx.getStart()));
+//    return visitChildren(ctx);
   }
 	
 
@@ -189,12 +173,12 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       init = (ASTExpr) visit(ctx.expression());
     }
     if(!(ctx.atom() instanceof MxparserParser.IdAtomContext)){
-      throw ErrorBasic("Expect the Identifier", new Position(ctx.getStart()));
+      throw new ErrorBasic("Expect the Identifier", new Position(ctx.getStart()));
     }
     ASTVarDef node = ASTVarDef.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
-      .label(new VarLable(ctx.atom().getText(), type))
+      .label(new VarLable(ctx.atom().getText(), type.getLabel()))
       .init(init)
       .build();
     return node;
@@ -213,7 +197,6 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
     ASTFuncDef node = ASTFuncDef.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
-      .label(label)
       .paraList(paraList)
       .stmtList(stmtList)
       .build();
@@ -232,7 +215,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
   }
 	
 
-	@Override public ASTNode visitBlockStmt(MxparserParser.BlockStmtCointext ctx) {
+	@Override public ASTNode visitBlockStmt(MxparserParser.BlockStmtContext ctx) {
     return visit(ctx.block());
   }
 	
@@ -277,7 +260,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
     return ASTBlockStmt.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
-      .stmtList(new ArrayList<>())
+      .stmts(new ArrayList<>())
       .build();
   }
 	
@@ -290,9 +273,9 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
     ASTBlockStmt node = ASTBlockStmt.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
-      .stmtList(stmtList)
+      .stmts(stmtList)
       .build();
-    for(var def : node.getStmtList()){
+    for(var def : node.getStmts()){
       def.setFather(node);
     }
     return node;
@@ -332,7 +315,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
     if(ctx.init!=null){
       init = (ASTStmt) visit(ctx.init);
     }else{
-      throw ErrorBasic("there must be a ';' in For Init!", new Position(ctx.getStart()));
+      throw new ErrorBasic("there must be a ';' in For Init!", new Position(ctx.getStart()));
     }
     if(ctx.cond!=null){
       cond = (ASTExpr) visit(ctx.cond);
@@ -379,13 +362,13 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 
 	@Override public ASTNode visitReturnStatement(MxparserParser.ReturnStatementContext ctx) {
     ASTExpr expr = null;
-    if(ctx.expr!=null){
-      expr = (ASTExpr) visit(ctx.expr);
+    if(ctx.expression()!=null){
+      expr = (ASTExpr) visit(ctx.expression());
     }
-    ASTReturnStmt node = ASTReturnStmt.builder()
+    ASTRetStmt node = ASTRetStmt.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
-      .expr(expr)
+      .retExpr(expr)
       .build();
     if(expr!=null){
       expr.setFather(node);
@@ -411,11 +394,13 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 	
 
 	@Override public ASTNode visitExpressionStatement(MxparserParser.ExpressionStatementContext ctx) {
-    ASTExpr expr = (ASTExpr) visit(ctx.expressionStatement());
+    ASTExpr expr = (ASTExpr) visit(ctx.expression());
+    var exprList = new ArrayList<ASTExpr>();
+    exprList.add(expr);
     ASTExprStmt node = ASTExprStmt.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
-      .exprList(expr)
+      .exprList(exprList)
       .build();
     expr.setFather(node);
     return node;
@@ -441,24 +426,24 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
   }
 	
 
-	@Override public ASTNode visitArrayLable(MxparserParser.ArrayLableContext ctx) {
-    throw ErrorBasic("This should not be called", new Position(ctx.getStart()));
-    return visitChildren(ctx); 
-  }
+  @Override public ASTNode visitArrayLable(MxparserParser.ArrayLableContext ctx) {
+     throw new ErrorBasic("This should not be called", new Position(ctx.getStart()));
+//     return visitChildren(ctx);
+   }
 	
 
 	@Override public ASTNode visitFormatStringElement(MxparserParser.FormatStringElementContext ctx) {
     ArrayList<ASTExpr> exprList = new ArrayList<>();
     ArrayList<String> strList = new ArrayList<>();
     //erase the useless f","
-    fString str = "";
+    String str = "";
     for(var ele : ctx.children){
       if(ele instanceof MxparserParser.ExpressionContext){
         exprList.add((ASTExpr) visit(ele));
       }else if(ele instanceof TerminalNode){
-        str = prunString(ele.getText(),true);
+        str = prunStringFormate(ele.getText());
         strList.add(str);
-        // throw ErrorBasic("We will cut the useless f\", TO DO", new Position(ctx.getStart()));
+        // throw new ErrorBasic("We will cut the useless f\", TO DO", new Position(ctx.getStart()));
         
         
       }
@@ -469,7 +454,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .args(exprList)
       .strs(strList)
       .build();
-    for(var def : node.getExprList()){
+    for(var def : node.getArgs()){
       def.setFather(node);
     }
     return node;
@@ -478,7 +463,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 
 	@Override public ASTNode visitNewExpr(MxparserParser.NewExprContext ctx) {
     ASTType type = (ASTType) visit(ctx.type());
-    ASTExpr expr = null;
+    ASTAtomExpr expr = null;
     if(ctx.constArray()!=null){
       expr = (ASTAtomExpr) visit(ctx.constArray());
     }
@@ -511,7 +496,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 
 	@Override public ASTNode visitTernaryExpr(MxparserParser.TernaryExprContext ctx) {
     if(ctx.expression().size()!=3){
-      throw ErrorBasic("Ternary expression should have 3 parts", new Position(ctx.getStart()));
+      throw new ErrorBasic("Ternary expression should have 3 parts", new Position(ctx.getStart()));
     }
     ASTExpr cond = (ASTExpr) visit(ctx.expression(0));
     ASTExpr then = (ASTExpr) visit(ctx.expression(1));
@@ -533,7 +518,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 	@Override public ASTNode visitArrayExpr(MxparserParser.ArrayExprContext ctx) {
     ArrayList<ASTExpr> array = new ArrayList<>();
     ASTExpr expr = (ASTExpr) visit(ctx.expression());
-    for(var ele : ctx.array){
+    for(var ele : ctx.arrayLable()){
       array.add((ASTExpr) visit(ele));
     }
     ASTArrayExpr node = ASTArrayExpr.builder()
@@ -552,7 +537,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 
 	@Override public ASTNode visitMemberExpr(MxparserParser.MemberExprContext ctx) {
     ASTExpr expr = (ASTExpr) visit(ctx.expression());
-    ASTSuffixExpr node = ASTSuffixExpr.builder()
+    ASTMemExpr node = ASTMemExpr.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
       .expr(expr)
@@ -570,7 +555,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 
 	@Override public ASTNode visitBinaryExpr(MxparserParser.BinaryExprContext ctx) {
     if(ctx.expression().size()!=2){
-      throw ErrorBasic("Binary expression should have 2 parts", new Position(ctx.getStart()));
+      throw new ErrorBasic("Binary expression should have 2 parts", new Position(ctx.getStart()));
     }
     ASTExpr lhs = (ASTExpr) visit(ctx.expression(0));
     ASTExpr rhs = (ASTExpr) visit(ctx.expression(1));
@@ -600,7 +585,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 	@Override public ASTNode visitCallExpr(MxparserParser.CallExprContext ctx) {
     ASTExpr expr = (ASTExpr) visit(ctx.expression());
     ArrayList<ASTExpr> paraList = new ArrayList<>();
-    for(var para : ctx.expressionList().expression()){
+    for(var para : ctx.parameterList().expression()){
       paraList.add((ASTExpr) visit(para));
     }
     ASTCallExpr node = ASTCallExpr.builder()
@@ -619,7 +604,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 
 	@Override public ASTNode visitAssignExpr(MxparserParser.AssignExprContext ctx) {
     if(ctx.expression().size()!=2){
-      throw ErrorBasic("Assign expression should have 2 parts", new Position(ctx.getStart()));
+      throw new ErrorBasic("Assign expression should have 2 parts", new Position(ctx.getStart()));
     }
     ASTExpr lhs = (ASTExpr) visit(ctx.expression(0));
     ASTExpr rhs = (ASTExpr) visit(ctx.expression(1));
@@ -628,7 +613,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .father(null)
       .lhs(lhs)
       .rhs(rhs)
-      .op(ctx.op.getText())
+      .op("=")
       .build();
     lhs.setFather(node);
     rhs.setFather(node);
@@ -664,64 +649,68 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .type(ASTAtomExpr.AtomType.INT)
-      .value(ctx.Integer().getText())
+      .value(ctx.getText())
       .build();
-  }
-	public String prunString(String str, boolean isFormate = false){
+    }
+	public String prunString(String str){
     String res= new String();
-    if(isFormate){
-      int p=1;
-      if(str.charAt(0)=='f'){
-        p=2;
-      }
-      for(int i=1;i<str.length()-1;i++){
-        if(str.charAt(i)=='\\'){
-          i++;
-          if(str.charAt(i)=='n'){
-            res+='\n';
-          }else if(str.charAt(i)=='t'){
-            res+='\t';
-          }else if(str.charAt(i)=='\\'){
-            res+='\\';
-          }else if(str.charAt(i)=='"'){
-            res+='"';
-          }else{
-            throw ErrorBasic("Unknow escape character", new Position(ctx.getStart()));
-          }
-        }else if(str.charAt(i)=='$'){
-          i++;
-          if(i==str.length()-1){
-            throw ErrorBasic("Unknow escape character", new Position(ctx.getStart()));
-          }
-          if(str.charAt(i)=='$'){
-            res+="$";
-          }else {
-            throw ErrorBasic("Unknow escape character", new Position(ctx.getStart()));
-          }
+
+    for(int i=1;i<str.length()-1;i++){
+      if(str.charAt(i)=='\\'){
+        i++;
+        if(str.charAt(i)=='n'){
+          res+='\n';
+        }else if(str.charAt(i)=='t'){
+          res+='\t';
+        }else if(str.charAt(i)=='\\'){
+          res+='\\';
+        }else if(str.charAt(i)=='"'){
+          res+='"';
         }else{
-          res+=str.charAt(i);
+          throw new ErrorBasic("Unknow escape character");
         }
-      }
-    }else{
-      for(int i=1;i<str.length()-1;i++){
-        if(str.charAt(i)=='\\'){
-          i++;
-          if(str.charAt(i)=='n'){
-            res+='\n';
-          }else if(str.charAt(i)=='t'){
-            res+='\t';
-          }else if(str.charAt(i)=='\\'){
-            res+='\\';
-          }else if(str.charAt(i)=='"'){
-            res+='"';
-          }else{
-            throw ErrorBasic("Unknow escape character", new Position(ctx.getStart()));
-          }
-        }else{
-          res+=str.charAt(i);
-        }
+      }else{
+        res+=str.charAt(i);
       }
     }
+
+    return res;
+  }
+  public String prunStringFormate(String str){
+    String res= new String();
+    int p=1;
+    if(str.charAt(0)=='f'){
+      p=2;
+    }
+    for(int i=1;i<str.length()-1;i++){
+      if(str.charAt(i)=='\\'){
+        i++;
+        if(str.charAt(i)=='n'){
+          res+='\n';
+        }else if(str.charAt(i)=='t'){
+          res+='\t';
+        }else if(str.charAt(i)=='\\'){
+          res+='\\';
+        }else if(str.charAt(i)=='"'){
+        res+='"';
+        }else{
+          throw new ErrorBasic("Unknow escape character");
+        }
+      }else if(str.charAt(i)=='$'){
+        i++;
+        if(i==str.length()-1){
+          throw new ErrorBasic("Unknow escape character");
+        }
+        if(str.charAt(i)=='$'){
+          res+="$";
+        }else {
+          throw new ErrorBasic("Unknow escape character");
+        }
+      }else{
+        res+=str.charAt(i);
+      }
+    }
+
     return res;
   }
 
@@ -730,7 +719,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .type(ASTAtomExpr.AtomType.STRING)
-      .value(prunString(ctx.String().getText(),false))
+      .value(prunString(ctx.getText()))
       .build();
   }
 	

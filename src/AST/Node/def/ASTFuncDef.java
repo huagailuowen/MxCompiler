@@ -11,9 +11,9 @@ import Utility.label.FuncLable;
 @lombok.Getter
 @lombok.Setter
 public class ASTFuncDef extends ASTDef{
-  private final FuncLable label;
-  private final ArrayList<ASTVarDef> paraList;
-  private final ArrayList<ASTStmt> stmtList;
+  protected FuncLable label;
+  protected ArrayList<ASTVarDef> paraList;
+  protected ArrayList<ASTStmt> stmtList;
   @Override 
   public <T> T accept(ASTVisitor<T> visitor) {
     return visitor.visit(this);

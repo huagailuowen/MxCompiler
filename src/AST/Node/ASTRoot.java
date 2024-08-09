@@ -1,13 +1,17 @@
 package AST.Node;
 
+import AST.Node.def.ASTDef;
 import Scope.Scope;
+
+import java.util.ArrayList;
+
 
 @lombok.experimental.SuperBuilder
 @lombok.Getter
 @lombok.Setter
 public class ASTRoot extends ASTNode {
-  private final ArrayList<ASTDef> defList;
-  private final Scope scope;
+  protected ArrayList<ASTDef> defList;
+  protected Scope scope;
   //this must be the global scope
   
   

@@ -2,16 +2,17 @@ package AST.Node.expr;
 
 import AST.ASTVisitor;
 import AST.Node.typ.ASTType;
+import Utility.error.ErrorBasic;
 
 @lombok.experimental.SuperBuilder
 @lombok.Getter
 @lombok.Setter
 public class ASTNewExpr extends ASTExpr {
-  private final ASTType type; 
-  private final ASTAtomExpr expr;
+  protected ASTType type; 
+  protected ASTAtomExpr expr;
 
   @Override
-  public <T> T accept(ASTVisitor<T> visitor) throws BaseError {
+  public <T> T accept(ASTVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
   }
 }

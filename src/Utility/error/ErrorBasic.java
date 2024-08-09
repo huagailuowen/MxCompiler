@@ -2,7 +2,7 @@ package Utility.error;
 
 import Utility.position.Position;
 
-public class ErrorBasic {
+public class ErrorBasic extends RuntimeException{
   private String message;
   private Position position;
 

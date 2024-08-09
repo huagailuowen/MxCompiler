@@ -8,8 +8,8 @@ import Utility.label.VarLable;
 @lombok.Getter
 @lombok.Setter
 public class ASTVarDef extends ASTDef {
-  private final VarLable label;
-  private final ASTExpr init;
+  protected VarLable label;
+  protected ASTExpr init;
   @Override 
   public <T> T accept(ASTVisitor<T> visitor) {
     return visitor.visit(this);

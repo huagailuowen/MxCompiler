@@ -1,5 +1,6 @@
 package AST.Node;
 
+import AST.ASTVisitor;
 import Utility.position.Position;
 
 @lombok.experimental.SuperBuilder

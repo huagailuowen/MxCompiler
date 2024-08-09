@@ -10,7 +10,7 @@ import Utility.label.TypeLable;
 @lombok.Getter
 @lombok.Setter
 public class ASTType extends ASTNode{
-  private final TypeLable label;
-  private final ArrayList<ASTExpr> dimList;
+  protected TypeLable label;
+  protected ArrayList<ASTExpr> dimList;
 
 }

@@ -8,6 +8,13 @@ public class Compileinfo {
   private String Content;
   private Position pos;
 
+  public  Compileinfo(){
+    Content = new String("");
+  }
+  public Compileinfo(String Content) {
+    this.Content = Content;
+    this.pos = null;
+  }
   public Compileinfo(String Content, Position pos) {
     this.Content = Content;
     this.pos = pos;

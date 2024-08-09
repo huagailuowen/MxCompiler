@@ -10,8 +10,8 @@ import AST.Node.expr.ASTExpr;
 @lombok.Getter
 @lombok.Setter
 public class ASTWhileStmt extends ASTStmt {
-  private final ASTExpr condition;
-  private final ASTStmt content;
+  protected ASTExpr condition;
+  protected ASTStmt content;
   
   
   @Override

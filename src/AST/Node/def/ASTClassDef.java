@@ -9,10 +9,10 @@ import Utility.label.ClassLable;
 @lombok.Getter
 @lombok.Setter
 public class ASTClassDef extends ASTDef {
-  private final ClassLable label;
-  private final ArrayList<ASTFuncDef> funcDefs;
-  private final ArrayList<ASTVarDef> varDefs;
-  private final ASTFuncDef constructor;
+  protected ClassLable label;
+  protected ArrayList<ASTFuncDef> funcDefs;
+  protected ArrayList<ASTVarDef> varDefs;
+  protected ASTFuncDef constructor;
   @Override 
   public <T> T accept(ASTVisitor<T> visitor) {
     return visitor.visit(this);

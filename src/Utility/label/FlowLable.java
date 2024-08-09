@@ -3,7 +3,7 @@ package Utility.label;
 
 @lombok.Getter
 @lombok.Setter
-public class FlowLable extends Label {
+public class FlowLable extends Lable {
   public FlowLable(String name) {
     super(name);
   }
