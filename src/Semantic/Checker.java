@@ -37,6 +37,7 @@ import Utility.label.FuncLable;
 import Utility.label.Label;
 import Utility.label.VarLable;
 
+// a type null, if ABANDON, then there is error, if RVALUE, then it is a constant, if LVALUE
 public class Checker implements ASTVisitor<Compileinfo>{
   private final Scope globalScope;
   private final Scope currentScope;
@@ -134,9 +135,14 @@ public class Checker implements ASTVisitor<Compileinfo>{
     var info = new Compileinfo();
     if(globalScope.get(node.getLabel().getReturnType().getName(),Scope.QueryType.CLASS)==null){
       info.append(new Compileinfo("return type undefined",node.getPosition()));
+    }else if(node.getLabel().getReturnType().getName().equals("this") || node.getLabel().getReturnType().getName().equals("null")){
+      throw new ErrorBasic("this is impossible",node.getPosition());
+      // info.append(new Compileinfo("void function should not have return value",node.getPosition()));
+    }
     for(ASTVarDef var:node.getParaList()){
       if(globalScope.get(var.getLabel().getType().getName(),Scope.QueryType.CLASS)==null){
         info.append(new Compileinfo("parameter type undefined",var.getPosition()));
+      }
     }
     for(ASTStmt stmt:node.getStmtList()){
       stmt.setScope(node.getScope());
@@ -155,7 +161,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
       info.append(new Compileinfo("variable "+name+" has been defined as a function",node.getPosition()));
     }else if(currentScope.get(name,Scope.QueryType.VAR)!=null){
       info.append(new Compileinfo("variable "+name+" has been defined as a variable",node.getPosition()));
-    }else if(currentScope.get(type,Scope.QueryType.CLASS,true)==null){
+    }else if(currentScope.get(type,Scope.QueryType.CLASS,true)==null || type.equals("null") || type.equals("this")){
       info.append(new Compileinfo("type undefined",node.getPosition()));
     }else{
       currentScope.declareVar(node.getLabel());
@@ -204,14 +210,23 @@ public class Checker implements ASTVisitor<Compileinfo>{
       return new Compileinfo();
     }
   }
+  private Compileinfo checkFinalExpr(ASTExpr expr){
+    var info = new Compileinfo();
+    info.append(expr.accept(this));
+    if(expr.getLabel().getName()!=null && expr.getLabel().getValueType() == ExprLable.ValueType.ABANDON){
+      info.append(new Compileinfo("expression should not be a single indentifier of function",node.getPosition()));
+    }else if(expr.getLabel().getType().getName().equals("null") && expr.getLabel().getValueType() == ExprLable.ValueType.ABANDON){
+      continue;
+      //there must be some error in the expr
+    }
+    return info;
+  }
   public Compileinfo visit(ASTExprStmt node) {
     node.setScope(currentScope);
     var info = new Compileinfo();
     for(var expr:node.getExprList()){
       info.append(expr.accept(this));
-      if(expr.getLabel().getName()!=null && expr.getLabel().getValueType() == ExprLable.ValueType.ABANDON){
-        info.append(new Compileinfo("expression should not be a single indentifier of function",node.getPosition()));
-      }
+      info.append(checkFinalExpr(expr));
     }
     return info;
   }
@@ -222,12 +237,21 @@ public class Checker implements ASTVisitor<Compileinfo>{
     var info = new Compileinfo();
     if(node.getInit()!=null){
       info.append(node.getInit().accept(this));
+      if(!(node.getInit() instanceof ASTVarDefStmt) && !(node.getInit() instanceof ASTExprStmt)){
+        info.append(new Compileinfo("init should be a variable definition or expr",node.getPosition()));
+      }
     }
     if(node.getCond()!=null){
       info.append(node.getCond().accept(this));
+      if(node.getCond().getLabel().getType().getName()!="bool"){
+        info.append(new Compileinfo("condition should be bool",node.getPosition()));
+      }
     }
     if(node.getStep()!=null){
       info.append(node.getStep().accept(this));
+      if(!(node.getStep() instanceof ASTExprStmt)){
+        info.append(new Compileinfo("step should be a expr",node.getPosition()));
+      }
     }
     node.getContent().setScope(currentScope);
     info.append(node.getContent().accept(this));
@@ -238,9 +262,12 @@ public class Checker implements ASTVisitor<Compileinfo>{
     node.setScope(currentScope);
     var info = new Compileinfo();
     info.append(node.getCond().accept(this));
-    info.append(node.getThen().accept(this));
+    if(!node.getCond().getLabel().getType().getName().equals("bool") || node.getCond().getLabel().getValueType() == ExprLable.ValueType.ABANDON){
+      info.append(new Compileinfo("condition should be bool",node.getPosition()));
+    }
+    info.append(node.getThenStmt().accept(this));
     if(node.getElse()!=null){
-      info.append(node.getElse().accept(this));
+      info.append(node.getElseStmt().accept(this));
     }
     
     return info;
@@ -248,11 +275,42 @@ public class Checker implements ASTVisitor<Compileinfo>{
   public Compileinfo visit(ASTRetStmt node) {
     node.setScope(currentScope);
     Scope Func = currentScope.findFunc(currentScope);
+    Scope Class = currentScope.findClass(currentScope);
+    var info = new Compileinfo();
     if(Func==null){
       return new Compileinfo("return statement not in Func",node.getPosition());
     }else{
-      return node.getRetExpr().accept(this);
+      String typename = Func.getName();
+      if(Class != null){
+        typename = Class.getName() + '.' + typename;
+      }
+      info.append(node.getRetExpr().accept(this));
+      FuncLable lable = (FuncLable)globalScope.get(typename,Scope.QueryType.FUNC);
+      if(lable == null){
+        throw new ErrorBasic("Checker: visit ASTRetStmt: function not found",node.getPosition());
+      }else {
+        if(node.getRetExpr().getLabel().getType().getName().equals("null")){
+          if(node.getRetExpr().getLabel().getValueType().equals(ExprLable.ValueType.ABANDON)){
+            return info;
+            //there must be some error in the expr
+          }else if(lable.getReturnType().getName().equals("void")
+            || lable.getReturnType().getName().equals("int")
+            || lable.getReturnType().getName().equals("bool")){
+            info.append(new Compileinfo("return type not match",node.getPosition()));
+          }else if(node.getRetExpr().getLabel().getType().getDimension() != lable.getReturnType().getDimension()){
+            info.append(new Compileinfo("return type dimension not match",node.getPosition()));
+          }
+
+        }else if(node.getRetExpr().getLabel().getType().getName().equals(lable.getReturnType().getName()
+          && node.getRetExpr().getLabel().getType().getDimension() == lable.getReturnType().getDimension())){
+          return info;
+        }else{
+          return new Compileinfo("return type not match",node.getPosition());
+        }
+      }
+
     }
+    return info;
   }
   public Compileinfo visit(ASTVarDefStmt node) {
     node.setScope(currentScope);
@@ -267,7 +325,11 @@ public class Checker implements ASTVisitor<Compileinfo>{
     node.setScope(currentScope);
     currentScope.setLoop(true);
     var info = new Compileinfo();
-    info.append(node.getCond().accept(this));
+  
+    info.append(node.getCondition().accept(this));
+    if(node.getCondition().getLabel().getType().getName()!="bool"){
+      info.append(new Compileinfo("condition should be bool",node.getPosition()));
+    } 
     node.getContent().setScope(currentScope);
     info.append(node.getContent().accept(this));
     stepOut();
@@ -287,21 +349,20 @@ public class Checker implements ASTVisitor<Compileinfo>{
     }else{
       node.getLabel().setValueType(ExprLable.ValueType.LVALUE);
     }
-    int dim = node.getLabel().getType().getDimension();
-    if(dim != node.getArray().size()){
+    int dim = node.getExpr().getLabel().getType().getDimension();
+    if(dim < node.getArray().size()){
       info.append(new Compileinfo("dimension not match",node.getPosition()));
       // return info;
     }
     for(var expr:node.getArray()){
       info.append(expr.accept(this));
-      if(expr.getLabel().getType().getName()!="int"){
+      if(!expr.getLabel().getType().getName().equals("int")){
         info.append(new Compileinfo("array index should be int",node.getPosition()));
-      }
-      if(expr.getLabel().getValueType()== ExprLable.ValueType.ABANDON){
+      }else if(expr.getLabel().getValueType()== ExprLable.ValueType.ABANDON){
         info.append(new Compileinfo("array index should be lvalue or rvalue",node.getPosition()));
       }
     }
-    node.getLabel().getType().setDimension(0);
+    node.getLabel().getType().setDimension(dim-node.getArray().size());
     return info;
   }
 
@@ -316,23 +377,22 @@ public class Checker implements ASTVisitor<Compileinfo>{
     info.append(node.getRhs().accept(this));
     
     if(!node.getLhs().getLabel().getType().getName() || !node.getRhs().getLabel().getType().getName()){
-      info.append(new Compileinfo("type null",node.getPosition()));
-    }else{ 
-      if(node.getLhs().getLabel().getType().getDimension()!=0){
-        info.append(new Compileinfo("array should not be assigned",node.getPosition()));
-      }
-      if(node.getRhs().getLabel().getType().getDimension()!=0){
-        info.append(new Compileinfo("array should not assign",node.getPosition()));
-      }
-      if(!node.getLhs().getLabel().getType().getName().equals(node.getRhs().getLabel().getType().getName())){
-        info.append(new Compileinfo("type not match",node.getPosition()));
-      }if(node.getLhs().getLabel().getValueType()!= ExprLable.ValueType.LVALUE){
-        info.append(new Compileinfo("lhs is not lvalue",node.getPosition()));
-      }
+      throw new ErrorBasic("type has no name? impossible",node.getPosition());
+      // info.append(new Compileinfo("type null",node.getPosition()));
+    } 
+
+
+    if(node.getLhs().getLabel().getType().getDimension() == node.getRhs().getLabel().getType().getDimension()){
+      info.append(new Compileinfo("dimension not match",node.getPosition()));
     }
-    throw new ErrorBasic("Checker: visit ASTAssignExpr: access denied",node.getPosition());
-    node.getLabel().getType().setDimension(0);
-    node.getLabel().setType(node.getLhs().getLabel().getType());
+    if(!node.getLhs().getLabel().getType().getName().equals(node.getRhs().getLabel().getType().getName())){
+      info.append(new Compileinfo("type not match",node.getPosition()));
+    }if(node.getLhs().getLabel().getValueType()!= ExprLable.ValueType.LVALUE){
+      info.append(new Compileinfo("lhs is not lvalue",node.getPosition()));
+    }
+    
+    node.getLabel().getType().setDimension(node.getLhs().getLabel().getType().getDimension());
+    node.getLabel().setType(globalScope.get("void",Scope.QueryType.CLASS));
     node.getLabel().setValueType(ExprLable.ValueType.ABANDON);
     //ban the value of the assign expr
     return info;
@@ -359,33 +419,42 @@ public class Checker implements ASTVisitor<Compileinfo>{
     }else if(node.getType() == ASTAtomExpr.AtomType.ARRAY){
       node.getLabel().setType(globalScope.get("null",Scope.QueryType.CLASS,true));
       node.getLabel().setValueType(ExprLable.ValueType.ABANDON);
+      int dim = 0;
       for(var expr:node.getArray()){
         info.append(expr.accept(this));
-        if(expr.getLabel().getType().getName().equals("null")){
-          continue;
-        }
         if(!expr.getLabel().getValueType().equals(ExprLable.ValueType.RVALUE)){
           info.append(new Compileinfo("element should be constant",node.getPosition()));
-        }else if(node.getLabel().getValueType().equals(ExprLable.ValueType.ABANDON)){
+          continue;
+        }
+        if(expr.getLabel().getType().getName().equals("null")){
+          if(node.getLabel().getValueType().equals(ExprLable.ValueType.ABANDON)){
+            dim = max(dim,expr.getLabel().getType().getDimension());
+          }else{
+            if(dim < expr.getLabel().getType().getDimension()){
+              info.append(new Compileinfo("dimension not match",node.getPosition()));
+            }
+          }
+          continue;
+        }
+        if(node.getLabel().getValueType().equals(ExprLable.ValueType.ABANDON)){
           node.getLabel().setType(expr.getLabel().getType());
+          node.getLabel().setValueType(ExprLable.ValueType.RVALUE);
         }else{
           if(node.getLabel().getType().getDimension()!=expr.getLabel().getType().getDimension()){
             info.append(new Compileinfo("dimension not match",node.getPosition()));
           }else{
-            if(node.getLabel().getType().getName().equals("null")){
-              node.getLabel().setType(expr.getLabel().getType());
-            }else{
-              if(!node.getLabel().getType().getName().equals(expr.getLabel().getType().getName())){
-                info.append(new Compileinfo("type not match",node.getPosition()));
-              }
+            
+            if(!node.getLabel().getType().getName().equals(expr.getLabel().getType().getName())){
+              info.append(new Compileinfo("type not match",node.getPosition()));
             }
+            
           }
         }
       }
       if(node.getLabel().getValueType().equals(ExprLable.ValueType.ABANDON)){
         node.getLabel().setValueType(ExprLable.ValueType.RVALUE);
       }
-      node.getLabel().getType().setDimension(node.getLabel().getType().getDimension()+1);
+      node.getLabel().getType().setDimension(dim+1);
 
     }else if(node.getType() == ASTAtomExpr.AtomType.BOOL){
       node.setLabel(new ExprLable(null,globalScope.get("bool",Scope.QueryType.CLASS,true),ExprLable.ValueType.RVALUE));
@@ -552,6 +621,9 @@ public class Checker implements ASTVisitor<Compileinfo>{
     node.setScope(currentScope);
     var info = new Compileinfo();
     info.append(node.getExpr().accept(this));
+    if(node.getExpr().getLabel().getName() != null){
+      return new Compileinfo("member access to a func",node.getPosition());
+    }
     String typename = node.getExpr().getLabel().getType().getName();
     if(typename == null){
       info.append(new Compileinfo("null has no member",node.getPosition()));
@@ -605,8 +677,11 @@ public class Checker implements ASTVisitor<Compileinfo>{
       }
       if(!node.getExpr().getLabel().getValueType().equals(ExprLable.ValueType.RVALUE)){
         info.append(new Compileinfo("dimension should be constant",node.getPosition()));
-      }
-      if(node.getExpr().getLabel().getType().getDimension() != dim){
+      }else if(node.getExpr().getLabel().getType().getName().equals("null")){
+        if(node.getExpr().getLabel().getType().getDimension() > dim){
+          info.append(new Compileinfo("dimension not match",node.getPosition()));
+        }
+      }else if(node.getExpr().getLabel().getType().getDimension() != dim){
         info.append(new Compileinfo("dimension should be 0",node.getPosition()));
       }
     }
@@ -623,8 +698,17 @@ public class Checker implements ASTVisitor<Compileinfo>{
     {
       info.append(new Compileinfo("array should not be ++ or -- and so on",node.getPosition()));
     }
+    if(!node.getExpr().getLabel().getValueType().equals(ExprLable.ValueType.LVALUE)){
+      if(node.getExpr().getLabel().getType().getName().equals("null")){
+        info.append(new Compileinfo("can not compute the ABANDON",node.getPosition()));
+
+      }
+      node.setLabel(new ExprLable(null,globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+      return info;
+    }
     if(node.getOp().equals("++")||node.getOp().equals("--")){
       if(node.getExpr().getLabel().getType().getName().equals("int")){
+        //in mx, it is rvalue
         node.setLabel(new ExprLable(null,globalScope.get("int",Scope.QueryType.CLASS),ExprLable.ValueType.LVALUE));
       }else{
         node.setLabel(new ExprLable(null,globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
@@ -665,9 +749,17 @@ public class Checker implements ASTVisitor<Compileinfo>{
     if(node.getExpr().getLabel().getType().getDimension() != 0){
       info.append(new Compileinfo("array should not be ++ or -- and so on",node.getPosition()));
     }
+    if(!node.getExpr().getLabel().getValueType().equals(ExprLable.ValueType.LVALUE)){
+      if(node.getExpr().getLabel().getType().getName().equals("null")){
+        info.append(new Compileinfo("can not compute the ABANDON",node.getPosition()));
+
+      }
+      node.setLabel(new ExprLable(null,globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+      return info;
+    }
     if(node.getOp().equals("++")||node.getOp().equals("--")){
       if(node.getExpr().getLabel().getType().getName().equals("int")){
-        node.setLabel(new ExprLable(null,globalScope.get("int",Scope.QueryType.CLASS),ExprLable.ValueType.LVALUE));
+        node.setLabel(new ExprLable(null,globalScope.get("int",Scope.QueryType.CLASS),ExprLable.ValueType.RVALUE));
       }else{
         node.setLabel(new ExprLable(null,globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
         info.append(new Compileinfo("type not match",node.getPosition()));
@@ -705,7 +797,6 @@ public class Checker implements ASTVisitor<Compileinfo>{
       info.append(new Compileinfo("type not match",node.getPosition()));
     }
     return info;
-  }
 
 
   public Compileinfo visit(ASTType node) {

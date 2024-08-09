@@ -7,7 +7,7 @@ public class TypeLable extends Label {
   private final int dimension;
   public TypeLable(String name,int dim) {
     super(name);
-    if(name.equals("int")||name.equals("bool")||name.equals("void")||name.equals("string")||name.equals("null")){
+    if(name.equals("int")||name.equals("bool")||name.equals("void")||name.equals("string")){
       this.isBaseType=true;
     }
     else{
