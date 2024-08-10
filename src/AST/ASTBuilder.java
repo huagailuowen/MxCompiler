@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import AST.Node.expr.*;
 import AST.Node.stmt.*;
+import Utility.label.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import Utility.error.ErrorBasic;
@@ -16,10 +17,6 @@ import AST.Node.def.ASTVarDef;
 import AST.Node.typ.ASTType;
 import Grammar.MxparserBaseVisitor;
 import Grammar.MxparserParser;
-import Utility.label.ClassLable;
-import Utility.label.FuncLable;
-import Utility.label.TypeLable;
-import Utility.label.VarLable;
 import Utility.position.Position;
 public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
   
@@ -57,14 +54,15 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       throw new ErrorBasic("Multiple constructors are not allowed", new Position(ctx.getStart()));
     }else if(ctx.classConstructor().size()==1){
       constructor = (ASTFuncDef) visit(ctx.classConstructor(0));
-      constructor.setLable(new FuncLable(ctx.Identifier().getText(), null, new ArrayList<ASTVarDef>()));
+      constructor.setLabel(new FuncLable(ctx.Identifier().getText(), null, new ArrayList<ASTVarDef>()));
     }else{
       //defalut constructor
       //the position may not right
+      FuncLable lable = new FuncLable(ctx.Identifier().getText(), null, new ArrayList<ASTVarDef>());
       constructor = ASTFuncDef.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
-      .lable(new FuncLable(ctx.Identifier().getText(), null, new ArrayList<ASTVarDef>()))
+      .label(lable)
       .paraList(new ArrayList<>())
       .stmtList(new ArrayList<>())
       .build();
@@ -462,7 +460,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .args(exprList)
-      .strs(strList)
+      .strs(strList).label(new ExprLable())
       .build();
     for(var def : node.getArgs()){
       def.setFather(node);
@@ -493,7 +491,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .type(type)
-      .expr(expr)
+      .expr(expr).label(new ExprLable())
       .build();
     type.setFather(node);
     if(expr!=null){
@@ -509,7 +507,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .expr(expr)
-      .op(ctx.op.getText())
+      .op(ctx.op.getText()).label(new ExprLable())
       .build();
     expr.setFather(node);
     return node;
@@ -528,7 +526,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .father(null)
       .cond(cond)
       .trueExpr(then)
-      .falseExpr(els)
+      .falseExpr(els).label(new ExprLable())
       .build();
     cond.setFather(node);
     then.setFather(node);
@@ -547,7 +545,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .expr(expr)
-      .array(array)
+      .array(array).label(new ExprLable())
       .build();
     expr.setFather(node);
     for(var ele : node.getArray()){
@@ -566,7 +564,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .expr(expr)
-      .member(ctx.atom().getText())
+      .member(ctx.atom().getText()).label(new ExprLable())
       .build();
     expr.setFather(node);
     return node;
@@ -589,7 +587,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .father(null)
       .lhs(lhs)
       .rhs(rhs)
-      .op(ctx.op.getText())
+      .op(ctx.op.getText()).label(new ExprLable())
       .build();
     lhs.setFather(node);
     rhs.setFather(node);
@@ -620,7 +618,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .expr(expr)
-      .args(paraList)
+      .args(paraList).label(new ExprLable())
       .build();
     expr.setFather(node);
     for(var def : node.getArgs()){
@@ -641,7 +639,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .father(null)
       .lhs(lhs)
       .rhs(rhs)
-      .op("=")
+      .op("=").label(new ExprLable())
       .build();
     lhs.setFather(node);
     rhs.setFather(node);
@@ -655,7 +653,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .expr(expr)
-      .op(ctx.op.getText())
+      .op(ctx.op.getText()).label(new ExprLable())
       .build();
     expr.setFather(node);
     return node;
@@ -667,7 +665,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .type(ASTAtomExpr.AtomType.IDENTIFIER)
-      .value(ctx.Identifier().getText())
+      .value(ctx.Identifier().getText()).label(new ExprLable())
       .build();
   }
 	
@@ -677,7 +675,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .type(ASTAtomExpr.AtomType.INT)
-      .value(ctx.getText())
+      .value(ctx.getText()).label(new ExprLable())
       .build();
     }
 	public String prunString(String str){
@@ -747,7 +745,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .type(ASTAtomExpr.AtomType.STRING)
-      .value(prunString(ctx.getText()))
+      .value(prunString(ctx.getText())).label(new ExprLable())
       .build();
   }
 	
@@ -757,7 +755,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .type(ASTAtomExpr.AtomType.BOOL)
-      .value("true")
+      .value("true").label(new ExprLable())
       .build();
   }
 	
@@ -777,7 +775,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .type(ASTAtomExpr.AtomType.THIS)
-      .value("this")
+      .value("this").label(new ExprLable())
       .build();
   }
 	
@@ -787,7 +785,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .type(ASTAtomExpr.AtomType.NULL)
-      .value("null")
+      .value("null").label(new ExprLable())
       .build();
   }
 	
@@ -808,7 +806,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .type(ASTAtomExpr.AtomType.ARRAY)
-      .array(array)
+      .array(array).label(new ExprLable()).label(new ExprLable())
       .build();
     for(var def : node.getArray()){
       def.setFather(node);

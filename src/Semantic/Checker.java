@@ -144,8 +144,8 @@ public class Checker implements ASTVisitor<Compileinfo>{
     //we assume that the collector has built the global scope
     node.setScope(currentScope);
     var info = new Compileinfo();
-    String name = ((VarLable)node.getLable()).getName();
-    String type = ((VarLable)node.getLable()).getType().getName();
+    String name = ((VarLable)node.getLabel()).getName();
+    String type = ((VarLable)node.getLabel()).getType().getName();
     if(currentScope.get(name,Scope.QueryType.FUNC)!=null){
       info.append(new Compileinfo("variable "+name+" has been defined as a function",node.getPosition()));
     }else if(currentScope.get(name,Scope.QueryType.VAR)!=null){
@@ -334,6 +334,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
     var info = new Compileinfo();
     info.append(node.getExpr().accept(this));
     node.getLabel().setType(node.getExpr().getLabel().getType());
+    node.getLabel().setValueType(node.getExpr().getLabel().getValueType());
     if(node.getLabel().getValueType() != ExprLable.ValueType.LVALUE){
       info.append(new Compileinfo("array should be lvalue",node.getPosition()));
     }else{

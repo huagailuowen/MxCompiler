@@ -11,6 +11,11 @@ public class ExprLable extends Lable {
   }
   protected ValueType valueType;
   //only LVALUE and some ABANDON has its name
+  public ExprLable() {
+    super(null);
+    this.type = new TypeLable("void");
+    this.valueType = ValueType.ABANDON;
+  }
   public ExprLable(String name, TypeLable type, ValueType valueType ) {
     super(name);
     this.type = type;

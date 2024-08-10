@@ -28,19 +28,47 @@ public class Compiler {
     ASTNode ast = new ASTBuilder().visit(tree);
     int i=1;
     System.out.print(ast.toString());
-//    System.out.println("Collector:");
-//    Compileinfo info = new Collector().visit((ASTRoot)ast);
-//    System.out.println(info);
-//    System.out.println("Checker:");
-//    info = new Checker().visit((ASTRoot)ast);
-//    System.out.println(info);
+    System.out.println("Collector:");
+    Compileinfo info = new Collector().visit((ASTRoot)ast);
+    System.out.println(info);
+    System.out.println("Checker:");
+    info = new Checker().visit((ASTRoot)ast);
+    System.out.println(info);
   }
 }
 /*
-int main()
-{
-  a++;
-  int s=f"342\\347893274\"{}{}$i+1+f"39847293$i=1$"$ 458934\\$$";
+
+int main() {
+  int i;
+  int j;
+  int k;
+  int[][] A = new int[3][4];
+  int[][] B = new int[4][2];
+  int[][] C = new int[3][2];
+  for (i = 0; i < 3; ++i)
+    for (j = 0; j < 4; ++j)
+      A[i][j] = i + j;
+//  for (i = 0; i < 4; ++i)
+//    for (j = 0; j < 2; ++j)
+//      B[i][j] = i * j;
+//  for (i = 0; i < 3; ++i)
+//    for (j = 0; j < 2; ++j)
+//      C[i][j] = 0;
+//  for (i = 0; i < 3; ++i)
+//    for (j = 0; j < 2; ++j)
+//      for (k = 0; k < 4; ++k)
+//        C[i][j] = C[i][j] + A[i][k] * B[k][j];
+//  int ans = 0;
+//  for (i = 0; i < 3; ++i)
+//    for (j = 0; j < 2; ++j)
+//      ans = ans + C[i][j];
+//  print(toString(ans));
+//  return 0;
 }
-int a=1;
+
+int main ()
+{
+  int a=7,b=2;
+  return 0;
+}
  */

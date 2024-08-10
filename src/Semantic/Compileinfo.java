@@ -12,10 +12,16 @@ public class Compileinfo {
     Content = new String("");
   }
   public Compileinfo(String Content) {
+    if(Content.isEmpty()){
+      int i=1;
+    }
     this.Content = Content;
     this.pos = null;
   }
   public Compileinfo(String Content, Position pos) {
+    if(Content.isEmpty()){
+      int i=1;
+    }
     this.Content = Content;
     this.pos = pos;
   }
