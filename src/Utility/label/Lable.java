@@ -7,4 +7,10 @@ public class Lable {
   public Lable(String name) {
     this.name = name;
   }
+
+  public String toString() {
+    if(name == null) return "";
+    return name;
+  }
+
 }

@@ -12,4 +12,13 @@ public class VarLable extends Lable {
     this.type = type;
   }
 
+  @Override
+    public String toString() {
+        StringBuilder ret = new StringBuilder();
+        ret.append(type.toString());
+        ret.append(" : ");
+        ret.append(super.toString());
+        return ret.toString();
+    }
+
 }

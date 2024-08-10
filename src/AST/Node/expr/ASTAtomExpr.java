@@ -20,4 +20,19 @@ public class ASTAtomExpr extends ASTExpr {
   public <T> T accept(ASTVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
   }
+
+  @Override
+    public String toString() {
+        if(type==AtomType.ARRAY){
+          StringBuilder sb = new StringBuilder();
+          sb.append("{");
+          for (ASTAtomExpr e : array) {
+          sb.append(e.toString()+",");
+          }
+          sb.deleteCharAt(sb.length()-1);
+          sb.append("}");
+          return sb.toString();
+        }
+        return value;
+    }
 }

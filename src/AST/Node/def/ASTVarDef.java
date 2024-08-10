@@ -14,4 +14,15 @@ public class ASTVarDef extends ASTDef {
   public <T> T accept(ASTVisitor<T> visitor) {
     return visitor.visit(this);
   } 
+
+  @Override
+    public String toString() {
+        StringBuilder ret = new StringBuilder();
+        ret.append(label.toString());
+        if(init != null) {
+        ret.append(" = ").append(init.toString());
+        }
+        return ret.toString();
+    }
 }
+

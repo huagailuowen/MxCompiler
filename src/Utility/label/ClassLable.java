@@ -52,4 +52,5 @@ public class ClassLable extends Lable{
       this.varTable.put(v.getLabel().getName(), new VarLable(v.getLabel().getName(), v.getLabel().getType()));
     }
   }
+
 }

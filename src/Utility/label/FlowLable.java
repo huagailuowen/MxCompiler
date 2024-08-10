@@ -26,4 +26,8 @@ public class FlowLable extends Lable {
     return isFor()||isWhile();
   }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }

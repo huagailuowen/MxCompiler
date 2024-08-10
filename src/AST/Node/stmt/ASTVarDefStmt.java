@@ -18,4 +18,17 @@ public class ASTVarDefStmt extends ASTStmt{
   public <T> T accept(ASTVisitor<T> visitor) {
     return visitor.visit(this);
   }
+
+  @Override
+    public String toString() {
+        StringBuilder ret = new StringBuilder();
+        ret.append(super.toString());
+        ret.append("var ");
+        for(ASTVarDef var : varList) {
+        ret.append(var.toString()).append(", ");
+        }
+        ret.delete(ret.length()-2, ret.length());
+        ret.append(";");
+        return ret.toString();
+    }
 }

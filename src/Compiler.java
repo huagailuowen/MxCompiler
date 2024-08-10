@@ -26,11 +26,12 @@ public class Compiler {
     parser.addErrorListener(new BaseErrorListener());
     var tree = parser.program();
     ASTNode ast = new ASTBuilder().visit(parser.program());
-    System.out.println("Collector:");
-    Compileinfo info = new Collector().visit((ASTRoot)ast);
-    System.out.println(info);
-    System.out.println("Checker:");
-    info = new Checker().visit((ASTRoot)ast);
-    System.out.println(info);
+    System.out.print(ast.toString());
+//    System.out.println("Collector:");
+//    Compileinfo info = new Collector().visit((ASTRoot)ast);
+//    System.out.println(info);
+//    System.out.println("Checker:");
+//    info = new Checker().visit((ASTRoot)ast);
+//    System.out.println(info);
   }
 }

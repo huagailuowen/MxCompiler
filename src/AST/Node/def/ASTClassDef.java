@@ -18,4 +18,19 @@ public class ASTClassDef extends ASTDef {
     return visitor.visit(this);
   } 
 
+  @Override
+  public String toString() {
+    StringBuilder ret = new StringBuilder();
+    ret.append("class ").append(label.getName()).append("{\n");
+    for(ASTVarDef varDef : varDefs) {
+//      ret.append("  ");
+      ret.append(varDef.toString()).append("\n");
+    }
+    for(ASTFuncDef funcDef : funcDefs) {
+//      ret.append("  ");
+      ret.append(funcDef.toString()).append("\n");
+    }
+    ret.append("}\n");
+    return ret.toString();
+  }
 }

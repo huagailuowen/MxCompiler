@@ -18,5 +18,18 @@ public class ASTBlockStmt extends ASTStmt {
   public <T> T accept(ASTVisitor<T> visitor) {
     return visitor.visit(this);
   }
-  
+
+  @Override
+    public String toString() {
+        StringBuilder ret = new StringBuilder();
+        ret.append("  ".repeat(tabNum-1));
+        ret.append("{\n");
+        for(ASTStmt stmt : stmts) {
+        stmt.setTabNum(tabNum );
+        ret.append(stmt.toString()).append("\n");
+        }
+        ret.append(super.toString());
+        ret.append("  ".repeat(tabNum-1)).append("}");
+        return ret.toString();
+    }
 }

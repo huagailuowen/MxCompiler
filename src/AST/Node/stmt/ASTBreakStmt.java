@@ -14,5 +14,9 @@ public class ASTBreakStmt extends ASTStmt {
   public <T> T accept(ASTVisitor<T> visitor) {
     return visitor.visit(this);
   }
-  
+
+  @Override
+    public String toString() {
+        return super.toString()+"break;";
+    }
 }

@@ -26,12 +26,22 @@ public class FuncLable extends Lable {
   }
   public FuncLable(String name, ASTType type,ArrayList<ASTVarDef> paramDefs) {
     super(name);
-    this.returnType = ((TypeLable)type.getLabel());
+    if(type == null)
+      this.returnType = new TypeLable("void");
+    else
+      this.returnType = ((TypeLable)type.getLabel());
     this.paramTypes = new ArrayList<TypeLable>();
     for(ASTVarDef v : paramDefs) {
       this.paramTypes.add(((VarLable)v.getLabel()).getType());
     }
   }
+    @Override
+        public String toString() {
+            StringBuilder ret = new StringBuilder();
+            ret.append(returnType.toString()).append(" ");
+            ret.append(super.toString()).append("(");
+            return ret.toString();
+        }
 
   
 }

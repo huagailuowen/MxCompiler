@@ -166,7 +166,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 	
 
 	@Override public ASTNode visitAtomVariableDeclaration(MxparserParser.AtomVariableDeclarationContext ctx) {
-    ASTType type = null;
+//    ASTType type = null;
     //this will be set in the visitVariableDeclaration
     ASTExpr init = null;
     if(ctx.expression()!=null){
@@ -178,7 +178,8 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
     ASTVarDef node = ASTVarDef.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
-      .label(new VarLable(ctx.atom().getText(), type.getLabel()))
+      .label(new VarLable(ctx.atom().getText(), null))
+            //this will be set in the visitVariableDeclaration
       .init(init)
       .build();
     return node;
@@ -192,7 +193,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
     //there is no parameter in the constructor
     stmtList.add((ASTStmt) visit(ctx.block()));
 
-    // FuncLable label = new FuncLable(ctx.getText(), null, paraList);
+    // FuncLable lable = new FuncLable(ctx.getText(), null, paraList);
     // lable is not set here, but in collector
     ASTFuncDef node = ASTFuncDef.builder()
       .position(new Position(ctx.getStart()))
@@ -466,6 +467,13 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
     ASTAtomExpr expr = null;
     if(ctx.constArray()!=null){
       expr = (ASTAtomExpr) visit(ctx.constArray());
+    }else{
+      if(ctx.children.size()==3){
+        //has the brackets
+        if(type.getLabel().getDimension()!=0){
+          throw new ErrorBasic("new () can not be an array", new Position(ctx.getStart()));
+        }
+      }
     }
     ASTNewExpr node = ASTNewExpr.builder()
       .position(new Position(ctx.getStart()))
@@ -682,7 +690,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
     if(str.charAt(0)=='f'){
       p=2;
     }
-    for(int i=1;i<str.length()-1;i++){
+    for(int i=p;i<str.length()-1;i++){
       if(str.charAt(i)=='\\'){
         i++;
         if(str.charAt(i)=='n'){

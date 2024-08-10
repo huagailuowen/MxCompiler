@@ -13,4 +13,8 @@ public class ASTPreExpr extends ASTExpr {
   public <T> T accept(ASTVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
   }
+    @Override
+        public String toString() {
+            return op+expr.toString();
+        }
 }

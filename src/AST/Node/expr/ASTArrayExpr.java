@@ -15,4 +15,14 @@ public class ASTArrayExpr extends ASTExpr {
   public <T> T accept(ASTVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
   }
+
+  @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(expr.toString());
+        for (ASTExpr e : array) {
+        sb.append("["+e.toString()+"]");
+        }
+        return sb.toString();
+    }
 }

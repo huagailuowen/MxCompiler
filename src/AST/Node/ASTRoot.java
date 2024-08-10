@@ -13,6 +13,14 @@ public class ASTRoot extends ASTNode {
   protected ArrayList<ASTDef> defList;
   protected Scope scope;
   //this must be the global scope
+  @Override
+  public String toString() {
+    StringBuilder ret = new StringBuilder();
+    for(ASTDef def : defList) {
+      ret.append(def.toString()).append("\n");
+    }
+    return ret.toString();
+  }
   
   
 }

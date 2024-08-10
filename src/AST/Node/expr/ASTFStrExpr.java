@@ -16,5 +16,18 @@ public class ASTFStrExpr extends ASTExpr {
   public <T> T accept(ASTVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
   }
-  
+  @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("f\"");
+        for (int i = 0; i < args.size(); i++) {
+          sb.append(strs.get(i));
+          sb.append("{");
+          sb.append(args.get(i).toString());
+          sb.append("}");
+        }
+        sb.append(strs.get(strs.size()-1));
+        sb.append("\"");
+        return sb.toString();
+    }
 }

@@ -28,5 +28,12 @@ public class TypeLable extends Lable {
     }
     this.dimension = dim;
   }
-  
+
+  @Override
+  public String toString() {
+    StringBuilder ret = new StringBuilder();
+    ret.append(super.toString());
+    ret.append("[]".repeat(Math.max(0, dimension)));
+    return ret.toString();
+  }
 }

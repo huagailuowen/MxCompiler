@@ -14,5 +14,10 @@ public class ASTAssignExpr extends ASTExpr {
   public <T> T accept(ASTVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
   }
+
+  @Override
+    public String toString() {
+        return lhs.toString()+" "+op+" "+rhs.toString();
+    }
   
 }

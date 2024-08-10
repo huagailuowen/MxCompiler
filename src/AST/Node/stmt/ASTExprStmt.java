@@ -20,4 +20,13 @@ public class ASTExprStmt extends ASTStmt {
     return visitor.visit(this);
   }
 
+    @Override
+        public String toString() {
+            StringBuilder ret = new StringBuilder();
+            ret.append(super.toString());
+            for(ASTExpr expr : exprList) {
+            ret.append(expr.toString()).append(";");
+            }
+            return ret.toString();
+        }
 }
