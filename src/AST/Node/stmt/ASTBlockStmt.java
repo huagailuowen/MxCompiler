@@ -25,10 +25,9 @@ public class ASTBlockStmt extends ASTStmt {
         ret.append("  ".repeat(tabNum-1));
         ret.append("{\n");
         for(ASTStmt stmt : stmts) {
-        stmt.setTabNum(tabNum );
-        ret.append(stmt.toString()).append("\n");
+          stmt.setTabNum(tabNum);
+          ret.append(stmt.toString()).append("\n");
         }
-        ret.append(super.toString());
         ret.append("  ".repeat(tabNum-1)).append("}");
         return ret.toString();
     }

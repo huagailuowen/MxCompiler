@@ -19,6 +19,8 @@ public class ASTIfStmt extends ASTStmt {
 
     @Override
     public String toString() {
+        thenStmt.setTabNum(tabNum+1);
+        if(elseStmt!=null) elseStmt.setTabNum(tabNum+1);
         return super.toString()+"if("+cond.toString()+")\n"+thenStmt.toString()+(elseStmt==null?"":"\n"+super.toString()+"else\n"+elseStmt.toString());
     }
 

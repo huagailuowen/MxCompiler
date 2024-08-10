@@ -139,6 +139,10 @@ public class Collector implements ASTVisitor<Compileinfo>{
   public Compileinfo visit(ASTContStmt node) {
     throw new ErrorBasic("visit access denied",node.getPosition());
   }
+  public Compileinfo visit(ASTEmptyStmt node) {
+    throw new ErrorBasic("visit access denied",node.getPosition());
+  }
+
   public Compileinfo visit(ASTExprStmt node) {
     throw new ErrorBasic("visit access denied",node.getPosition());
   }

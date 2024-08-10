@@ -20,16 +20,7 @@ import AST.Node.expr.ASTNewExpr;
 import AST.Node.expr.ASTPreExpr;
 import AST.Node.expr.ASTSuffixExpr;
 import AST.Node.expr.ASTTernaryExpr;
-import AST.Node.stmt.ASTBlockStmt;
-import AST.Node.stmt.ASTBreakStmt;
-import AST.Node.stmt.ASTContStmt;
-import AST.Node.stmt.ASTExprStmt;
-import AST.Node.stmt.ASTForStmt;
-import AST.Node.stmt.ASTIfStmt;
-import AST.Node.stmt.ASTRetStmt;
-import AST.Node.stmt.ASTStmt;
-import AST.Node.stmt.ASTVarDefStmt;
-import AST.Node.stmt.ASTWhileStmt;
+import AST.Node.stmt.*;
 import AST.Node.typ.ASTType;
 import Scope.Scope;
 import Utility.error.ErrorBasic;
@@ -219,6 +210,10 @@ public class Checker implements ASTVisitor<Compileinfo>{
     }
     return info;
   }
+  public Compileinfo visit(ASTEmptyStmt node) {
+    node.setScope(currentScope);
+    return new Compileinfo();
+  }
   public Compileinfo visit(ASTExprStmt node) {
     node.setScope(currentScope);
     var info = new Compileinfo();
@@ -370,26 +365,51 @@ public class Checker implements ASTVisitor<Compileinfo>{
     }
     info.append(node.getLhs().accept(this));
     info.append(node.getRhs().accept(this));
-    
+    node.getLabel().getType().setDimension(node.getLhs().getLabel().getType().getDimension());
+    node.getLabel().setType((TypeLable) globalScope.get("void",Scope.QueryType.CLASS));
+    node.getLabel().setValueType(ExprLable.ValueType.ABANDON);
+    //ban the value of the assign expr
+    if(!info.empty()){
+      return info;
+    }
+    if(node.getLhs().getLabel().getValueType()!= ExprLable.ValueType.LVALUE){
+      info.append(new Compileinfo("lhs is not lvalue",node.getPosition()));
+      return info;
+    }if(node.getRhs().getLabel().getValueType().equals(ExprLable.ValueType.ABANDON)){
+      info.append(new Compileinfo("rhs is abandon",node.getPosition()));
+      return info;
+    }
+
+
     if(node.getLhs().getLabel().getType().getName() == null || node.getRhs().getLabel().getType().getName() == null){
       throw new ErrorBasic("type has no name? impossible",node.getPosition());
       // info.append(new Compileinfo("type null",node.getPosition()));
     } 
 
+    if(node.getRhs().getLabel().getType().getName().equals("null")) {
+      if(node.getLhs().getLabel().getType().getDimension()!=0) {
+        if (node.getLhs().getLabel().getType().getDimension() < node.getRhs().getLabel().getType().getDimension()) {
+          info.append(new Compileinfo("dimension not match", node.getPosition()));
+          return info;
+        }
 
-    if(node.getLhs().getLabel().getType().getDimension() == node.getRhs().getLabel().getType().getDimension()){
+      }else if (node.getLhs().getLabel().getType().getName().equals("int")
+              || node.getLhs().getLabel().getType().getName().equals("bool")
+              || node.getLhs().getLabel().getType().getName().equals("void")) {
+        info.append(new Compileinfo("type not match", node.getPosition()));
+        return info;
+      }
+    }
+    if(node.getLhs().getLabel().getType().getDimension() != node.getRhs().getLabel().getType().getDimension()){
       info.append(new Compileinfo("dimension not match",node.getPosition()));
+      return info;
     }
     if(!node.getLhs().getLabel().getType().getName().equals(node.getRhs().getLabel().getType().getName())){
       info.append(new Compileinfo("type not match",node.getPosition()));
-    }if(node.getLhs().getLabel().getValueType()!= ExprLable.ValueType.LVALUE){
-      info.append(new Compileinfo("lhs is not lvalue",node.getPosition()));
+      return info;
     }
-    
-    node.getLabel().getType().setDimension(node.getLhs().getLabel().getType().getDimension());
-    node.getLabel().setType((TypeLable) globalScope.get("void",Scope.QueryType.CLASS));
-    node.getLabel().setValueType(ExprLable.ValueType.ABANDON);
-    //ban the value of the assign expr
+
+
     return info;
   }
   
@@ -449,6 +469,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
       if(node.getLabel().getValueType().equals(ExprLable.ValueType.ABANDON)){
         node.getLabel().setValueType(ExprLable.ValueType.RVALUE);
       }
+      node.getLabel().getType().setDimension(dim+1);
       node.getLabel().getType().setDimension(dim+1);
 
     }else if(node.getType() == ASTAtomExpr.AtomType.BOOL){
@@ -657,6 +678,23 @@ public class Checker implements ASTVisitor<Compileinfo>{
     node.setScope(currentScope);
     var info = new Compileinfo();
     var typename = node.getType().getLabel().getName();
+    for(var expr:node.getType().getDimList()){
+      if(expr==null){
+        continue;
+      }
+      info.append(expr.accept(this));
+      if(!info.empty()){
+        return info;
+      }
+      if(expr.getLabel().getValueType().equals(ExprLable.ValueType.ABANDON)){
+        info.append(new Compileinfo("dimension should be an ABANDON",node.getPosition()));
+        return info;
+      }else if(!expr.getLabel().getType().getName().equals("int")) {
+        info.append(new Compileinfo("dimension should be an int", node.getPosition()));
+        return info;
+      }
+
+    }
     var dim = node.getType().getLabel().getDimension();
     if(globalScope.get(typename,Scope.QueryType.CLASS)==null){
       info.append(new Compileinfo("type "+typename+" not defined",node.getPosition()));

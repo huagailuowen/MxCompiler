@@ -39,7 +39,7 @@ public class FuncLable extends Lable {
         public String toString() {
             StringBuilder ret = new StringBuilder();
             ret.append(returnType.toString()).append(" ");
-            ret.append(super.toString()).append("(");
+            ret.append(super.toString());
             return ret.toString();
         }
 

@@ -102,8 +102,10 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 	@Override public ASTNode visitFunctionDeclaration(MxparserParser.FunctionDeclarationContext ctx) {
     ArrayList<ASTVarDef> paraList = new ArrayList<>();
     ArrayList<ASTStmt> stmtList = new ArrayList<>();
-    for(var para : ctx.parameterDeclarationList().parameterDeclaration()){
-      paraList.add((ASTVarDef) visit(para));
+    if(ctx.parameterDeclarationList()!=null && ctx.parameterDeclarationList().parameterDeclaration()!=null) {
+      for (var para : ctx.parameterDeclarationList().parameterDeclaration()) {
+        paraList.add((ASTVarDef) visit(para));
+      }
     }
     stmtList.add((ASTStmt) visit(ctx.block()));
 
@@ -258,10 +260,9 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 
 	@Override public ASTNode visitEmptyStmt(MxparserParser.EmptyStmtContext ctx) {
     //empty statement
-    return ASTBlockStmt.builder()
+    return ASTEmptyStmt.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
-      .stmts(new ArrayList<>())
       .build();
   }
 	
@@ -415,7 +416,12 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
     String name = ctx.typ.getText();
     ArrayList<ASTExpr> dimList = new ArrayList<>();
     for(var array : ctx.arrayLable()){
-      dimList.add((ASTExpr) visit(array.expression()));
+      if(array.expression()!=null){
+        dimList.add((ASTExpr) visit(array.expression()));
+      }else{
+        dimList.add(null);
+      }
+
     }
     ASTType node = ASTType.builder()
       .position(new Position(ctx.getStart()))
@@ -428,8 +434,11 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 	
 
   @Override public ASTNode visitArrayLable(MxparserParser.ArrayLableContext ctx) {
-     throw new ErrorBasic("This should not be called", new Position(ctx.getStart()));
-//     return visitChildren(ctx);
+    if(ctx.expression()!=null){
+      return visit(ctx.expression());
+    }else{
+      return null;
+    }
    }
 	
 
@@ -464,6 +473,11 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 
 	@Override public ASTNode visitNewExpr(MxparserParser.NewExprContext ctx) {
     ASTType type = (ASTType) visit(ctx.type());
+    for(int i=0;i<type.getLabel().getDimension()-1;i++){
+      if(type.getDimList().get(i)==null){
+        throw new ErrorBasic("new [] should have a size when not the last dimension", new Position(ctx.getStart()));
+      }
+    }
     ASTAtomExpr expr = null;
     if(ctx.constArray()!=null){
       expr = (ASTAtomExpr) visit(ctx.constArray());
@@ -537,6 +551,9 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .build();
     expr.setFather(node);
     for(var ele : node.getArray()){
+      if(ele == null){
+        throw new ErrorBasic("Array should have a size", new Position(ctx.getStart()));
+      }
       ele.setFather(node);
     }
     return node;
@@ -549,7 +566,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       .position(new Position(ctx.getStart()))
       .father(null)
       .expr(expr)
-      .member(ctx.Member().getText())
+      .member(ctx.atom().getText())
       .build();
     expr.setFather(node);
     return node;
@@ -593,9 +610,12 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 	@Override public ASTNode visitCallExpr(MxparserParser.CallExprContext ctx) {
     ASTExpr expr = (ASTExpr) visit(ctx.expression());
     ArrayList<ASTExpr> paraList = new ArrayList<>();
-    for(var para : ctx.parameterList().expression()){
-      paraList.add((ASTExpr) visit(para));
+    if(ctx.parameterList()!=null){
+      for(var para : ctx.parameterList().expression()){
+        paraList.add((ASTExpr) visit(para));
+      }
     }
+
     ASTCallExpr node = ASTCallExpr.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
@@ -631,7 +651,7 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 
 	@Override public ASTNode visitPreOpExpr(MxparserParser.PreOpExprContext ctx) {
     ASTExpr expr = (ASTExpr) visit(ctx.expression());
-    ASTSuffixExpr node = ASTSuffixExpr.builder()
+    ASTPreExpr node = ASTPreExpr.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
       .expr(expr)

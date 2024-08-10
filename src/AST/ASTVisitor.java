@@ -19,6 +19,7 @@ public interface ASTVisitor<T> {
   public T visit(ASTBlockStmt node) throws ErrorBasic;
   public T visit(ASTBreakStmt node) throws ErrorBasic;
   public T visit(ASTContStmt node) throws ErrorBasic;
+  public T visit(ASTEmptyStmt node) throws ErrorBasic;
   public T visit(ASTExprStmt node) throws ErrorBasic;
   public T visit(ASTForStmt node) throws ErrorBasic;
   public T visit(ASTIfStmt node) throws ErrorBasic;

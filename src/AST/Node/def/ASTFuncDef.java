@@ -30,12 +30,11 @@ public class ASTFuncDef extends ASTDef{
             ret.append(", ");
         }
         }
-        ret.append(") {\n");
+        ret.append(") \n");
         for(ASTStmt stmt : stmtList) {
             stmt.setTabNum(1);
-        ret.append(stmt.toString()).append("\n");
+            ret.append(stmt.toString()).append("\n");
         }
-        ret.append("}\n");
         return ret.toString();
     }
 }

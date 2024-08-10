@@ -21,7 +21,10 @@ public class ASTArrayExpr extends ASTExpr {
         StringBuilder sb = new StringBuilder();
         sb.append(expr.toString());
         for (ASTExpr e : array) {
-        sb.append("["+e.toString()+"]");
+          if(e!=null)
+            sb.append("[").append(e.toString()).append("]");
+          else
+            sb.append("["+"]");
         }
         return sb.toString();
     }

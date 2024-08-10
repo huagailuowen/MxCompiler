@@ -25,7 +25,8 @@ public class Compiler {
     parser.removeErrorListeners();
     parser.addErrorListener(new BaseErrorListener());
     var tree = parser.program();
-    ASTNode ast = new ASTBuilder().visit(parser.program());
+    ASTNode ast = new ASTBuilder().visit(tree);
+    int i=1;
     System.out.print(ast.toString());
 //    System.out.println("Collector:");
 //    Compileinfo info = new Collector().visit((ASTRoot)ast);
@@ -35,3 +36,11 @@ public class Compiler {
 //    System.out.println(info);
   }
 }
+/*
+int main()
+{
+  a++;
+  int s=f"342\\347893274\"{}{}$i+1+f"39847293$i=1$"$ 458934\\$$";
+}
+int a=1;
+ */

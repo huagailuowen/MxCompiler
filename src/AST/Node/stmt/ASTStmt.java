@@ -9,7 +9,7 @@ import Scope.Scope;
 @lombok.Setter
 public abstract class ASTStmt extends ASTNode {
   protected Scope scope;
-  protected int tabNum;
+  protected int tabNum = 1;
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {
     return visitor.visit(this);

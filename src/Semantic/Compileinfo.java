@@ -35,4 +35,7 @@ public class Compileinfo {
     return "Compile Error:"+Content+(pos==null?"":pos.toString());
   }
 
+  public boolean empty() {
+    return Content.isEmpty();
+  }
 }

@@ -10,7 +10,7 @@ public class TypeLable extends Lable {
   }
   public TypeLable(String name) {
     super(name);
-    if(name.equals("int")||name.equals("bool")||name.equals("void")||name.equals("string")){
+    if(name.equals("int")||name.equals("bool")||name.equals("void")){
       this.isBaseType=true;
     }
     else{
@@ -20,7 +20,7 @@ public class TypeLable extends Lable {
   }
   public TypeLable(String name,int dim) {
     super(name);
-    if(name.equals("int")||name.equals("bool")||name.equals("void")||name.equals("string")){
+    if(name.equals("int")||name.equals("bool")||name.equals("void")){
       this.isBaseType=true;
     }
     else{

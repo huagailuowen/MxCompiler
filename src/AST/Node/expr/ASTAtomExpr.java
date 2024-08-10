@@ -33,6 +33,9 @@ public class ASTAtomExpr extends ASTExpr {
           sb.append("}");
           return sb.toString();
         }
+        if(type==AtomType.STRING){
+          return "\""+value+"\"";
+        }
         return value;
     }
 }
