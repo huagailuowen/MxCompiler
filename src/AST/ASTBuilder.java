@@ -54,6 +54,9 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
       throw new ErrorBasic("Multiple constructors are not allowed", new Position(ctx.getStart()));
     }else if(ctx.classConstructor().size()==1){
       constructor = (ASTFuncDef) visit(ctx.classConstructor(0));
+      if(!constructor.getLabel().getName().equals(ctx.Identifier().getText())){
+        throw new ErrorBasic("The constructor should have the same name as the class", new Position(ctx.getStart()));
+      }
       constructor.setLabel(new FuncLable(ctx.Identifier().getText(), null, new ArrayList<ASTVarDef>()));
     }else{
       //defalut constructor
@@ -193,13 +196,14 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
     //there is no parameter in the constructor
     stmtList.add((ASTStmt) visit(ctx.block()));
 
-    // FuncLable lable = new FuncLable(ctx.getText(), null, paraList);
+    FuncLable lable = new FuncLable(ctx.Identifier().getText(), null, paraList);
     // lable is not set here, but in collector
     ASTFuncDef node = ASTFuncDef.builder()
       .position(new Position(ctx.getStart()))
       .father(null)
       .paraList(paraList)
       .stmtList(stmtList)
+      .label(lable)
       .build();
     for(var def : node.getParaList()){
       def.setFather(node);
@@ -471,16 +475,20 @@ public class ASTBuilder extends MxparserBaseVisitor<ASTNode> {
 
 	@Override public ASTNode visitNewExpr(MxparserParser.NewExprContext ctx) {
     ASTType type = (ASTType) visit(ctx.type());
-    for(int i=0;i<type.getLabel().getDimension()-1;i++){
+    boolean flag = false;
+    for(int i=0;i<type.getLabel().getDimension();i++){
       if(type.getDimList().get(i)==null){
-        throw new ErrorBasic("new [] should have a size when not the last dimension", new Position(ctx.getStart()));
+        flag = true;
+      }
+      if(flag && type.getDimList().get(i)!=null) {
+        throw new ErrorBasic("The array should have a size", new Position(ctx.getStart()));
       }
     }
     ASTAtomExpr expr = null;
     if(ctx.constArray()!=null){
       expr = (ASTAtomExpr) visit(ctx.constArray());
     }else{
-      if(ctx.children.size()==3){
+      if(ctx.children.size()==3 && ctx.children.get(2).getText().equals("()")){
         //has the brackets
         if(type.getLabel().getDimension()!=0){
           throw new ErrorBasic("new () can not be an array", new Position(ctx.getStart()));

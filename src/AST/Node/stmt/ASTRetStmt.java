@@ -19,6 +19,8 @@ public class ASTRetStmt extends ASTStmt {
   @Override
 
   public String toString() {
+    if(retExpr==null)
+      return super.toString()+"return;";
     return super.toString()+"return "+retExpr.toString()+";";
   }
 

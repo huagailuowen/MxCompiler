@@ -8,5 +8,5 @@ Comment: New expression cannot apply to void.
 Origin Package: Semantic Pretest
 */
 int main() {
-    new void;
+    void a;
 }

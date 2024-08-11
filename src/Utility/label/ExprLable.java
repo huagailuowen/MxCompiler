@@ -7,7 +7,11 @@ public class ExprLable extends Lable {
   public enum ValueType {
     LVALUE,
     RVALUE,
-    ABANDON
+    ABANDON,
+  }
+  protected boolean isThis = false;
+  public boolean getThis() {
+    return isThis;
   }
   protected ValueType valueType;
   //only LVALUE and some ABANDON has its name
@@ -15,11 +19,13 @@ public class ExprLable extends Lable {
     super(null);
     this.type = new TypeLable("void");
     this.valueType = ValueType.ABANDON;
+    this.isThis = false;
   }
   public ExprLable(String name, TypeLable type, ValueType valueType ) {
     super(name);
     this.type = type;
     this.valueType = valueType;
+    this.isThis = false;
   }
   @Override
   public ExprLable clone(){

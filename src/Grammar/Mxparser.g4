@@ -60,7 +60,7 @@ formatStringElement:
 
 expression : 
 	'('expression')'																											# childExpr
-	|New type (constArray? | ('()')?)                      								# newExpr
+	|New type (constArray | ('()'))?                      								# newExpr
 	|expression Member atom																								# memberExpr
   |expression (('('parameterList ')')|'()')															# callExpr
 	|expression ((arrayLable)+)																						# arrayExpr

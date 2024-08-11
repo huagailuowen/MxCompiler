@@ -22,6 +22,9 @@ public class ASTClassDef extends ASTDef {
   public String toString() {
     StringBuilder ret = new StringBuilder();
     ret.append("class ").append(label.getName()).append("{\n");
+    if(constructor != null) {
+      ret.append(constructor.toString()).append("\n");
+    }
     for(ASTVarDef varDef : varDefs) {
 //      ret.append("  ");
       ret.append(varDef.toString()).append("\n");

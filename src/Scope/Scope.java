@@ -18,18 +18,10 @@ public class Scope {
   //only func and class has name
   public Scope()
   {
-    boolean is_global = false;
     this.parent = null;
     funcMap = new TreeMap<String,FuncLable>() {};
     varMap = new TreeMap<String,VarLable>() {};
     classMap = new TreeMap<String,TypeLable>() {};
-    if(!is_global)
-      return;
-    for(FuncLable func : BasicClassFunc.BuildInFunc)
-      funcMap.put(func.getName(), func);
-    for(TypeLable cls : BasicClassFunc.BuildInClass)
-      classMap.put(cls.getName(), cls);
-    //add some default functions
   }
   public Scope(boolean is_global)
   {
@@ -43,6 +35,7 @@ public class Scope {
       funcMap.put(func.getName(), func);
     for(TypeLable cls : BasicClassFunc.BuildInClass)
       classMap.put(cls.getName(), cls);
+
     //add some default functions
   }
   public Scope(Scope parent) //this is definetely not a global scope

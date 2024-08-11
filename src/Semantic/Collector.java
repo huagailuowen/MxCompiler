@@ -86,9 +86,14 @@ public class Collector implements ASTVisitor<Compileinfo>{
       throw new ErrorBasic("class "+node.getLabel().getName()+" has no constructor",node.getPosition());
     }
     info.append(node.getConstructor().accept(this));
-    node.getConstructor().getLabel().setReturnType((TypeLable) globalScope.get("void",Scope.QueryType.CLASS));
+    if(!node.getConstructor().getLabel().getName().equals(node.getLabel().getName()))
+    {
+      info.append(new Compileinfo("constructor name should be the same as class name",node.getConstructor().getPosition()));
+    }
+    node.getConstructor().getLabel().setReturnType((TypeLable) globalScope.get("void",Scope.QueryType.CLASS).clone());
     //we should not visit the varDef, for it is not allowed to define variable former quote
-    
+    currentScope.declareFunc(node.getConstructor().getLabel());
+    globalScope.declareFunc(node.getConstructor().getLabel().getName(),node.getConstructor().getLabel());
     for (ASTFuncDef f : node.getFuncDefs()) {
       String name = f.getLabel().getName();
       if(currentScope.get(name)!=null){
@@ -121,7 +126,10 @@ public class Collector implements ASTVisitor<Compileinfo>{
     // throw new ErrorBasic("visit ASTVarDef, access denied",node.getPosition());
     var info = new Compileinfo();
     String name = node.getLabel().getName();
-    if(currentScope.get(name)!=null){
+    String type = node.getLabel().getType().getName();
+    if(type.equals("void")) {
+      info.append(new Compileinfo("variable name can not be void", node.getPosition()));
+    }if(currentScope.get(name)!=null){
       return new Compileinfo("variable "+name+" has been defined",node.getPosition());
     }else{
       //we are sure that there is no init expression

@@ -33,6 +33,8 @@ public class Compileinfo {
       return;
     if(Content == null)
       Content = new String();
+    if(info.Content.isEmpty())
+      return;
     if(!info.Content.isEmpty()&& !this.Content.isEmpty()){
       this.Content += "\n";
     }
