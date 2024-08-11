@@ -12,5 +12,8 @@ public class Lable {
     if(name == null) return "";
     return name;
   }
+  public Lable clone(){
+    throw new RuntimeException("clone not implemented");
+  }
 
 }

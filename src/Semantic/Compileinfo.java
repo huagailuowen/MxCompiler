@@ -29,6 +29,8 @@ public class Compileinfo {
   {
     if(info == null)
       return;
+    if(!this.getContent().isEmpty())
+      return;
     if(Content == null)
       Content = new String();
     if(!info.Content.isEmpty()&& !this.Content.isEmpty()){
@@ -38,7 +40,7 @@ public class Compileinfo {
       this.Content += info.toString();
   }
   public String toString() {
-    return "Compile Error:"+Content+(pos==null?"":pos.toString());
+    return (Content.isEmpty()?"":"Compile Error:"+Content+(pos==null?"":' '+pos.toString()));
   }
 
   public boolean empty() {

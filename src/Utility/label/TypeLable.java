@@ -36,4 +36,8 @@ public class TypeLable extends Lable {
     ret.append("[]".repeat(Math.max(0, dimension)));
     return ret.toString();
   }
+  @Override
+  public TypeLable clone(){
+    return new TypeLable(this.getName(),this.dimension);
+  }
 }

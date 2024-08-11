@@ -201,7 +201,8 @@ public class Checker implements ASTVisitor<Compileinfo>{
   }
   private Compileinfo checkFinalExpr(ASTExpr expr){
     var info = new Compileinfo();
-    info.append(expr.accept(this));
+//    info.append(expr.accept(this));
+    //stupid, we have already visited the expr
     if(expr.getLabel().getName()!=null && expr.getLabel().getValueType() == ExprLable.ValueType.ABANDON){
       info.append(new Compileinfo("expression should not be a single indentifier of function"));
     }else if(expr.getLabel().getType().getName().equals("null") && expr.getLabel().getValueType() == ExprLable.ValueType.ABANDON){
@@ -231,17 +232,21 @@ public class Checker implements ASTVisitor<Compileinfo>{
     if(node.getInit()!=null){
       info.append(node.getInit().accept(this));
       if(!(node.getInit() instanceof ASTVarDefStmt) && !(node.getInit() instanceof ASTExprStmt)){
-        info.append(new Compileinfo("init should be a variable definition or expr",node.getPosition()));
+        if(info.empty())
+          info.append(new Compileinfo("init should be a variable definition or expr",node.getPosition()));
       }
     }
     if(node.getCond()!=null){
       info.append(node.getCond().accept(this));
-      if(node.getCond().getLabel().getType().getName()!="bool"){
+      if(!node.getCond().getLabel().getType().getName().equals("bool")){
         info.append(new Compileinfo("condition should be bool",node.getPosition()));
+      } else if (node.getCond().getLabel().getValueType() == ExprLable.ValueType.ABANDON){
+        info.append(new Compileinfo("condition should not be a single identifier of function",node.getPosition()));
       }
     }
     if(node.getUpdate()!=null){
       info.append(node.getUpdate().accept(this));
+      info.append(checkFinalExpr(node.getUpdate()));
     }
     node.getContent().setScope(currentScope);
     info.append(node.getContent().accept(this));
@@ -317,11 +322,14 @@ public class Checker implements ASTVisitor<Compileinfo>{
     var info = new Compileinfo();
   
     info.append(node.getCondition().accept(this));
-    if(node.getCondition().getLabel().getType().getName()!="bool"){
+    if(!node.getCondition().getLabel().getType().getName().equals("bool")){
       info.append(new Compileinfo("condition should be bool",node.getPosition()));
-    } 
+    }else if(node.getCondition().getLabel().getValueType() == ExprLable.ValueType.ABANDON){
+      info.append(new Compileinfo("condition should not be a single identifier of function",node.getPosition()));
+    }
     node.getContent().setScope(currentScope);
-    info.append(node.getContent().accept(this));
+    if(info.empty())
+      info.append(node.getContent().accept(this));
     stepOut();
     return info;
   }
@@ -333,7 +341,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
     node.setScope(currentScope);
     var info = new Compileinfo();
     info.append(node.getExpr().accept(this));
-    node.getLabel().setType(node.getExpr().getLabel().getType());
+    node.getLabel().setType(node.getExpr().getLabel().getType().clone());
     node.getLabel().setValueType(node.getExpr().getLabel().getValueType());
     if(node.getLabel().getValueType() != ExprLable.ValueType.LVALUE){
       info.append(new Compileinfo("array should be lvalue",node.getPosition()));
@@ -366,8 +374,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
     }
     info.append(node.getLhs().accept(this));
     info.append(node.getRhs().accept(this));
-    node.getLabel().getType().setDimension(node.getLhs().getLabel().getType().getDimension());
-    node.getLabel().setType((TypeLable) globalScope.get("void",Scope.QueryType.CLASS));
+    node.getLabel().setType(new TypeLable("void",node.getLhs().getLabel().getType().getDimension()));
     node.getLabel().setValueType(ExprLable.ValueType.ABANDON);
     //ban the value of the assign expr
     if(!info.empty()){
@@ -422,18 +429,21 @@ public class Checker implements ASTVisitor<Compileinfo>{
       Lable var = currentScope.get(node.getValue(),true);
       if(var==null){
         info.append(new Compileinfo("Identifier "+node.getValue()+" not defined",node.getPosition()));
-        node.setLabel(new ExprLable(null, (TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+        node.setLabel(new ExprLable(null, ((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
       }else if(var instanceof VarLable){
-        node.setLabel(new ExprLable(null, ((VarLable)var).getType(),ExprLable.ValueType.LVALUE));
+        node.setLabel(new ExprLable(null, ((VarLable)var).getType().clone(),ExprLable.ValueType.LVALUE));
       }else if(var instanceof FuncLable){
-        node.setLabel(new ExprLable(node.getValue(), ((FuncLable)var).getReturnType(),ExprLable.ValueType.ABANDON));
+        node.setLabel(new ExprLable(node.getValue(), ((FuncLable)var).getReturnType().clone(),ExprLable.ValueType.ABANDON));
         //the single func can not be a expression
       }else{
         //class must be recognize as type in .g4
         info.append(new Compileinfo("Identifier "+node.getValue()+" is a class name",node.getPosition()));
       }
     }else if(node.getType() == ASTAtomExpr.AtomType.ARRAY){
-      node.getLabel().setType((TypeLable) globalScope.get("null",Scope.QueryType.CLASS));
+      node.getLabel().setType(((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone());
+      node.getLabel().setValueType(ExprLable.ValueType.ABANDON);
+      //we must new a type for the array
+      //or we can not set the dimension
       node.getLabel().setValueType(ExprLable.ValueType.ABANDON);
       int dim = 0;
       for(var expr:node.getArray()){
@@ -453,7 +463,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
           continue;
         }
         if(node.getLabel().getValueType().equals(ExprLable.ValueType.ABANDON)){
-          node.getLabel().setType(expr.getLabel().getType());
+          node.getLabel().setType(expr.getLabel().getType().clone());
           node.getLabel().setValueType(ExprLable.ValueType.RVALUE);
         }else{
           if(node.getLabel().getType().getDimension()!=expr.getLabel().getType().getDimension()){
@@ -471,27 +481,26 @@ public class Checker implements ASTVisitor<Compileinfo>{
         node.getLabel().setValueType(ExprLable.ValueType.RVALUE);
       }
       node.getLabel().getType().setDimension(dim+1);
-      node.getLabel().getType().setDimension(dim+1);
 
     }else if(node.getType() == ASTAtomExpr.AtomType.BOOL){
-      node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("bool",Scope.QueryType.CLASS),ExprLable.ValueType.RVALUE));
+      node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("bool",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
     }else if(node.getType() == ASTAtomExpr.AtomType.INT){
-      node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("int",Scope.QueryType.CLASS),ExprLable.ValueType.RVALUE));
+      node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("int",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
     }else if(node.getType() == ASTAtomExpr.AtomType.NULL){
-      node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.RVALUE));
+      node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
     }else if(node.getType() == ASTAtomExpr.AtomType.STRING){
-      node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("string",Scope.QueryType.CLASS),ExprLable.ValueType.RVALUE));
+      node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("string",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
     }else if(node.getType() == ASTAtomExpr.AtomType.THIS){
       Scope Class = currentScope.findClass(currentScope);
       if(Class==null){
         info.append(new Compileinfo("this not in class",node.getPosition()));
-        node.setLabel(new ExprLable(null, (TypeLable) globalScope.get("null",Scope.QueryType.CLASS), ExprLable.ValueType.ABANDON));
+        node.setLabel(new ExprLable(null, ((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(), ExprLable.ValueType.ABANDON));
       }else{
-        node.setLabel(new ExprLable(Class.getName(),(TypeLable) globalScope.get("this",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+        node.setLabel(new ExprLable(Class.getName(),((TypeLable) globalScope.get("this",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
 
       }
     }else if(node.getType() == ASTAtomExpr.AtomType.VOID){
-      node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("void",Scope.QueryType.CLASS),ExprLable.ValueType.RVALUE));
+      node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("void",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
     }else{
       throw new ErrorBasic("Checker: visit ASTAtomExpr: type not match",node.getPosition());
     }
@@ -507,7 +516,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
     if(node.getLhs().getLabel().getValueType().equals(ExprLable.ValueType.ABANDON)
       ||node.getRhs().getLabel().getValueType().equals(ExprLable.ValueType.ABANDON)){
       info.append(new Compileinfo("can not compute the ABANDON",node.getPosition()));
-      node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+      node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
       return info;
     }
     if(!node.getLhs().getLabel().getType().getIsBaseType()
@@ -526,18 +535,18 @@ public class Checker implements ASTVisitor<Compileinfo>{
     ||node.getOp().equals("^")){
       if(node.getLhs().getLabel().getType().getName().equals("int")
         && node.getRhs().getLabel().getType().getName().equals("int")){
-        node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("int",Scope.QueryType.CLASS),ExprLable.ValueType.RVALUE));
+        node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("int",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
       }else{
-        node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+        node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
         info.append(new Compileinfo("type not match",node.getPosition()));
       }
     }else if(node.getOp().equals("&&")
     ||node.getOp().equals("||")){
       if(node.getLhs().getLabel().getType().getName().equals("bool")
         && node.getRhs().getLabel().getType().getName().equals("bool")){
-        node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("bool",Scope.QueryType.CLASS),ExprLable.ValueType.RVALUE));
+        node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("bool",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
       }else{
-        node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+        node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
         info.append(new Compileinfo("type not match",node.getPosition()));
       }
     }else if(node.getOp().equals("==")
@@ -549,23 +558,23 @@ public class Checker implements ASTVisitor<Compileinfo>{
       if(!node.getOp().equals("==") && !node.getOp().equals("!=")){
         if(node.getLhs().getLabel().getType().getName().equals("int")
           && node.getRhs().getLabel().getType().getName().equals("int")){
-          node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("bool",Scope.QueryType.CLASS),ExprLable.ValueType.RVALUE));
+          node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("bool",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
         }else{
-          node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+          node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
           info.append(new Compileinfo("type not match",node.getPosition()));
         }
       }else{
         if(node.getLhs().getLabel().getType().getName().equals(node.getRhs().getLabel().getType().getName())
           && node.getLhs().getLabel().getType().getDimension() == 0
           && node.getRhs().getLabel().getType().getDimension() == 0){
-          node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("bool",Scope.QueryType.CLASS),ExprLable.ValueType.RVALUE));
+          node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("bool",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
         }else{
-          node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+          node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
           info.append(new Compileinfo("type not match",node.getPosition()));
         }
       }
     }else{
-      node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+      node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
       info.append(new Compileinfo("type not match",node.getPosition()));
     }
     return info;
@@ -581,7 +590,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
       return info;
     }
     var name = expr.getLabel().getName();
-    node.setLabel(new ExprLable(null, (TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+    node.setLabel(new ExprLable(null, ((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
     if(name==null){
       info.append(new Compileinfo("call to a non-function",node.getPosition()));
       return info;
@@ -601,7 +610,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
           info.append(new Compileinfo("parameter type not match",node.getPosition()));
         }
       }
-      node.setLabel(new ExprLable(null,func.getReturnType(),ExprLable.ValueType.RVALUE));
+      node.setLabel(new ExprLable(null,func.getReturnType().clone(),ExprLable.ValueType.RVALUE));
       if(func.getReturnType().getName().equals("void")){
         node.getLabel().setValueType(ExprLable.ValueType.ABANDON);
       }
@@ -613,14 +622,14 @@ public class Checker implements ASTVisitor<Compileinfo>{
     node.setScope(currentScope);
     var info = new Compileinfo();
     info.append(node.getExpr().accept(this));
-    node.getLabel().setType(node.getExpr().getLabel().getType());
+    node.getLabel().setType(node.getExpr().getLabel().getType().clone());
     return info;
   }
 
   public Compileinfo visit(ASTFStrExpr node){
     node.setScope(currentScope);
     var info = new Compileinfo();
-    node.getLabel().setType((TypeLable) globalScope.get("string",Scope.QueryType.CLASS));
+    node.getLabel().setType(((TypeLable) globalScope.get("string",Scope.QueryType.CLASS)).clone());
     node.getLabel().setValueType(ExprLable.ValueType.RVALUE);
     for(var expr:node.getArgs()){
       info.append(expr.accept(this));
@@ -644,32 +653,32 @@ public class Checker implements ASTVisitor<Compileinfo>{
     String typename = node.getExpr().getLabel().getType().getName();
     if(typename == null){
       info.append(new Compileinfo("null has no member",node.getPosition()));
-      node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+      node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
       return info;
     }
     if(typename.equals("this")){
       var Class = currentScope.findClass(currentScope);
       if(Class==null){
         info.append(new Compileinfo("this not in class",node.getPosition()));
-        node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+        node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
         return info;
       }
       typename = Class.getName();
     }else if(node.getExpr().getLabel().getValueType().equals(ExprLable.ValueType.ABANDON)){
       info.append(new Compileinfo("member access to a non-class",node.getPosition()));
-      node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+      node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
       return info;
     }
-    node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),node.getExpr().getLabel().getValueType()));
+    node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),node.getExpr().getLabel().getValueType()));
     
     Lable item = globalScope.get(typename+'.'+node.getMember(),Scope.QueryType.ANY);
     if(item==null){
       info.append(new Compileinfo("member "+node.getMember()+" not defined",node.getPosition()));
       return info;
     }else if(item instanceof VarLable){
-      node.setLabel(new ExprLable(null,((VarLable)item).getType(),node.getExpr().getLabel().getValueType()));
+      node.setLabel(new ExprLable(null,(((VarLable)item).getType()).clone(),node.getExpr().getLabel().getValueType()));
     }else if(item instanceof FuncLable){
-      node.setLabel(new ExprLable(((FuncLable)item).getName(),((FuncLable)item).getReturnType(),ExprLable.ValueType.ABANDON));
+      node.setLabel(new ExprLable(((FuncLable)item).getName(),(((FuncLable)item).getReturnType()).clone(),ExprLable.ValueType.ABANDON));
     }else{
       info.append(new Compileinfo("member "+node.getMember()+" is a class name",node.getPosition()));
     }
@@ -699,11 +708,11 @@ public class Checker implements ASTVisitor<Compileinfo>{
     var dim = node.getType().getLabel().getDimension();
     if(globalScope.get(typename,Scope.QueryType.CLASS)==null){
       info.append(new Compileinfo("type "+typename+" not defined",node.getPosition()));
-      node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+      node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
       return info;
     }
     // the new is LVALUE or RVALUE?
-    node.setLabel(new ExprLable(null,(TypeLable) globalScope.get(typename,Scope.QueryType.CLASS),ExprLable.ValueType.LVALUE));
+    node.setLabel(new ExprLable(null,((TypeLable) globalScope.get(typename,Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.LVALUE));
     if(node.getExpr()!=null){
       info.append(node.getExpr().accept(this));
       if(node.getExpr().getLabel().getType().getName()!=typename){
@@ -737,40 +746,40 @@ public class Checker implements ASTVisitor<Compileinfo>{
         info.append(new Compileinfo("can not compute the ABANDON",node.getPosition()));
 
       }
-      node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+      node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
       return info;
     }
     if(node.getOp().equals("++")||node.getOp().equals("--")){
       if(node.getExpr().getLabel().getType().getName().equals("int")){
         //in mx, it is rvalue
-        node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("int",Scope.QueryType.CLASS),ExprLable.ValueType.LVALUE));
+        node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("int",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.LVALUE));
       }else{
-        node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+        node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
         info.append(new Compileinfo("type not match",node.getPosition()));
       }
     }else if(node.getOp().equals("+")||node.getOp().equals("-")){
       if(node.getExpr().getLabel().getType().getName().equals("int")){
-        node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("int",Scope.QueryType.CLASS),ExprLable.ValueType.RVALUE));
+        node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("int",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
       }else{
-        node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+        node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
         info.append(new Compileinfo("type not match",node.getPosition()));
       } 
     }else if(node.getOp().equals("!")){
       if(node.getExpr().getLabel().getType().getName().equals("bool")){
-        node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("bool",Scope.QueryType.CLASS),ExprLable.ValueType.RVALUE));
+        node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("bool",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
       }else{
-        node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+        node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
         info.append(new Compileinfo("type not match",node.getPosition()));
       }
     }else if(node.getOp().equals("~")){
       if(node.getExpr().getLabel().getType().getName().equals("int")){
-        node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("int",Scope.QueryType.CLASS),ExprLable.ValueType.RVALUE));
+        node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("int",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
       }else{
-        node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+        node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
         info.append(new Compileinfo("type not match",node.getPosition()));
       }
     }else{
-      node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+      node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
       info.append(new Compileinfo("type not match",node.getPosition()));
     }
     return info;
@@ -788,18 +797,18 @@ public class Checker implements ASTVisitor<Compileinfo>{
         info.append(new Compileinfo("can not compute the ABANDON",node.getPosition()));
 
       }
-      node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+      node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
       return info;
     }
     if(node.getOp().equals("++")||node.getOp().equals("--")){
       if(node.getExpr().getLabel().getType().getName().equals("int")){
-        node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("int",Scope.QueryType.CLASS),ExprLable.ValueType.RVALUE));
+        node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("int",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
       }else{
-        node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+        node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
         info.append(new Compileinfo("type not match",node.getPosition()));
       }
     }else{
-      node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+      node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
       info.append(new Compileinfo("type not match",node.getPosition()));
     }
     return info;
@@ -815,19 +824,19 @@ public class Checker implements ASTVisitor<Compileinfo>{
       ||node.getTrueExpr().getLabel().getValueType().equals(ExprLable.ValueType.ABANDON)
       ||node.getFalseExpr().getLabel().getValueType().equals(ExprLable.ValueType.ABANDON)){
       info.append(new Compileinfo("can not compute the ABANDON",node.getPosition()));
-      node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+      node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
       return info;
     }
     if(node.getCond().getLabel().getType().getName().equals("bool")){
       if(node.getTrueExpr().getLabel().getType().getName().equals(node.getTrueExpr().getLabel().getType().getName())
         && node.getFalseExpr().getLabel().getType().getDimension() == node.getFalseExpr().getLabel().getType().getDimension()){
-        node.setLabel(new ExprLable(null,node.getTrueExpr().getLabel().getType(),ExprLable.ValueType.RVALUE));
+        node.setLabel(new ExprLable(null,node.getTrueExpr().getLabel().getType().clone(),ExprLable.ValueType.RVALUE));
       }else{
-        node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+        node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
         info.append(new Compileinfo("type not match",node.getPosition()));
       }
     }else{
-      node.setLabel(new ExprLable(null,(TypeLable) globalScope.get("null",Scope.QueryType.CLASS),ExprLable.ValueType.ABANDON));
+      node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
       info.append(new Compileinfo("type not match",node.getPosition()));
     }
     return info;

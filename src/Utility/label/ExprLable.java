@@ -21,5 +21,9 @@ public class ExprLable extends Lable {
     this.type = type;
     this.valueType = valueType;
   }
+  @Override
+  public ExprLable clone(){
+    return new ExprLable(this.getName(),this.type,this.valueType);
+  }
   
 }
