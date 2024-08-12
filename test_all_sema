@@ -1,0 +1,2 @@
+#!/bin/sh
+testcases/sema/scripts/test_all.bash 'mvn exec:java'  testcases/sema

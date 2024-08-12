@@ -13,6 +13,6 @@ mkdir ./tmp
 # javac *.java
 
 
-cp ./src/antlr/*.g4 ./src/Grammar
-cd ./src/Grammar
+cp ./src/antlr/*.g4 ./src/main/java/Grammar
+cd ./src/main/java/Grammar
 antlr4 Mxparser.g4 -o . -visitor
