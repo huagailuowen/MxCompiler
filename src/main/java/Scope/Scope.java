@@ -2,6 +2,9 @@ package Scope;
 
 import java.util.TreeMap;
 
+import Ir.Item.Item;
+import Ir.Utility.IRLable;
+import Utility.error.ErrorBasic;
 import Utility.label.*;
 
 @lombok.Getter
@@ -11,6 +14,13 @@ public class Scope {
   TreeMap<String, FuncLable> funcMap;
   TreeMap<String, VarLable> varMap;
   TreeMap<String, TypeLable> classMap;
+
+  //for the IR builder
+  //store the register of the variable
+  //once created, it can not be changed
+  TreeMap<String, Item> regMap = new TreeMap<String, Item>();
+  //only the global scope has the following map
+  TreeMap<String, IRLable> funcLableMap = new TreeMap<String, IRLable>();
   boolean isLoop = false;
   boolean isFunc = false;
   boolean isClass = false;
@@ -35,6 +45,9 @@ public class Scope {
       funcMap.put(func.getName(), func);
     for(TypeLable cls : BasicClassFunc.BuildInClass)
       classMap.put(cls.getName(), cls);
+
+    for(IRLable lable : BasicClassFunc.BuildInFuncLable)
+      funcLableMap.put(lable.getName(), lable);
 
     //add some default functions
   }
@@ -101,6 +114,20 @@ public class Scope {
     if(recursive && parent!=null)
       return parent.get(name,recursive);
     return null;
+  }
+  public Item getReg(String name,boolean recursive)
+  {
+    if(regMap.containsKey(name))
+      return regMap.get(name);
+    if(recursive && parent!=null)
+      return parent.getReg(name,recursive);
+    return null;
+  }
+  public void declareReg(String name, Item reg)
+  {
+    if(regMap.containsKey(name))
+      throw new ErrorBasic("Variable "+name+" has been declared, can not declare reg");
+    regMap.put(name, reg);
   }
   public void declareFunc(FuncLable func)
   {

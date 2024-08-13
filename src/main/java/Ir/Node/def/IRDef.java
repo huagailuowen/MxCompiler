@@ -1,12 +1,12 @@
-package Ir.Node.ins;
+package Ir.Node.def;
 
 import Ir.IRVisitor;
 import Ir.Node.IRNode;
 import Utility.error.ErrorBasic;
 
-@lombok.Getter
 @lombok.Setter
-public class IRIns extends IRNode {
+@lombok.Getter
+public class IRDef extends IRNode {
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);

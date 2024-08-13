@@ -6,6 +6,7 @@ import Utility.label.TypeLable;
 @lombok.Setter
 public class IRBaseType {
     protected String name;
+    //ptr void i32 i1 func
     public IRBaseType(String name) {
         this.name = name;
     }
@@ -22,7 +23,22 @@ public class IRBaseType {
           this.name = "ptr";
         }
     }
-
+    public boolean equals(IRBaseType other) {
+        return name.equals(other.name);
+    }
+    public static IRBaseType getVoidType() {
+        return new IRBaseType("void");
+    }
+    public static IRBaseType getIntType() {
+        return new IRBaseType("i32");
+    }
+    public static IRBaseType getBoolType() {
+        return new IRBaseType("i1");
+    }
+    public static IRBaseType getPtrType() {
+        return new IRBaseType("ptr");
+    }
+    @Override
     public String toString() {
         return name;
     }

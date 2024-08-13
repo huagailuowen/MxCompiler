@@ -12,7 +12,7 @@ public class MyErrorListener extends BaseErrorListener {
                           int line, int charPositionInLine,
                           String msg,
                           RecognitionException e) {
-
-    throw new ErrorBasic(msg, new Position(line, charPositionInLine));
+    System.out.println("Invalid Identifier");
+    throw new ErrorBasic("");
   }
 }

@@ -10,7 +10,6 @@ import Utility.label.ExprLable;
 @lombok.Setter
 public abstract class ASTExpr extends ASTNode {
   protected ExprLable label = new ExprLable();
-  protected Scope scope; 
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {
     return visitor.visit(this);

@@ -29,16 +29,16 @@ public class Compiler {
     parser.addErrorListener(new MyErrorListener());
     var tree = parser.program();
     ASTNode ast = new ASTBuilder().visit(tree);
-    int i=1;
-    System.out.print(ast.toString());
-    System.out.println("Collector:");
+//    int i=1;
+//    System.out.print(ast.toString());
+//    System.out.println("Collector:");
     Compileinfo info = new Collector().visit((ASTRoot)ast);
     System.out.println(info);
-    if(!info.empty())throw new RuntimeException("Compile Error:Collector");
-    System.out.println("Checker:");
+    if(!info.empty())throw new RuntimeException(info.getContent());
+//    System.out.println("Checker:");
     info = new Checker().visit((ASTRoot)ast);
     System.out.println(info);
-    if(!info.empty())throw new RuntimeException("Compile Error:Checker");
+    if(!info.empty())throw new RuntimeException(info.getContent());
   }
 }
 /*

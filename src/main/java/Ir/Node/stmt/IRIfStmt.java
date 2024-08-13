@@ -1,4 +1,8 @@
 package Ir.Node.stmt;
 
-public class IRIfStmt {
+@lombok.Getter
+@lombok.Setter
+public class IRIfStmt extends IRStmt {
+  protected String condLable, trueLable, falseLable,endLable;
+
 }

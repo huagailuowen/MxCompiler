@@ -41,7 +41,7 @@ public class Collector implements ASTVisitor<Compileinfo>{
       if(def instanceof ASTClassDef ){
         String name = ((ASTClassDef)def).getLabel().getName();
         if(currentScope.get(name)!=null){
-          info.append(new Compileinfo("class "+name+" has been defined",def.getPosition()));
+          info.append(new Compileinfo("Multiple Definitions",def.getPosition()));
         }else{
           currentScope.declareClass(((ASTClassDef)def).getLabel().getType());
           info.append(def.accept(this));
@@ -49,7 +49,7 @@ public class Collector implements ASTVisitor<Compileinfo>{
       }else if(def instanceof ASTFuncDef){
         String name = ((ASTFuncDef)def).getLabel().getName();
         if(currentScope.get(name)!=null){
-          info.append(new Compileinfo("function "+name+" has been defined",def.getPosition()));
+          info.append(new Compileinfo("Multiple Definitions",def.getPosition()));
         }else{
           currentScope.declareFunc(((ASTFuncDef)def).getLabel());
           info.append(def.accept(this));
@@ -104,7 +104,7 @@ public class Collector implements ASTVisitor<Compileinfo>{
     for (ASTFuncDef f : node.getFuncDefs()) {
       String name = f.getLabel().getName();
       if(currentScope.get(name)!=null){
-        info.append(new Compileinfo("function "+name+" has been defined",f.getPosition()));
+        info.append(new Compileinfo("Multiple Definitions",f.getPosition()));
       }else{
         info.append(f.accept(this));
         currentScope.declareFunc(f.getLabel());
@@ -136,9 +136,9 @@ public class Collector implements ASTVisitor<Compileinfo>{
     String name = node.getLabel().getName();
     String type = node.getLabel().getType().getName();
     if(type.equals("void")) {
-      info.append(new Compileinfo("variable name can not be void", node.getPosition()));
+      info.append(new Compileinfo("Invalid Type", node.getPosition()));
     }if(currentScope.get(name)!=null){
-      return new Compileinfo("variable "+name+" has been defined",node.getPosition());
+      return new Compileinfo("Multiple Definitions",node.getPosition());
     }else{
       //we are sure that there is no init expression
       currentScope.declareVar(node.getLabel());

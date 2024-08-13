@@ -41,10 +41,12 @@ public class Compileinfo {
     if(!info.Content.isEmpty())
       this.Content += info.toString();
   }
+//  public String toString() {
+//    return (Content.isEmpty()?"":"Compile Error:"+Content+(pos==null?"":' '+pos.toString()));
+//  }
   public String toString() {
-    return (Content.isEmpty()?"":"Compile Error:"+Content+(pos==null?"":' '+pos.toString()));
+    return Content == null ? "" : Content ;//+ (pos == null ? "" : ' ' + pos.toString());
   }
-
   public boolean empty() {
     return Content.isEmpty();
   }

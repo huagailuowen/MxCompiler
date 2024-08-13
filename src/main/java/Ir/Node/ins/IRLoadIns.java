@@ -1,4 +1,29 @@
 package Ir.Node.ins;
 
-public class IRLoadIns {
+import Ir.IRVisitor;
+import Ir.Item.RegItem;
+import Ir.Type.IRBaseType;
+import Utility.error.ErrorBasic;
+
+@lombok.Getter
+@lombok.Setter
+public class IRLoadIns extends IRIns {
+  protected RegItem addr;
+  protected RegItem dest;
+  protected IRBaseType type;
+
+  public IRLoadIns(RegItem addr, RegItem dest, IRBaseType type) {
+    this.addr = addr;
+    this.dest = dest;
+    this.type = type;
+  }
+
+  @Override
+  public String toString() {
+    return dest.getName() + " = load " + type.toString() + ", " + addr.getName();
+  }
+  @Override
+  public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
+    return visitor.visit(this);
+  }
 }

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 @lombok.Setter
 public class ASTRoot extends ASTNode {
   protected ArrayList<ASTDef> defList;
-  protected Scope scope;
   //this must be the global scope
   @Override
   public String toString() {

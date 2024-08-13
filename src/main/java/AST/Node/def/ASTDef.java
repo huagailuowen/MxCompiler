@@ -10,7 +10,6 @@ import Utility.label.Lable;
 @lombok.Setter
 public abstract class ASTDef extends ASTNode {
   private Lable lable;
-  protected Scope scope;
   
   @Override 
   public <T> T accept(ASTVisitor<T> visitor) {
