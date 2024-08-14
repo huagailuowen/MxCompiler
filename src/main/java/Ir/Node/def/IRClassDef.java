@@ -6,7 +6,7 @@ import Utility.error.ErrorBasic;
 
 import java.util.ArrayList;
 
-@lombok.experimental.SuperBuilder
+
 @lombok.Setter
 @lombok.Getter
 public class IRClassDef extends IRDef{

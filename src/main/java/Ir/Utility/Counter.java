@@ -10,6 +10,8 @@ import java.util.TreeMap;
 
 public class Counter {
   TreeMap<String, Integer> counterMap;
+  //only count var num
+
   TreeMap<String, Integer> typeSizeMap;
   TreeMap<String, Integer> classMemMap;
 

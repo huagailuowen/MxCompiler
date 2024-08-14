@@ -15,7 +15,12 @@ public class ASTAtomExpr extends ASTExpr {
   protected AtomType type;
   protected String value;//if this is not a atom, then this is null
   // {2+1,3} is not allowed
-  protected ArrayList<ASTAtomExpr> array;  
+  protected ArrayList<ASTAtomExpr> array;
+
+  //for ir use
+  protected String irName;
+
+
   @Override
   public <T> T accept(ASTVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);

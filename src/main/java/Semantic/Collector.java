@@ -10,6 +10,7 @@ import AST.Node.def.ASTVarDef;
 import AST.Node.expr.*;
 import AST.Node.stmt.*;
 import AST.Node.typ.ASTType;
+import Ir.Utility.Counter;
 import Scope.Scope;
 import Utility.error.ErrorBasic;
 import Utility.label.FuncLable;
@@ -19,10 +20,12 @@ import Utility.label.TypeLable;
 public class Collector implements ASTVisitor<Compileinfo>{
   protected Scope globalScope;
   protected Scope currentScope;
+  protected Counter counter;
   private void init()
   {
     globalScope = new Scope(true);
     currentScope = globalScope;
+    counter = new Counter();
   }
   private void stepIn()
   {
@@ -36,6 +39,7 @@ public class Collector implements ASTVisitor<Compileinfo>{
     init();
     var info = new Compileinfo();
     node.setScope(currentScope);
+    node.setCounter(counter);
     for (ASTDef def : node.getDefList()) {
     
       if(def instanceof ASTClassDef ){
@@ -52,16 +56,12 @@ public class Collector implements ASTVisitor<Compileinfo>{
           info.append(new Compileinfo("Multiple Definitions",def.getPosition()));
         }else{
           currentScope.declareFunc(((ASTFuncDef)def).getLabel());
+          var funcname = ((ASTFuncDef) def).getLabel().getName();
+          currentScope.declareIrLable(funcname,funcname);
           info.append(def.accept(this));
         }
       }else if(def instanceof ASTVarDef){
         // throw new ErrorBasic("TO DO, in checker",def.getPosition());
-        continue;
-        // if(currentScope.get(((ASTVarDef)def).getName())!=null){
-        //   info.append(new Compileinfo("variable "+((ASTVarDef)def).getName()+" has been defined",def.getPosition()));
-        // }else{
-        //   currentScope.declareVar(((ASTVarDef)def).getLabel());
-        // }
       }
     }
     //not .equals, but ==, to check if the two scopes are the same
@@ -97,19 +97,28 @@ public class Collector implements ASTVisitor<Compileinfo>{
     }
     node.getConstructor().getLabel().setReturnType((TypeLable) globalScope.get("void",Scope.QueryType.CLASS).clone());
     //we should not visit the varDef, for it is not allowed to define variable former quote
-    currentScope.declareFunc(node.getConstructor().getLabel());
-    globalScope.declareFunc(node.getLabel().getName()+'.'+node.getConstructor().getLabel().getName(),node.getConstructor().getLabel());
+    //this 2 methods are not allowed and impossible to be visited
+//    currentScope.declareFunc(node.getConstructor().getLabel());
+//    globalScope.declareFunc(node.getLabel().getName()+'.'+node.getConstructor().getLabel().getName(),node.getConstructor().getLabel());
     globalScope.declareFunc( node.getConstructor().getLabel().getName(),node.getConstructor().getLabel());
-
+    String irConstructorName = new String(node.getLabel().getName()+"."+node.getConstructor().getLabel().getName());
+    globalScope.declareIrLable(node.getConstructor().getLabel().getName(),irConstructorName);
     for (ASTFuncDef f : node.getFuncDefs()) {
       String name = f.getLabel().getName();
       if(currentScope.get(name)!=null){
         info.append(new Compileinfo("Multiple Definitions",f.getPosition()));
       }else{
+
         info.append(f.accept(this));
-        currentScope.declareFunc(f.getLabel());
+        int index = counter.queryIndex("this");
+        f.getScope().setIrThisName("this."+index);
+        counter.addIndex("this");
+
         String funcname = new String(node.getLabel().getName()+"."+f.getLabel().getName());
+        currentScope.declareFunc(f.getLabel());
+        currentScope.declareIrLable(f.getLabel().getName(),funcname);
         globalScope.declareFunc(funcname,f.getLabel());
+        globalScope.declareFunc(f.getLabel().getName(),f.getLabel());
       }
     }
     stepOut();
@@ -142,6 +151,10 @@ public class Collector implements ASTVisitor<Compileinfo>{
     }else{
       //we are sure that there is no init expression
       currentScope.declareVar(node.getLabel());
+      var varname = node.getLabel().getName()+'.'+counter.queryIndex(node.getLabel().getName());
+      currentScope.declareIrLable(node.getLabel().getName(),varname);
+      node.setIrName(varname);
+      counter.addIndex(node.getLabel().getName());
     }
      return info;
   }

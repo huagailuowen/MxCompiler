@@ -1,11 +1,13 @@
 package Scope;
 
+import java.awt.*;
 import java.util.TreeMap;
 
 import Ir.Item.Item;
 import Ir.Utility.IRLable;
 import Utility.error.ErrorBasic;
 import Utility.label.*;
+import org.antlr.v4.runtime.misc.Pair;
 
 @lombok.Getter
 @lombok.Setter
@@ -16,11 +18,22 @@ public class Scope {
   TreeMap<String, TypeLable> classMap;
 
   //for the IR builder
-  //store the register of the variable
+  //store the register of the variable and function lable
   //once created, it can not be changed
-  TreeMap<String, Item> regMap = new TreeMap<String, Item>();
-  //only the global scope has the following map
-  TreeMap<String, IRLable> funcLableMap = new TreeMap<String, IRLable>();
+  TreeMap<String, String> irLableMap = new TreeMap<String, String>();
+  String irThisName = null;
+  //the rules
+  /*
+  1. globalFunc and globalVar: the origin name
+  2. classFunc : class_name.func_name
+  3. classVar : class_name.var_name, however it actually not exist, it is a class member, with "this+offset"
+  4. classConstructor: 'class'.constructor
+  4. localVar: var_name.index
+  so apparently, an element is global if only it not contain a dot
+   */
+
+
+
   boolean isLoop = false;
   boolean isFunc = false;
   boolean isClass = false;
@@ -47,7 +60,7 @@ public class Scope {
       classMap.put(cls.getName(), cls);
 
     for(IRLable lable : BasicClassFunc.BuildInFuncLable)
-      funcLableMap.put(lable.getName(), lable);
+      irLableMap.put(lable.getName(), lable.getName());
 
     //add some default functions
   }
@@ -90,6 +103,23 @@ public class Scope {
       return parent.get(name,recursive);
     return null;
   }
+  public Pair<Lable,String> getDetail(String name,boolean recursive)
+  {
+    if(funcMap.containsKey(name)){
+      return new Pair<>(funcMap.get(name),irLableMap.get(name));
+    }
+
+    if(varMap.containsKey(name)) {
+      return new Pair<>(varMap.get(name),irLableMap.get(name));
+    }
+    if(classMap.containsKey(name)) {
+      return new Pair<>(classMap.get(name),irLableMap.get(name));
+    }
+    if(recursive && parent!=null)
+      return parent.getDetail(name,recursive);
+    return new Pair<>(null,null);
+  }
+
   public Lable get(String name, QueryType qType)
   {
     boolean recursive = false;
@@ -115,19 +145,19 @@ public class Scope {
       return parent.get(name,recursive);
     return null;
   }
-  public Item getReg(String name,boolean recursive)
+  public String getIrLable(String name,boolean recursive)
   {
-    if(regMap.containsKey(name))
-      return regMap.get(name);
+    if(irLableMap.containsKey(name))
+      return irLableMap.get(name);
     if(recursive && parent!=null)
-      return parent.getReg(name,recursive);
+      return parent.getIrLable(name,recursive);
     return null;
   }
-  public void declareReg(String name, Item reg)
+  public void declareIrLable(String name, String irName)
   {
-    if(regMap.containsKey(name))
+    if(irLableMap.containsKey(name))
       throw new ErrorBasic("Variable "+name+" has been declared, can not declare reg");
-    regMap.put(name, reg);
+    irLableMap.put(name, irName);
   }
   public void declareFunc(FuncLable func)
   {

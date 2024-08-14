@@ -15,7 +15,7 @@ public class BasicClassFunc {
 
   public static TypeLable[] BuildInClass= {int_,string_,bool_,void_,null_,this_};
 
-  public static FuncLable BuildInArraySize_ = new FuncLable("buildInArraySize", int_);
+  public static FuncLable BuildInArraySize_ = new FuncLable("$buildInArraySize", int_);
 
   public static FuncLable print_ = new FuncLable("print", void_, string_);
   public static FuncLable println_ = new FuncLable("println", void_, string_);

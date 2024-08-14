@@ -10,6 +10,8 @@ import Utility.label.VarLable;
 public class ASTVarDef extends ASTDef {
   protected VarLable label;
   protected ASTExpr init;
+  //for ir use
+  protected String irName;
   @Override 
   public <T> T accept(ASTVisitor<T> visitor) {
     return visitor.visit(this);

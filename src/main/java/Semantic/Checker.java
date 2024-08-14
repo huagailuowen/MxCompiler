@@ -22,6 +22,7 @@ import AST.Node.expr.ASTSuffixExpr;
 import AST.Node.expr.ASTTernaryExpr;
 import AST.Node.stmt.*;
 import AST.Node.typ.ASTType;
+import Ir.Utility.Counter;
 import Scope.Scope;
 import Utility.error.ErrorBasic;
 import Utility.label.*;
@@ -32,10 +33,12 @@ import java.util.TreeMap;
 public class Checker implements ASTVisitor<Compileinfo>{
   private Scope globalScope = null;
   private Scope currentScope = null;
-  private void init(Scope rootScope)
+  private Counter counter = null;
+  private void init(ASTRoot node)
   {
-    globalScope = rootScope;
+    globalScope = node.getScope();
     currentScope = globalScope;
+    counter = node.getCounter();
   }
   private void stepIn(Scope tarScope,boolean isNew)
   {
@@ -57,7 +60,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
   }
   public Compileinfo visit(ASTRoot node) {
     //we assume that the collector has built the global scope
-    init(node.getScope());
+    init(node);
     var info = new Compileinfo();
 
     for(ASTDef def:node.getDefList()){
@@ -70,13 +73,20 @@ public class Checker implements ASTVisitor<Compileinfo>{
       stepIn(def.getScope(),false);
       for(ASTVarDef var:((ASTClassDef)def).getVarDefs()){
         var name = new String(((ASTClassDef)def).getLabel().getName()+'.'+((VarLable)var.getLabel()).getName());
-        info.append(var.accept(this));
+        var tmp = var.accept(this);
+        info.append(tmp);
+        if(tmp.empty()){
+          //overwrite the name
+          currentScope.getIrLableMap().put(((VarLable)var.getLabel()).getName(),name);
+          var.setIrName(name);
+        }
         if(globalScope.get(name)!=null){
           info.append(new Compileinfo("variable "+name+" has been defined",var.getPosition()));
         }else if(name.equals("void")){
           info.append(new Compileinfo("variable name can not be void",var.getPosition()));
         }else{
           globalScope.declareVar(name, var.getLabel());
+          globalScope.declareIrLable(name,name);
         }
         
       }
@@ -172,6 +182,11 @@ public class Checker implements ASTVisitor<Compileinfo>{
         info.append(node.getInit().accept(this));
       }
       currentScope.declareVar(node.getLabel());
+      int index = counter.queryIndex(name);
+      String irname = name+'.'+index;
+      currentScope.declareIrLable(name,irname);
+      node.setIrName(irname);
+      counter.addIndex(name);
     }
     return info;
   }
@@ -469,10 +484,13 @@ public class Checker implements ASTVisitor<Compileinfo>{
     var info = new Compileinfo();
     //atomexpr has no lable until now
     if(node.getType() == ASTAtomExpr.AtomType.IDENTIFIER){
-      Lable var = currentScope.get(node.getValue(),true);
+      var pair = currentScope.getDetail(node.getValue(),true);
+      Lable var = pair.a;
+      node.setIrName(pair.b);
       if(var==null){
         info.append(new Compileinfo("Undefined Identifier",node.getPosition()));
         node.setLabel(new ExprLable(null, ((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
+
       }else if(var instanceof VarLable){
         node.setLabel(new ExprLable(null, ((VarLable)var).getType().clone(),ExprLable.ValueType.LVALUE));
       }else if(var instanceof FuncLable){
@@ -517,7 +535,6 @@ public class Checker implements ASTVisitor<Compileinfo>{
             if(!node.getLabel().getType().getName().equals(expr.getLabel().getType().getName())){
               info.append(new Compileinfo("Type Mismatch",node.getPosition()));
             }
-            
           }
         }
       }
@@ -525,15 +542,28 @@ public class Checker implements ASTVisitor<Compileinfo>{
         node.getLabel().setValueType(ExprLable.ValueType.RVALUE);
       }
       node.getLabel().getType().setDimension(dim+1);
+      //remain to be done
+      node.setIrName("$array");
 
     }else if(node.getType() == ASTAtomExpr.AtomType.BOOL){
       node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("bool",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
+      if(node.getValue().equals("true")) {
+        node.setIrName("1");
+      }else if(node.getValue().equals("false")){
+        node.setIrName("0");
+      }else{
+        throw new ErrorBasic("Checker: visit ASTAtomExpr: Type Mismatch",node.getPosition());
+      }
     }else if(node.getType() == ASTAtomExpr.AtomType.INT){
       node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("int",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
+      node.setIrName(node.getValue());
     }else if(node.getType() == ASTAtomExpr.AtomType.NULL){
       node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
+      node.setIrName("null");
     }else if(node.getType() == ASTAtomExpr.AtomType.STRING){
       node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("string",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
+      //remain to be done
+      node.setIrName(node.getValue());
     }else if(node.getType() == ASTAtomExpr.AtomType.THIS){
       Scope Class = currentScope.findClass(currentScope);
       if(Class==null){
@@ -554,9 +584,12 @@ public class Checker implements ASTVisitor<Compileinfo>{
             node.getLabel().setThis(true);
           }
         }
+        var funcScope = currentScope.findFunc(currentScope);
+        node.setIrName(funcScope.getIrThisName());
       }
     }else if(node.getType() == ASTAtomExpr.AtomType.VOID){
       node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("void",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
+      node.setIrName("0");
     }else{
       throw new ErrorBasic("Checker: visit ASTAtomExpr: Type Mismatch",node.getPosition());
     }
@@ -795,7 +828,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
 
     if(node.getExpr().getLabel().getType().getDimension()!=0){
       if(node.getMember().equals("size")) {
-        node.setLabel(new ExprLable("@buildInArraySize", ((TypeLable) globalScope.get("int", Scope.QueryType.CLASS)).clone(), ExprLable.ValueType.ABANDON));
+        node.setLabel(new ExprLable("$buildInArraySize", ((TypeLable) globalScope.get("int", Scope.QueryType.CLASS)).clone(), ExprLable.ValueType.ABANDON));
         return info;
       }else{
         info.append(new Compileinfo("array has no member",node.getPosition()));
