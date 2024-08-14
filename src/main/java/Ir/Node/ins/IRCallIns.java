@@ -6,14 +6,16 @@ import Ir.Item.RegItem;
 import Ir.Type.IRBaseType;
 import Utility.error.ErrorBasic;
 
+import java.util.ArrayList;
+
 @lombok.Getter
 @lombok.Setter
 public class IRCallIns extends IRIns {
   String funcName;
   RegItem dest;
   IRBaseType type;
-  java.util.ArrayList<Item> args;
-  public IRCallIns(String funcName, RegItem dest, java.util.ArrayList<Ir.Item.Item> args) {
+  ArrayList<Item> args;
+  public IRCallIns(String funcName, RegItem dest, ArrayList<Ir.Item.Item> args) {
     this.funcName = funcName;
     this.dest = dest;
     this.args = args;

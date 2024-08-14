@@ -12,6 +12,7 @@ public class IRLoadIns extends IRIns {
   protected RegItem dest;
   protected IRBaseType type;
 
+
   public IRLoadIns(RegItem addr, RegItem dest, IRBaseType type) {
     this.addr = addr;
     this.dest = dest;

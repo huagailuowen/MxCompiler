@@ -17,7 +17,6 @@ public class IRFuncDef extends IRDef {
   IRBaseType returnType;
   ArrayList<RegItem> paramList;
   ArrayList<IRBlockStmt> blockList;
-  TreeMap<String,Integer> blockMap;
   int entryBlockIndex;
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {

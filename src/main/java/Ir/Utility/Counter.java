@@ -1,6 +1,7 @@
 package Ir.Utility;
 
 import AST.Node.def.ASTClassDef;
+import Ir.Item.Item;
 import Ir.Type.IRBaseType;
 import Ir.Type.IRClassType;
 import Utility.error.ErrorBasic;
@@ -8,14 +9,66 @@ import Utility.label.TypeLable;
 
 import java.util.TreeMap;
 
+@lombok.Getter
+@lombok.Setter
 public class Counter {
   TreeMap<String, Integer> counterMap;
   //only count var num
+  int loopIndex;
+  int branchIndex;
+  int arithIndex;//$arith.index
+  int callIndex;//$call.index
+  int geteleIndex;//$getele.index
+  int allocIndex;//$alloc.index
+  int stringIndex;//$string.index
+  int loadIndex;//$load.index
+
+  public void addLoopIndex() {
+    loopIndex++;
+  }
+  public void addBranchIndex() {
+    branchIndex++;
+  }
+
+  public void addArithIndex() {
+    arithIndex++;
+  }
+  public void addCallIndex() {
+    callIndex++;
+  }
+  public void addGeteleIndex() {
+    geteleIndex++;
+  }
+  public void addAllocIndex() {
+    allocIndex++;
+  }
+  public void addStringIndex() {
+    stringIndex++;
+  }
+  public void addLoadIndex() {
+    loadIndex++;
+  }
 
   TreeMap<String, Integer> typeSizeMap;
   TreeMap<String, Integer> classMemMap;
 
+  TreeMap<String, Item>itemTable;
+
   //the reg name will like   @[index][key]  %[index][key]
+  public void addItem(String key, Item item) {
+    if(itemTable.containsKey(key)) {
+      throw new ErrorBasic("item already exist");
+    }
+    itemTable.put(key, item);
+  }
+  public Item queryItem(String key) {
+    if(itemTable.containsKey(key)) {
+      return itemTable.get(key);
+    } else {
+      return null;
+    }
+  }
+
   public Counter() {
     counterMap = new TreeMap<>();
     typeSizeMap = new TreeMap<>();

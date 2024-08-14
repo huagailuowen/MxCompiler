@@ -35,4 +35,7 @@ public class IRStmt extends IRNode {
   public void addIns(ArrayList<IRIns> ins){
     insList.addAll(ins);
   }
+  public void addStmt(IRStmt stmt){
+    insList.addAll(stmt.getInsList());
+  }
 }

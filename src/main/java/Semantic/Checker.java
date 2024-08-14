@@ -262,6 +262,8 @@ public class Checker implements ASTVisitor<Compileinfo>{
     stepIn(currentScope, true);
     node.setScope(currentScope);
     currentScope.setLoop(true);
+    currentScope.setIndex(counter.getLoopIndex());
+    counter.addLoopIndex();
     var info = new Compileinfo();
     if(node.getInit()!=null){
       var tmp = node.getInit();
@@ -288,8 +290,10 @@ public class Checker implements ASTVisitor<Compileinfo>{
     return info;
   }
   public Compileinfo visit(ASTIfStmt node){
-
+    stepIn(currentScope, true);
     node.setScope(currentScope);
+    node.getScope().setIndex(counter.getBranchIndex());
+    counter.addBranchIndex();
     var info = new Compileinfo();
     info.append(node.getCond().accept(this));
     if(!node.getCond().getLabel().getType().getName().equals("bool") || node.getCond().getLabel().getValueType() == ExprLable.ValueType.ABANDON){
@@ -304,7 +308,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
       stepOut();
     }
     assert (currentScope==node.getScope());
-
+    stepOut();
     return info;
   }
   public Compileinfo visit(ASTRetStmt node) {
@@ -316,9 +320,9 @@ public class Checker implements ASTVisitor<Compileinfo>{
       return new Compileinfo("Invalid Control Flow",node.getPosition());
     }else{
       String typename = Func.getName();
-      if(Class != null){
-        typename = Class.getName() + '.' + typename;
-      }
+//      if(Class != null){
+//        typename = Class.getName() + '.' + typename;
+//      }
       if(node.getRetExpr()!=null){
         info.append(node.getRetExpr().accept(this));
       }
@@ -366,6 +370,8 @@ public class Checker implements ASTVisitor<Compileinfo>{
     stepIn(currentScope, true);
     node.setScope(currentScope);
     currentScope.setLoop(true);
+    currentScope.setIndex(counter.getLoopIndex());
+    counter.addLoopIndex();
     var info = new Compileinfo();
   
     info.append(node.getCondition().accept(this));

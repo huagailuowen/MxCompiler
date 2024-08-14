@@ -25,6 +25,5 @@ public interface IRVisitor<T> {
   public T visit(IRStoreIns node) throws ErrorBasic;
 
   public T visit(IRBlockStmt node) throws ErrorBasic;
-  public T visit(IRIfStmt node) throws ErrorBasic;
-  public T visit(IRLoopStmt node) throws ErrorBasic;
+
 }

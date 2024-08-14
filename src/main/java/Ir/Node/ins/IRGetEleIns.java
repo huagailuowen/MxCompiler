@@ -10,11 +10,19 @@ import java.util.ArrayList;
 @lombok.Setter
 public class IRGetEleIns extends IRIns {
   protected RegItem dest;
+  protected String type;
   protected Item src;
   protected ArrayList<Item> indexList;
 
-  public IRGetEleIns(RegItem dest, Item src, ArrayList<Item> indexList) {
+  public IRGetEleIns()
+  {
+    dest = null;
+    src = null;
+    indexList = new ArrayList<>();
+  }
+  public IRGetEleIns(RegItem dest, String type, Item src, ArrayList<Item> indexList) {
     this.dest = dest;
+    this.type = type;
     this.src = src;
     this.indexList = indexList;
   }

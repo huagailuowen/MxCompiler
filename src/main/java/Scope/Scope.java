@@ -22,6 +22,7 @@ public class Scope {
   //once created, it can not be changed
   TreeMap<String, String> irLableMap = new TreeMap<String, String>();
   String irThisName = null;
+  Item retItem =null;
   //the rules
   /*
   1. globalFunc and globalVar: the origin name
@@ -32,8 +33,8 @@ public class Scope {
   so apparently, an element is global if only it not contain a dot
    */
 
-
-
+  //for ir use
+  int Index;
   boolean isLoop = false;
   boolean isFunc = false;
   boolean isClass = false;
@@ -189,7 +190,7 @@ public class Scope {
       throw new Error("Class "+cls.getName()+" has been declared");
     classMap.put(cls.getName(), cls);
   }
-  public Scope findLoop(Scope curScope)
+  public static Scope findLoop(Scope curScope)
   {
     if(curScope==null)
       return null;
@@ -197,7 +198,7 @@ public class Scope {
       return curScope;
     return findLoop(curScope.parent);
   }
-  public Scope findFunc(Scope curScope)
+  public static Scope findFunc(Scope curScope)
   {
     if(curScope==null)
       return null;
@@ -205,7 +206,7 @@ public class Scope {
       return curScope;
     return findFunc(curScope.parent);
   }
-  public Scope findClass(Scope curScope)
+  public static Scope findClass(Scope curScope)
   {
     if(curScope==null)
       return null;

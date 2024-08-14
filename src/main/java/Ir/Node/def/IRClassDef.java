@@ -14,6 +14,11 @@ public class IRClassDef extends IRDef{
     protected ArrayList<IRFuncDef> funcList;
     //also contain the constructor
     //get the this pointer, and return void
+    public IRClassDef()
+    {
+        memberList = new ArrayList<>();
+        funcList = new ArrayList<>();
+    }
     public IRClassDef(ArrayList<IRBaseType> memberList, ArrayList<IRFuncDef> funcList) {
       this.memberList = memberList;
       this.funcList = funcList;

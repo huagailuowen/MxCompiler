@@ -91,18 +91,30 @@ public class Collector implements ASTVisitor<Compileinfo>{
       throw new ErrorBasic("class "+node.getLabel().getName()+" has no constructor",node.getPosition());
     }
     info.append(node.getConstructor().accept(this));
+    int index = counter.queryIndex("this");
+    node.getConstructor().getScope().setIrThisName("this."+index);
+    counter.addIndex("this");
+
+    String irConstructorName = new String(node.getLabel().getName()+"."+node.getConstructor().getLabel().getName());
+    node.getConstructor().getScope().setName(irConstructorName);
+
     if(!node.getConstructor().getLabel().getName().equals(node.getLabel().getName()))
     {
       info.append(new Compileinfo("constructor name should be the same as class name",node.getConstructor().getPosition()));
     }
     node.getConstructor().getLabel().setReturnType((TypeLable) globalScope.get("void",Scope.QueryType.CLASS).clone());
+
     //we should not visit the varDef, for it is not allowed to define variable former quote
     //this 2 methods are not allowed and impossible to be visited
 //    currentScope.declareFunc(node.getConstructor().getLabel());
-//    globalScope.declareFunc(node.getLabel().getName()+'.'+node.getConstructor().getLabel().getName(),node.getConstructor().getLabel());
-    globalScope.declareFunc( node.getConstructor().getLabel().getName(),node.getConstructor().getLabel());
-    String irConstructorName = new String(node.getLabel().getName()+"."+node.getConstructor().getLabel().getName());
+    globalScope.declareFunc(irConstructorName,node.getConstructor().getLabel());
+    globalScope.declareIrLable(irConstructorName,irConstructorName);
+
+    globalScope.declareFunc(node.getConstructor().getLabel().getName(),node.getConstructor().getLabel());
     globalScope.declareIrLable(node.getConstructor().getLabel().getName(),irConstructorName);
+    node.getConstructor().getScope().setName(irConstructorName);
+
+    //----------------------------------------------------------------
     for (ASTFuncDef f : node.getFuncDefs()) {
       String name = f.getLabel().getName();
       if(currentScope.get(name)!=null){
@@ -110,15 +122,17 @@ public class Collector implements ASTVisitor<Compileinfo>{
       }else{
 
         info.append(f.accept(this));
-        int index = counter.queryIndex("this");
+        String funcname = new String(node.getLabel().getName()+"."+f.getLabel().getName());
+        f.getScope().setName(funcname);
+        index = counter.queryIndex("this");
         f.getScope().setIrThisName("this."+index);
         counter.addIndex("this");
 
-        String funcname = new String(node.getLabel().getName()+"."+f.getLabel().getName());
+
         currentScope.declareFunc(f.getLabel());
         currentScope.declareIrLable(f.getLabel().getName(),funcname);
         globalScope.declareFunc(funcname,f.getLabel());
-        globalScope.declareFunc(f.getLabel().getName(),f.getLabel());
+        globalScope.declareIrLable(funcname,funcname);
       }
     }
     stepOut();
