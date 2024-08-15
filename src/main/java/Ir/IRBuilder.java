@@ -424,6 +424,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     irStmt.addStmt(rhsStmt);
     var lhsStmt = (IRStmt)node.getLhs().accept(this);
     irStmt.addStmt(lhsStmt);
+    throw new ErrorBasic("the lhs of assign now not a lvalue");
     irStmt.addIns(new IRStoreIns(lhsStmt.getDest(),rhsStmt.getDest()));
     return irStmt;
   }
