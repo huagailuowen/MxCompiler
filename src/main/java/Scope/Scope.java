@@ -21,6 +21,8 @@ public class Scope {
   //store the register of the variable and function lable
   //once created, it can not be changed
   TreeMap<String, String> irLableMap = new TreeMap<String, String>();
+  // a func's ir name
+
   String irThisName = null;
   Item retItem =null;
   //the rules
@@ -60,8 +62,9 @@ public class Scope {
     for(TypeLable cls : BasicClassFunc.BuildInClass)
       classMap.put(cls.getName(), cls);
 
-    for(IRLable lable : BasicClassFunc.BuildInFuncLable)
-      irLableMap.put(lable.getName(), lable.getName());
+    for(FuncLable func : BasicClassFunc.BuildInFunc)
+      irLableMap.put(func.getName(), "__"+func.getName());
+      //the latter one should match those in c++ code
 
     //add some default functions
   }

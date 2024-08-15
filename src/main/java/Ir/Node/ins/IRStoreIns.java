@@ -8,10 +8,10 @@ import Utility.error.ErrorBasic;
 @lombok.Getter
 @lombok.Setter
 public class IRStoreIns extends IRIns {
-  protected Item addr;
-  protected RegItem value;
+  protected RegItem addr;
+  protected Item value;
 
-  public IRStoreIns(Item addr, RegItem value) {
+  public IRStoreIns(RegItem addr, Item value) {
     this.addr = addr;
     this.value = value;
   }

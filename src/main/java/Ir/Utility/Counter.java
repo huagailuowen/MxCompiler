@@ -33,10 +33,14 @@ public class Counter {
   int arithIndex;//$arith.index
   int callIndex;//$call.index
   int geteleIndex;//$getele.index
+  int mallocIndex;//$malloc.index
   int allocIndex;//$alloc.index
   int stringIndex;//$string.index
   int loadIndex;//$load.index
 
+  public void addMallocIndex() {
+    mallocIndex++;
+  }
   public void addLoopIndex() {
     loopIndex++;
   }
@@ -94,7 +98,14 @@ public class Counter {
       if(classMemMap.containsKey(typename)) {
         throw new ErrorBasic("class member already exist");
       }
-      classMemMap.put(typename, ++index);
+      classMemMap.put(typename, index++);
+    }
+  }
+  public int queryClassMem(String key) {
+    if(classMemMap.containsKey(key)) {
+      return classMemMap.get(key);
+    } else {
+      return -1;
     }
   }
   public int queryIndex(String key) {
@@ -103,9 +114,6 @@ public class Counter {
     } else {
       return 0;
     }
-  }
-  public void addIndex(String key, int index) {
-    counterMap.put(key, index);
   }
   public void addIndex(String key) {
     if (counterMap.containsKey(key)) {
@@ -127,7 +135,7 @@ public class Counter {
         }else if(member.getName().equals("i1")) {
           size += 1;
         }else if(member.getName().equals("ptr")) {
-          size += 8;
+          size += 4;
         }else{
           throw new ErrorBasic("unknown type");
         }

@@ -834,7 +834,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
 
     if(node.getExpr().getLabel().getType().getDimension()!=0){
       if(node.getMember().equals("size")) {
-        node.setLabel(new ExprLable("$buildInArraySize", ((TypeLable) globalScope.get("int", Scope.QueryType.CLASS)).clone(), ExprLable.ValueType.ABANDON));
+        node.setLabel(new ExprLable("buildInArraySize", ((TypeLable) globalScope.get("int", Scope.QueryType.CLASS)).clone(), ExprLable.ValueType.ABANDON));
         return info;
       }else{
         info.append(new Compileinfo("array has no member",node.getPosition()));

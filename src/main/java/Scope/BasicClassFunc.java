@@ -15,7 +15,7 @@ public class BasicClassFunc {
 
   public static TypeLable[] BuildInClass= {int_,string_,bool_,void_,null_,this_};
 
-  public static FuncLable BuildInArraySize_ = new FuncLable("$buildInArraySize", int_);
+  public static FuncLable BuildInArraySize_ = new FuncLable("buildInArraySize", int_);
 
   public static FuncLable print_ = new FuncLable("print", void_, string_);
   public static FuncLable println_ = new FuncLable("println", void_, string_);
@@ -33,19 +33,19 @@ public class BasicClassFunc {
 
 
 
-  public static IRLable print_lable = new IRLable("print");
-  public static IRLable println_lable = new IRLable("println");
-  public static IRLable printInt_lable = new IRLable("printInt");
-  public static IRLable printlnInt_lable = new IRLable("printlnInt");
-  public static IRLable getString_lable = new IRLable("getString");
-  public static IRLable getInt_lable = new IRLable("getInt");
-  public static IRLable toString_lable = new IRLable("toString");
-
-  public static IRLable length_lable = new IRLable("string.length");
-  public static IRLable substring_lable = new IRLable("string.substring");
-  public static IRLable parseInt_lable = new IRLable("string.parseInt");
-  public static IRLable ord_lable = new IRLable("string.ord");
-  public static IRLable[] BuildInFuncLable = {print_lable, println_lable, printInt_lable, printlnInt_lable, getString_lable, getInt_lable, toString_lable, length_lable, substring_lable, parseInt_lable, ord_lable};
+//  public static IRLable print_lable = new IRLable("print");
+//  public static IRLable println_lable = new IRLable("println");
+//  public static IRLable printInt_lable = new IRLable("printInt");
+//  public static IRLable printlnInt_lable = new IRLable("printlnInt");
+//  public static IRLable getString_lable = new IRLable("getString");
+//  public static IRLable getInt_lable = new IRLable("getInt");
+//  public static IRLable toString_lable = new IRLable("toString");
+//
+//  public static IRLable length_lable = new IRLable("string.length");
+//  public static IRLable substring_lable = new IRLable("string.substring");
+//  public static IRLable parseInt_lable = new IRLable("string.parseInt");
+//  public static IRLable ord_lable = new IRLable("string.ord");
+//  public static IRLable[] BuildInFuncLable = {print_lable, println_lable, printInt_lable, printlnInt_lable, getString_lable, getInt_lable, toString_lable, length_lable, substring_lable, parseInt_lable, ord_lable};
 
 
   public static IRBaseType intType = new IRBaseType(int_);

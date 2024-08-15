@@ -22,7 +22,42 @@ public class IRArithIns extends IRIns {
     this.lhs = lhs;
     this.rhs = rhs;
     this.dest = dest;
-    this.op = op;
+    this.op = null;
+    if(op.equals("+")){
+      this.op = "add";
+    }else if(op.equals("-")){
+      this.op = "sub";
+    }else if(op.equals("*")){
+      this.op = "mul";
+    }else if(op.equals("/")){
+      this.op = "sdiv";
+    }else if(op.equals("%")){
+      this.op = "srem";
+    }else if(op.equals("<<")){
+      this.op = "shl";
+    }else if(op.equals(">>")){
+      this.op = "ashr";
+    }else if(op.equals("&")){
+      this.op = "and";
+    }else if(op.equals("|")){
+      this.op = "or";
+    }else if(op.equals("^")){
+      this.op = "xor";
+    }else if(op.equals("==")){
+      this.op = "eq";
+    }else if(op.equals("!=")){
+      this.op = "ne";
+    }else if(op.equals("<")){
+      this.op = "slt";
+    }else if(op.equals(">")){
+      this.op = "sgt";
+    }else if(op.equals("<=")){
+      this.op = "sle";
+    }else if(op.equals(">=")){
+      this.op = "sge";
+    } else{
+      throw new ErrorBasic("Invalid op in IRArithIns");
+    }
   }
 
   @Override
