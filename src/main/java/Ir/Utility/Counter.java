@@ -13,6 +13,20 @@ import java.util.TreeMap;
 @lombok.Setter
 public class Counter {
   TreeMap<String, Integer> counterMap;
+  TreeMap<String, Item> stringMap;
+  public Item queryString(String key) {
+    if(stringMap.containsKey(key)) {
+      return stringMap.get(key);
+    } else {
+      return null;
+    }
+  }
+  public void addString(String key, Item item) {
+    if(stringMap.containsKey(key)) {
+      throw new ErrorBasic("string already exist");
+    }
+    stringMap.put(key, item);
+  }
   //only count var num
   int loopIndex;
   int branchIndex;

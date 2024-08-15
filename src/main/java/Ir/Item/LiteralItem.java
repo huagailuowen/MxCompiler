@@ -7,9 +7,9 @@ import Ir.Type.IRBaseType;
 public class LiteralItem extends Item {
     public LiteralItem(IRBaseType typename, int value) {
       super(typename, Integer.toString(value));
-        if(typename.equals(IRBaseType.getPtrType()) && value==0){
-         super.setName("null");
-        }
+      if(typename.equals(IRBaseType.getPtrType()) && value==0){
+        super.setName("null");
+      }
     }
     @Override
     public String toString() {

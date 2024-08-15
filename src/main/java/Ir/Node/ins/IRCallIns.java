@@ -19,6 +19,7 @@ public class IRCallIns extends IRIns {
     this.funcName = funcName;
     this.dest = dest;
     this.args = args;
+    type = dest.getType();
   }
   @Override
   public String toString() {
