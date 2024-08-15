@@ -18,4 +18,8 @@ public class IRGlobalDef extends IRDef {
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
   }
+  @Override
+  public String toString() {
+    return value.toString();
+  }
 }

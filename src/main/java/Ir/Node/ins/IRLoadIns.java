@@ -14,10 +14,10 @@ public class IRLoadIns extends IRIns {
   protected IRBaseType type;
 
 
-  public IRLoadIns(Item value, RegItem dest, IRBaseType type) {
+  public IRLoadIns(Item value, RegItem dest) {
     this.value = value;
     this.dest = dest;
-    this.type = type;
+//    this.type = type;
   }
 
   @Override
