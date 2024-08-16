@@ -172,9 +172,9 @@ public class Checker implements ASTVisitor<Compileinfo>{
       info.append(new Compileinfo("variable name can not be void",node.getPosition()));
     }else
     if(currentScope.get(name,Scope.QueryType.FUNC)!=null){
-      info.append(new Compileinfo("variable "+name+" has been defined as a function",node.getPosition()));
+      info.append(new Compileinfo("Multiple Definitions",node.getPosition()));
     }else if(currentScope.get(name,Scope.QueryType.VAR)!=null){
-      info.append(new Compileinfo("variable "+name+" has been defined as a variable",node.getPosition()));
+      info.append(new Compileinfo("Multiple Definition",node.getPosition()));
     }else if(currentScope.get(type,Scope.QueryType.CLASS,true)==null || type.equals("null") || type.equals("this")){
       info.append(new Compileinfo("type undefined",node.getPosition()));
     }else{
@@ -219,7 +219,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
     node.setScope(currentScope);
     Scope Loop = currentScope.findLoop(currentScope);
     if(Loop==null){
-      return new Compileinfo("break statement not in loop",node.getPosition());
+      return new Compileinfo("Invalid Control Flow",node.getPosition());
     }else{
       return new Compileinfo();
     }
@@ -628,7 +628,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
         node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("string",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.RVALUE));
       }else{
         node.setLabel(new ExprLable(null,((TypeLable) globalScope.get("null",Scope.QueryType.CLASS)).clone(),ExprLable.ValueType.ABANDON));
-        info.append(new Compileinfo("Type Mismatch",node.getPosition()));
+        info.append(new Compileinfo("Invalid Type",node.getPosition()));
       }
     }
     else if(node.getOp().equals("-")
@@ -756,7 +756,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
           }
         }else if(!node.getArgs().get(i).getLabel().getType().getName().equals(func.getParamTypes().get(i).getName())
           || node.getArgs().get(i).getLabel().getType().getDimension() != func.getParamTypes().get(i).getDimension()){
-          info.append(new Compileinfo("parameter Type Mismatch",node.getPosition()));
+          info.append(new Compileinfo("Type Mismatch",node.getPosition()));
         }
       }
       node.setLabel(new ExprLable(null,func.getReturnType().clone(),ExprLable.ValueType.RVALUE));
