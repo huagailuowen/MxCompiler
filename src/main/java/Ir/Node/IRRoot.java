@@ -52,7 +52,7 @@ public class IRRoot extends IRNode{
 
 
     return string.toString();
-    throw new ErrorBasic("TO DO: the link to c libary");
+//    throw new ErrorBasic("TO DO: the link to c libary");
   }
 
 }
