@@ -3,7 +3,7 @@
 build: Compiler
 
 run:
-	mvn exec:java
+	mvn -o exec:java
 
 Compiler:
 	mvn install
