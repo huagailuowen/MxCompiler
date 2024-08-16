@@ -174,7 +174,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
     if(currentScope.get(name,Scope.QueryType.FUNC)!=null){
       info.append(new Compileinfo("Multiple Definitions",node.getPosition()));
     }else if(currentScope.get(name,Scope.QueryType.VAR)!=null){
-      info.append(new Compileinfo("Multiple Definition",node.getPosition()));
+      info.append(new Compileinfo("Multiple Definitions",node.getPosition()));
     }else if(currentScope.get(type,Scope.QueryType.CLASS,true)==null || type.equals("null") || type.equals("this")){
       info.append(new Compileinfo("type undefined",node.getPosition()));
     }else{
