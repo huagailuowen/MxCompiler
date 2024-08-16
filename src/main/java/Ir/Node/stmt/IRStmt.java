@@ -1,5 +1,6 @@
 package Ir.Node.stmt;
 
+import Ir.Item.Item;
 import Ir.Item.RegItem;
 import Ir.Node.IRNode;
 import Ir.Node.ins.IRIns;
@@ -9,14 +10,17 @@ import java.util.ArrayList;
 @lombok.Setter
 public class IRStmt extends IRNode {
   protected RegItem dest;
+  protected Item destAddr;
   //the key res will store in this.dest
   protected ArrayList<IRIns>  insList;
   public IRStmt() {
     this.dest = null;
+    this.destAddr = null;
     this.insList = new ArrayList<>();
   }
   public IRStmt(RegItem dest) {
     this.dest = dest;
+    this.destAddr = null;
     this.insList = new ArrayList<>();
   }
   public IRStmt(RegItem dest, ArrayList<IRIns> insList) {
@@ -25,6 +29,7 @@ public class IRStmt extends IRNode {
   }
   public IRStmt(ArrayList<IRIns> insList) {
     this.dest = null;
+    this.destAddr = null;
     this.insList = insList;
   }
 
