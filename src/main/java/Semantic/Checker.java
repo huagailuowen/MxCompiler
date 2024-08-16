@@ -34,6 +34,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
   private Scope globalScope = null;
   private Scope currentScope = null;
   private Counter counter = null;
+  private int retNum;
   private void init(ASTRoot node)
   {
     globalScope = node.getScope();
@@ -154,10 +155,14 @@ public class Checker implements ASTVisitor<Compileinfo>{
         info.append(new Compileinfo("parameter type undefined",var.getPosition()));
       }
     }
+    this.retNum=0;
     for(ASTStmt stmt:node.getStmtList()){
       stmt.setScope(node.getScope());
       info.append(stmt.accept(this));
 
+    }
+    if(this.retNum==0 && !node.getLabel().getReturnType().getName().equals("void")){
+      info.append(new Compileinfo("Missing Return Statement",node.getPosition()));
     }
     stepOut();
     return info;
@@ -312,6 +317,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
     return info;
   }
   public Compileinfo visit(ASTRetStmt node) {
+    this.retNum++;
     node.setScope(currentScope);
     Scope Func = currentScope.findFunc(currentScope);
     Scope Class = currentScope.findClass(currentScope);
