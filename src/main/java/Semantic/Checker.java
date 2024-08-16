@@ -144,7 +144,7 @@ public class Checker implements ASTVisitor<Compileinfo>{
     stepIn(node.getScope(),false);
     var info = new Compileinfo();
     if(globalScope.get(node.getLabel().getReturnType().getName(),Scope.QueryType.CLASS)==null){
-      info.append(new Compileinfo("Undefined Identifier",node.getPosition()));
+      info.append(new Compileinfo("Invalid Identifier",node.getPosition()));
     }else if(node.getLabel().getReturnType().getName().equals("this") || node.getLabel().getReturnType().getName().equals("null")){
       throw new ErrorBasic("this is impossible",node.getPosition());
       // info.append(new Compileinfo("void function should not have return value",node.getPosition()));
