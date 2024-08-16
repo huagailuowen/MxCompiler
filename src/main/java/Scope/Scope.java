@@ -63,9 +63,15 @@ public class Scope {
       classMap.put(cls.getName(), cls);
 
     for(FuncLable func : BasicClassFunc.BuildInFunc)
-      irLableMap.put(func.getName(), "__"+func.getName());
-      //the latter one should match those in c++ code
+      irLableMap.put(func.getName(), func.getName());
+    //overwrite the name
 
+    irLableMap.put("string.length","__string_length");
+    irLableMap.put("string.substring","__string_substring");
+    irLableMap.put("string.parseInt","__string_parseInt");
+    irLableMap.put("string.ord","__string_ord");
+
+    //the latter one should match those in c++ code
     //add some default functions
   }
   public Scope(Scope parent) //this is definetely not a global scope

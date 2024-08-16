@@ -137,7 +137,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     }
     for(var param : node.getParaList()) {
 
-      var varname = node.getScope().getDetail(param.getLabel().getName(),true).b;
+      var varname = node.getScope().getDetail(param.getLabel().getName(),false).b;
       RegItem ptr=new RegItem(IRBaseType.getPtrType(),varname);
       counter.addItem(varname,ptr);
       RegItem in = new RegItem(new IRBaseType(param.getLabel().getType()),varname+".in");
@@ -438,12 +438,12 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     IRStmt irStmt = new IRStmt();
     RegItem dest = new RegItem(new IRBaseType(node.getLabel().getType()),"%load."+String.valueOf(counter.getLoadIndex()));
     counter.addLoadIndex();
-    irStmt.setDest(dest);
     if(node.getType() == ASTAtomExpr.AtomType.IDENTIFIER
       || node.getType() == ASTAtomExpr.AtomType.THIS) {
       if(node.getLabel().getName() != null){
         //it means it is a function
         //there is noting to do with
+        //it not contain 'this'
         return irStmt;
       }else{
         //then variable or this
@@ -474,9 +474,10 @@ public class IRBuilder implements ASTVisitor<IRNode>{
               throw new ErrorBasic("class member not in class");
             }
             irStmt.addIns(new IRGetEleIns(geteleItem,"%class."+tmp[0],loadItem,new ArrayList<Item>(List.of(new LiteralItem(IRBaseType.getIntType(),index)))));
-            srcItem = new RegItem(IRBaseType.getPtrType(),"%load."+String.valueOf(counter.getLoadIndex()));
-            counter.addLoadIndex();
-            irStmt.addIns(new IRLoadIns(geteleItem,srcItem));
+//            srcItem = new RegItem(IRBaseType.getPtrType(),"%load."+String.valueOf(counter.getLoadIndex()));
+//            counter.addLoadIndex();
+            srcItem = geteleItem;
+//            irStmt.addIns(new IRLoadIns(geteleItem,srcItem));
 
           }
         }
@@ -500,7 +501,18 @@ public class IRBuilder implements ASTVisitor<IRNode>{
       int size = node.getArray().size();
       var args = new ArrayList<Item>();
       args.add(new LiteralItem(IRBaseType.getIntType(),size));
-      irStmt.addIns(new IRCallIns("__malloc",dest,args));
+      if(node.getLabel().getType().getDimension()>1){
+        args.add(new LiteralItem(IRBaseType.getIntType(),IRBaseType.getPtrType().getSize()));
+      }else if(node.getLabel().getType().getName().equals("int")){
+        args.add(new LiteralItem(IRBaseType.getIntType(),IRBaseType.getIntType().getSize()));
+      }else if(node.getLabel().getType().getName().equals("bool")){
+        args.add(new LiteralItem(IRBaseType.getIntType(),IRBaseType.getBoolType().getSize()));
+      }else{
+        args.add(new LiteralItem(IRBaseType.getIntType(),IRBaseType.getPtrType().getSize()));
+      }
+
+
+      irStmt.addIns(new IRCallIns("__malloc_array",dest,args));
 
       irStmt.addIns(new IRLoadIns(new LiteralItem(IRBaseType.getIntType(),size),dest));
 
@@ -512,7 +524,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
         counter.addGeteleIndex();
 //        counter.addItem(geteleItem.getName(),geteleItem);
         args = new ArrayList<>();
-        args.add(new LiteralItem(IRBaseType.getIntType(),i+1));
+        args.add(new LiteralItem(IRBaseType.getIntType(),i));
         var typename = "ptr";
         if(index.getType() == ASTAtomExpr.AtomType.INT) {
           typename = "i32";
@@ -530,6 +542,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
       IRBaseType type = new IRBaseType(node.getLabel().getType());
       irStmt.addIns(new IRLoadIns(new LiteralItem(type,Integer.parseInt(node.getValue())),dest));
     }
+    irStmt.setDest(dest);
     return irStmt;
   }
   @Override
@@ -538,7 +551,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     var dest = new RegItem(new IRBaseType(node.getLabel().getType()),"%arith."+String.valueOf(counter.getArithIndex()));
     counter.addArithIndex();
     counter.addItem(dest.getName(),dest);
-    if(node.getOp().equals("+") && node.getLabel().getType().getName().equals("string")){
+    if(node.getLhs().getLabel().getType().getName().equals("string")){
       //using the call to handle the string
       var lhsStmt = (IRStmt)node.getLhs().accept(this);
       irStmt.addStmt(lhsStmt);
@@ -547,7 +560,23 @@ public class IRBuilder implements ASTVisitor<IRNode>{
       var args = new ArrayList<Item>();
       args.add(lhsStmt.getDest());
       args.add(rhsStmt.getDest());
-      irStmt.addIns(new IRCallIns("__string_add",dest,args));
+      if(node.getOp().equals("+")){
+        irStmt.addIns(new IRCallIns("__string_concat",dest,args));
+      }else if(node.getOp().equals("<")) {
+        irStmt.addIns(new IRCallIns("__string_lt", dest, args));
+      }else if(node.getOp().equals(">")) {
+        irStmt.addIns(new IRCallIns("__string_gt", dest, args));
+      }else if(node.getOp().equals("<=")) {
+        irStmt.addIns(new IRCallIns("__string_le", dest, args));
+      }else if(node.getOp().equals(">=")) {
+        irStmt.addIns(new IRCallIns("__string_ge", dest, args));
+      }else if(node.getOp().equals("==")) {
+        irStmt.addIns(new IRCallIns("__string_eq", dest, args));
+      }else if(node.getOp().equals("!=")) {
+        irStmt.addIns(new IRCallIns("__string_ne", dest, args));
+      }else{
+        throw new ErrorBasic("not support string op");
+      }
       return irStmt;
     }
     if(node.getOp().equals("&&") || node.getOp().equals("||")) {
@@ -586,6 +615,12 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     ArrayList<Item> paramList = new ArrayList<>();
     var exprStmt = (IRStmt)node.getExpr().accept(this);
     irStmt.addStmt(exprStmt);
+
+    if(exprStmt.getDest()!=null){
+      //add the this
+      paramList.add(exprStmt.getDest());
+    }
+
     for(var param : node.getArgs()) {
       var paramStmt = (IRStmt)param.accept(this);
       irStmt.addStmt(paramStmt);
@@ -636,11 +671,11 @@ public class IRBuilder implements ASTVisitor<IRNode>{
       }else if(node.getArgs().get(i).getLabel().getType().getName().equals("int")) {
         var callArgs = new ArrayList<Item>();
         callArgs.add(expr.getDest());
-        irStmt.addIns(new IRCallIns("__int_to_string",exprdest,callArgs));
+        irStmt.addIns(new IRCallIns("toString",exprdest,callArgs));
       }else if(node.getArgs().get(i).getLabel().getType().getName().equals("bool")) {
         var callArgs = new ArrayList<Item>();
         callArgs.add(expr.getDest());
-        irStmt.addIns(new IRCallIns("__bool_to_string", exprdest, callArgs));
+        irStmt.addIns(new IRCallIns("toString_bool", exprdest, callArgs));
       }else{
         throw new ErrorBasic("not support type");
       }
@@ -651,8 +686,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
         callArgs.add(exprdest);
         dest = new RegItem(IRBaseType.getPtrType(),"%string."+String.valueOf(counter.getStringIndex()));
         counter.addStringIndex();
-        counter.addItem(dest.getName(),dest);
-        irStmt.addIns(new IRCallIns("__string_add",dest,callArgs));
+        irStmt.addIns(new IRCallIns("__string_concat",dest,callArgs));
       }
 
 
@@ -668,7 +702,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
       dest = new RegItem(IRBaseType.getPtrType(),"%string."+String.valueOf(counter.getStringIndex()));
       counter.addStringIndex();
       counter.addItem(dest.getName(),dest);
-      irStmt.addIns(new IRCallIns("__string_add",dest,callArgs));
+      irStmt.addIns(new IRCallIns("__string_concat",dest,callArgs));
     }
 
     irStmt.setDest(dest);
@@ -700,7 +734,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
       throw new ErrorBasic("class member not exist");
     }
     var args = new ArrayList<Item>();
-    args.add(new LiteralItem(IRBaseType.getIntType(),0));
+//    args.add(new LiteralItem(IRBaseType.getIntType(),0));
     args.add(new LiteralItem(IRBaseType.getIntType(),index));
     irStmt.addIns(new IRGetEleIns(geteleItem,"%class."+classname,exprStmt.getDest(),args));
 
@@ -802,6 +836,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     {
       irStmt.addIns(new IRCallIns("__malloc_array", ptrList.get(0), new ArrayList<Item>() {{
         add(indexList.get(0).getDest());
+        add(new LiteralItem(IRBaseType.getIntType(),0));
       }}));
       irStmt.addIns(new IRGetEleIns(geteledest, "ptr", ptrList.get(0), new ArrayList<Item>() {{
         add(new LiteralItem(IRBaseType.getIntType(), 0));

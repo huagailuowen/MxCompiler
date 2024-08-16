@@ -1,6 +1,8 @@
 
 
 import Grammar.MxparserLexer;
+import Ir.IRBuilder;
+import Ir.Node.IRNode;
 import Utility.error.MyErrorListener;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
@@ -39,6 +41,8 @@ public class Compiler {
     info = new Checker().visit((ASTRoot)ast);
     System.out.println(info);
     if(!info.empty())throw new RuntimeException(info.getContent());
+    IRNode ir = new IRBuilder().visit(ast);
+    System.out.println(ir.toString());
   }
 }
 /*
