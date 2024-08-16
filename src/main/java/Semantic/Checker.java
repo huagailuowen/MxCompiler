@@ -161,9 +161,9 @@ public class Checker implements ASTVisitor<Compileinfo>{
       info.append(stmt.accept(this));
 
     }
-    if(this.retNum==0 && !node.getLabel().getReturnType().getName().equals("void")){
-      info.append(new Compileinfo("Missing Return Statement",node.getPosition()));
-    }
+//    if(this.retNum==0 && !node.getLabel().getReturnType().getName().equals("void")){
+//      info.append(new Compileinfo("Missing Return Statement",node.getPosition()));
+//    }
     stepOut();
     return info;
   }
