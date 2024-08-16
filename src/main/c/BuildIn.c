@@ -24,5 +24,5 @@ char *toString(int i) {
   sprintf(str, "%d", i);
   return str;
 }
-void __malloc_array
+void __malloc_array()
 
