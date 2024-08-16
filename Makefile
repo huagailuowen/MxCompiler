@@ -6,6 +6,8 @@ run:
 	mvn exec:java
 
 Compiler:
+	mvn install
+	mvn compile
 	mvn package
 	mkdir -p bin
 	cp target/*.jar bin/

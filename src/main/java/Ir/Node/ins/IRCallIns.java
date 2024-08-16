@@ -23,7 +23,7 @@ public class IRCallIns extends IRIns {
   }
   @Override
   public String toString() {
-    return dest.getName() + " = call " + funcName + "(" + args.stream().map(Ir.Item.Item::toString).reduce((a, b) -> a + ", " + b).orElse("") + ")";
+    return dest.getName() + " = call " +funcName + "(" + args.stream().map(Ir.Item.Item::toString).reduce((a, b) -> a + ", " + b).orElse("") + ")";
   }
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {

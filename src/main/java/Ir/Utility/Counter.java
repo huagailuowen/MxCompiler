@@ -144,4 +144,11 @@ public class Counter {
     typeSizeMap.put(key, size);
     return size;
   }
+  public int queryTypeSize(String key) {
+    if(typeSizeMap.containsKey(key)) {
+      return typeSizeMap.get(key);
+    } else {
+      return 0;
+    }
+  }
 }
