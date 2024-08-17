@@ -1,3 +1,4 @@
+typedef enum { false, true } bool;
 int printf(const char *format, ...);
 int scanf(const char *format, ...);
 int sprintf(char *str, const char *format, ...);
@@ -11,17 +12,17 @@ void printlnInt(int n) { printf("%d\n", n); }
 char *getString() {
   char *str = (char *)malloc(4096);
   scanf("%s", str);
-  return s;
+  return str;
 }
 int getInt() {
   int num;
   scanf("%d", &num);
-  return n;
+  return num;
 }
 char *toString(int num) {
   char *str;
   str = (char *)malloc(sizeof(char) * 10);
-  sprintf(str, "%d", i);
+  sprintf(str, "%d", num);
   return str;
 }
 char * toString_bool(bool flag)
@@ -43,7 +44,7 @@ void * __malloc_array(int length,int size)
 }
 void * __malloc(int length,int size)
 {
-    return ()malloc(size*length);
+    return malloc(size*length);
 }
 int buildInArraySize(void * ptr)
 {
@@ -134,7 +135,7 @@ bool __string_ge(char *s1,char *s2)
 {
     return !__string_lt(s1,s2);
 }
-bool __string_concat(char *s1,char *s2)
+void* __string_concat(char *s1,char *s2)
 {
     int len1=__string_length(s1);
     int len2=__string_length(s2);

@@ -17,7 +17,9 @@ import Semantic.Collector;
 import Semantic.Compileinfo;
 import org.antlr.v4.runtime.CommonTokenStream;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 
 public class Compiler {
   public static void main(String[] args) throws IOException {
@@ -43,6 +45,9 @@ public class Compiler {
     if(!info.empty())throw new RuntimeException(info.getContent());
     IRNode ir = new IRBuilder().visit((ASTRoot) ast);
     System.out.println(ir.toString());
+    var output = new PrintStream(new FileOutputStream("src/test/mx/output.ll"));
+    output.println(ir);
+    output.close();
   }
 }
 /*
@@ -60,19 +65,21 @@ class b{
   }
   int a;
 };
+
 int pp=2;
 int f(int x,int y){
   return x+y;
 }
-int main(){
-  int i=pp+1,j=3;
+int i=pp+1,j=3;
   {
     int i=j+1;
   }
-  for(i=1;i<10;i=i+1){
-    int j=1;
-    j=f(j,1);
-  }
-  return j;
+string s="123";
+int main(){
+
+s=s+"123";
+  //string ss= s;
+
+
 }
  */

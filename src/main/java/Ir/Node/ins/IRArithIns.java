@@ -64,4 +64,15 @@ public class IRArithIns extends IRIns {
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
   }
+  @Override
+  public String toString() {
+    if(!lhs.getType().getName().equals(rhs.getType().getName())){
+      throw new ErrorBasic("lhs and rhs type mismatch in IRArithIns");
+    }
+    if(op.equals("eq") || op.equals("ne") || op.equals("slt") || op.equals("sgt") || op.equals("sle") || op.equals("sge")){
+
+      return dest.getName() + " = icmp " + op + " " + lhs.getType().toString() + " " + lhs.getName() + ", " + rhs.getName();
+    }
+    return dest.getName() + " = " + op + " " + lhs.getType().toString() + " " + lhs.getName() + ", " + rhs.getName();
+  }
 }

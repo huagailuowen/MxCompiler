@@ -20,6 +20,9 @@ public class Item {
     return name;
   }
   public String globalDef() {
+    if(!(this instanceof RegItem)&&!(this instanceof StringItem)){
+      return type.toString() ;
+    }
     throw new ErrorBasic("globalDef not implemented");
   }
 
