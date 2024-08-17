@@ -9,7 +9,7 @@ import java.util.ArrayList;
 @lombok.Getter
 @lombok.Setter
 public class IRStmt extends IRNode {
-  protected RegItem dest;
+  protected Item dest;
   protected Item destAddr;
   //the key res will store in this.dest
   protected ArrayList<IRIns>  insList;
@@ -18,12 +18,12 @@ public class IRStmt extends IRNode {
     this.destAddr = null;
     this.insList = new ArrayList<>();
   }
-  public IRStmt(RegItem dest) {
+  public IRStmt(Item dest) {
     this.dest = dest;
     this.destAddr = null;
     this.insList = new ArrayList<>();
   }
-  public IRStmt(RegItem dest, ArrayList<IRIns> insList) {
+  public IRStmt(Item dest, ArrayList<IRIns> insList) {
     this.dest = dest;
     this.insList = insList;
   }

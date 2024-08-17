@@ -19,11 +19,15 @@ public class IRCallIns extends IRIns {
     this.funcName = funcName;
     this.dest = dest;
     this.args = args;
-    type = dest.getType();
+    if(dest == null){
+      type = IRBaseType.getVoidType();
+    }else{
+      type = dest.getType();
+    }
   }
   @Override
   public String toString() {
-    return dest.getName() + " = call " +funcName + "(" + args.stream().map(Ir.Item.Item::toString).reduce((a, b) -> a + ", " + b).orElse("") + ")";
+    return (dest==null?"":dest.getName() + " = ") + "call " + (dest==null?"void ":dest.getType().getName())  +funcName + "(" + args.stream().map(Ir.Item.Item::toString).reduce((a, b) -> a + ", " + b).orElse("") + ")";
   }
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {

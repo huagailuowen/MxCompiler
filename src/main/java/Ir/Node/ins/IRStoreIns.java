@@ -18,7 +18,7 @@ public class IRStoreIns extends IRIns {
 
   @Override
   public String toString() {
-    return "store" + " " + addr.toString() + ", " + value.toString();
+    return "store " + value.getType().getName() + ' '+ value.getName() + ", "+ addr.toString()  ;
   }
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {

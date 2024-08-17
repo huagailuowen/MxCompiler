@@ -17,7 +17,6 @@ public class RegItem extends Item {
 
     @Override
     public String toString() {
-        //if call this, must be global variable
         return type.getName() + " " + name;
     }
     @Override

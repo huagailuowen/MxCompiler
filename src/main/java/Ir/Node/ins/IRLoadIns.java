@@ -9,19 +9,19 @@ import Utility.error.ErrorBasic;
 @lombok.Getter
 @lombok.Setter
 public class IRLoadIns extends IRIns {
-  protected Item value;
+  protected RegItem addr;
   protected RegItem dest;
 
 
-  public IRLoadIns(Item value, RegItem dest) {
-    this.value = value;
+  public IRLoadIns(RegItem addr, RegItem dest) {
+    this.addr = addr;
     this.dest = dest;
 //    this.type = type;
   }
 
   @Override
   public String toString() {
-    return dest.getName() + " = load " + dest.getType().toString() + ", " + value.getName();
+    return dest.getName() + " = load " + dest.getType().toString() + ", " + addr.getName();
   }
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
