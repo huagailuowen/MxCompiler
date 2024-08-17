@@ -1,6 +1,7 @@
 package Ir.Item;
 
 import Ir.Type.IRBaseType;
+import Utility.error.ErrorBasic;
 
 @lombok.Getter
 @lombok.Setter
@@ -17,6 +18,9 @@ public class Item {
   }
   public String toString() {
     return name;
+  }
+  public String globalDef() {
+    throw new ErrorBasic("globalDef not implemented");
   }
 
 }

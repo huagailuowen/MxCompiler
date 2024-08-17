@@ -14,6 +14,10 @@ public class StringItem extends Item{
     public String toString() {
         return name+" = private unnamed_addr constant ["+(value.length()+1)+" x i8] c\""+convert(value)+"\\00\"";
     }
+    @Override
+    public String globalDef() {
+        return toString();
+    }
     public static String convert(String s){
         StringBuilder sb = new StringBuilder();
         for(int i=0;i<s.length();i++){

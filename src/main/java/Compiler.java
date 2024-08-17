@@ -41,7 +41,7 @@ public class Compiler {
     info = new Checker().visit((ASTRoot)ast);
     System.out.println(info);
     if(!info.empty())throw new RuntimeException(info.getContent());
-    IRNode ir = new IRBuilder().visit(ast);
+    IRNode ir = new IRBuilder().visit((ASTRoot) ast);
     System.out.println(ir.toString());
   }
 }
@@ -60,8 +60,19 @@ class b{
   }
   int a;
 };
-
+int pp=2;
+int f(int x,int y){
+  return x+y;
+}
 int main(){
-  return 0;
+  int i=pp+1,j=3;
+  {
+    int i=j+1;
+  }
+  for(i=1;i<10;i=i+1){
+    int j=1;
+    j=f(j,1);
+  }
+  return j;
 }
  */

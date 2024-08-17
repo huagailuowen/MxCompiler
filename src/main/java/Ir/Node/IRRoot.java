@@ -44,6 +44,7 @@ public class IRRoot extends IRNode{
 
     for (IRNode globalDef : globalDefList) {
       string.append(globalDef.toString());
+      string.append("\n");
     }
     string.append(initFunc.toString());
     for (IRNode funcDef : funcList) {

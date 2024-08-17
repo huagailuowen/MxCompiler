@@ -6,8 +6,7 @@ import Utility.error.ErrorBasic;
 @lombok.Getter
 @lombok.Setter
 public class RegItem extends Item {
-
-
+    IRBaseType valueType;
     public RegItem(IRBaseType type, String name) {
         super(type, name);
         //it is very sepcial that the name of register should start with % or @
@@ -18,6 +17,13 @@ public class RegItem extends Item {
 
     @Override
     public String toString() {
-        return type.toString() + " " + name;
+        //if call this, must be global variable
+        return type.getName() + " " + name;
     }
+    @Override
+    public String globalDef() {
+        //if call this, must be global variable
+        return name + " = global " + valueType.toString()  + " 0, align "+valueType.getSize();
+    }
+
 }

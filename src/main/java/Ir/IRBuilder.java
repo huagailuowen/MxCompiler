@@ -122,14 +122,14 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     var funcName = node.getScope().getName() ;
     //this is the real name
     if(funcName.equals("main")) {
-      irStmt.addIns(new IRCallIns("__init__", new RegItem(IRBaseType.getIntType(),"..."),new ArrayList<>()));
+      irStmt.addIns(new IRCallIns("__init__", new RegItem(IRBaseType.getIntType(),"%..."),new ArrayList<>()));
     }
     IRBaseType retType = new IRBaseType(node.getLabel().getReturnType());
     IRLable lable = new IRLable(funcName);
     ArrayList<RegItem>  paramList = new ArrayList<>();
 
 
-    var retItem = new RegItem(IRBaseType.getPtrType(),".retaddr."+funcName);
+    var retItem = new RegItem(IRBaseType.getPtrType(),"%.retaddr."+funcName);
     irStmt.addIns(new IRAllocIns(retType,retItem));
     node.getScope().setRetItem(retItem);
     if(node.getScope().getIrThisName() != null) {
@@ -138,11 +138,13 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     for(var param : node.getParaList()) {
 
       var varname = node.getScope().getDetail(param.getLabel().getName(),false).b;
-      RegItem ptr=new RegItem(IRBaseType.getPtrType(),varname);
+      RegItem ptr=new RegItem(IRBaseType.getPtrType(),"%"+varname);
       counter.addItem(varname,ptr);
-      RegItem in = new RegItem(new IRBaseType(param.getLabel().getType()),varname+".in");
+      var valueTypeName = new IRBaseType(param.getLabel().getType());
+      RegItem in = new RegItem(valueTypeName,"%"+varname+".in");
+      ptr.setValueType(valueTypeName);
       paramList.add(in);
-      irStmt.addIns(new IRAllocIns(new IRBaseType(param.getLabel().getType()),ptr));
+      irStmt.addIns(new IRAllocIns(valueTypeName,ptr));
       irStmt.addIns(new IRStoreIns(ptr,in));
     }
     irFuncDef.setName(lable);
@@ -154,7 +156,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     }
 
     irStmt.addIns(new IRLable("func."+funcName+".end"));
-    irStmt.addIns(new IRLoadIns(retItem,new RegItem(retType,".retval."+funcName)));
+    irStmt.addIns(new IRLoadIns(retItem,new RegItem(retType,"%.retval."+funcName)));
     irStmt.addIns(new IRRetIns(retType,(RegItem)node.getScope().getRetItem()));
 
     irFuncDef.setBlockList(IRBlockStmt.makeBlock(irStmt,funcName));
@@ -164,12 +166,13 @@ public class IRBuilder implements ASTVisitor<IRNode>{
   public IRNode visit(ASTVarDef node) throws ErrorBasic{
     IRStmt irStmt = new IRStmt();
     String varname = node.getIrName();
-    if(node.getScope() != globalScope){
+    if(node.getScope() == globalScope){
       varname = "@"+varname;
     }else{
       varname = "%"+varname;
     }
     RegItem regItem = new RegItem(IRBaseType.getPtrType(),varname);
+    regItem.setValueType(new IRBaseType(node.getLabel().getType()));
     counter.addItem(node.getIrName(),regItem);
     irStmt.addIns(new IRAllocIns(new IRBaseType(node.getLabel().getType()),regItem));
     if(node.getInit()!=null){

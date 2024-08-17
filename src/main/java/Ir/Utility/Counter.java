@@ -12,7 +12,7 @@ import java.util.TreeMap;
 @lombok.Getter
 @lombok.Setter
 public class Counter {
-  TreeMap<String, Integer> counterMap;
+  TreeMap<String, Integer> counterMap ;
   TreeMap<String, Item> stringMap;
   public Item queryString(String key) {
     if(stringMap.containsKey(key)) {
@@ -90,6 +90,9 @@ public class Counter {
   public Counter() {
     counterMap = new TreeMap<>();
     typeSizeMap = new TreeMap<>();
+    classMemMap = new TreeMap<>();
+    stringMap = new TreeMap<>();
+    itemTable = new TreeMap<>();
   }
   public void addClassMem(ASTClassDef node) {
     int index = 0;

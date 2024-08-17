@@ -11,7 +11,6 @@ import Utility.error.ErrorBasic;
 public class IRLoadIns extends IRIns {
   protected Item value;
   protected RegItem dest;
-  protected IRBaseType type;
 
 
   public IRLoadIns(Item value, RegItem dest) {
@@ -22,7 +21,7 @@ public class IRLoadIns extends IRIns {
 
   @Override
   public String toString() {
-    return dest.getName() + " = load " + type.toString() + ", " + value.getName();
+    return dest.getName() + " = load " + dest.getType().toString() + ", " + value.getName();
   }
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {

@@ -16,8 +16,13 @@ public class IRLable extends IRIns {
   {
     this.name = name;
   }
-  public String realName()
+  @Override
+  public String toString()
   {
     return name;
   }
+//  public String realName()
+//  {
+//    return name;
+//  }
 }

@@ -20,6 +20,6 @@ public class IRGlobalDef extends IRDef {
   }
   @Override
   public String toString() {
-    return value.toString();
+    return value.globalDef();
   }
 }

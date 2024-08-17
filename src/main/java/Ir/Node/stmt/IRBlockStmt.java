@@ -32,12 +32,14 @@ public class IRBlockStmt extends IRStmt {
         if(block == null){
           block = new IRBlockStmt(((IRLable)ins).getName());
         }else if(block.getExitIns() == null) {
-          throw new ErrorBasic("block exit is null");
+          block.setExitIns(new IRJmpIns(((IRLable)ins).getName()));
+          blocks.add(block);
+          block = new IRBlockStmt(((IRLable)ins).getName());
         }else{
           blocks.add(block);
           block = new IRBlockStmt(((IRLable)ins).getName());
         }
-        block.addIns(ins);
+//        block.addIns(ins);
         continue;
       }
       if(block == null){
@@ -73,5 +75,17 @@ public class IRBlockStmt extends IRStmt {
     }
     blocks.get(0).setExitIns(new IRJmpIns(blocks.get(1).getLableName()));
     return blocks;
+  }
+  @Override
+  public String toString()
+  {
+    StringBuilder sb = new StringBuilder();
+    sb.append(lableName).append(":\n");
+    for(IRIns ins : insList)
+    {
+      sb.append("  ").append(ins.toString()).append('\n');
+    }
+    sb.append("  ").append(exitIns.toString()).append('\n');
+    return sb.toString();
   }
 }
