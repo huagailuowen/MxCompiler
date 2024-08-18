@@ -67,6 +67,8 @@ public class IRBuilder implements ASTVisitor<IRNode>{
   public IRNode visit(ASTRoot node) throws ErrorBasic{
     init(node);
     IRRoot irRoot = new IRRoot();
+    irRoot.setCounter(counter);
+    irRoot.setScope(globalScope);
     //handle the class type
     var initInsList = new ArrayList<IRIns>();
     for(var def : node.getDefList()) {
@@ -108,7 +110,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
       }
     }
     for(var str : counter.getStringMap().entrySet()) {
-      StringItem stringItem = new StringItem(str.getKey(),str.getValue().getName());
+      StringItem stringItem = new StringItem(str.getValue().getName(),str.getKey());
       irRoot.addGlobalDef(new IRGlobalDef(stringItem));
     }
     //handle the function
@@ -497,7 +499,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
       }
     }else if(node.getType() == ASTAtomExpr.AtomType.STRING){
       if(counter.queryString(node.getValue()) == null) {
-        RegItem stringItem = new RegItem(IRBaseType.getPtrType(),"%string."+String.valueOf(counter.getStringIndex()));
+        RegItem stringItem = new RegItem(IRBaseType.getPtrType(),"@string."+String.valueOf(counter.getStringIndex()));
         counter.addStringIndex();
         counter.addString(node.getValue(),stringItem);
       }
@@ -546,7 +548,20 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     }else{
       //normal type
       IRBaseType type = new IRBaseType(node.getLabel().getType());
-      dest = new LiteralItem(type,Integer.parseInt(node.getValue()));
+      if(type.getName().equals("i1")){
+        if(node.getValue().equals("true")){
+          dest = new LiteralItem(type,1);
+        }else if(node.getValue().equals("false")) {
+          dest = new LiteralItem(type, 0);
+        }else{
+          throw new ErrorBasic("bool type not true or false");
+        }
+      }else if(type.getName().equals("i32")){
+        dest = new LiteralItem(type,Integer.parseInt(node.getValue()));
+      }else{
+        throw new ErrorBasic("not support type");
+      }
+
     }
     irStmt.setDest(dest);
     return irStmt;
@@ -587,6 +602,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     }
     if(node.getOp().equals("&&") || node.getOp().equals("||")) {
       var destAddr = new RegItem(IRBaseType.getPtrType(),"%arith."+String.valueOf(counter.getArithIndex())+".addr");
+      irStmt.addIns(new IRAllocIns(IRBaseType.getBoolType(),destAddr));
       IRLable rhsLable = new IRLable("arith."+String.valueOf(counter.getArithIndex())+".rhs");
       IRLable endLable = new IRLable("arith."+String.valueOf(counter.getArithIndex())+".end");
       counter.addArithIndex();

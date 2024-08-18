@@ -22,7 +22,7 @@ public class RegItem extends Item {
     @Override
     public String globalDef() {
         //if call this, must be global variable
-        return name + " = global " + valueType.toString()  + " 0, align "+valueType.getSize();
+        return name + " = global " + valueType.toString()  + " " + (valueType.getName().equals("ptr")?"null":"0");
     }
 
 }

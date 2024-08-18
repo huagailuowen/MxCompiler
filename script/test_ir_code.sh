@@ -1,4 +1,5 @@
 cd ./src/test/mx
-clang -15 -m32 builtin.ll output.ll -o code
-./code
+clang --target=riscv32-unknown-elf -S builtin.ll -o builtin.s
+clang --target=riscv32-unknown-elf -S output.ll -o test.s
+reimu
 $?

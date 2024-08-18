@@ -66,20 +66,45 @@ class b{
   int a;
 };
 
-int pp=2;
+
+
+
+string s="123";
+
+
 int f(int x,int y){
   return x+y;
 }
-int i=pp+1,j=3;
-  {
-    int i=j+1;
-  }
-string s="123";
+int pp=2;
 int main(){
-
+//  pp+1;
   int i=1;
+//  int j=3;
+//  i=f(j,1);
+//  for(int j=0;j<10;j=j+1){
+//    i=i+1;
+//    {
+//      int i=f(j,1);
+//    }
+//  }
+
+
   return i;
 
 
+}
+bool f()
+{
+  return true;
+}
+int main()
+{
+    string s1 = "$\\$\\$$";
+    string s2 = f"$$$f"\\$"$\\$"$"$$$";
+    println(s1);
+    println(s2);
+    println(f"$f()$");
+    println(f"$s1 == s2$");
+    return 0;
 }
  */
