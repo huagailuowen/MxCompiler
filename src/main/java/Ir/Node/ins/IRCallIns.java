@@ -27,7 +27,7 @@ public class IRCallIns extends IRIns {
   }
   @Override
   public String toString() {
-    return (dest==null?"":dest.getName() + " = ") + "call " + (dest==null?"void ":dest.getType().getName())  +funcName + "(" + args.stream().map(Ir.Item.Item::toString).reduce((a, b) -> a + ", " + b).orElse("") + ")";
+    return (dest==null?"":dest.getName() + " = ") + "call " + (dest==null?"void ":dest.getType().getName())  + '@' + funcName + "(" + args.stream().map(Ir.Item.Item::toString).reduce((a, b) -> a + ", " + b).orElse("") + ")";
   }
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {

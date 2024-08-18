@@ -18,7 +18,7 @@ public class IRRetIns extends IRIns {
 
   @Override
   public String toString() {
-    return "ret " + type.toString() + " " + value.toString();
+    return "ret " + type.toString() + (type.getName().equals("void")?"":" " + value.getName());
   }
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {

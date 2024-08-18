@@ -14,7 +14,7 @@ public class IRJmpIns extends IRIns {
 
   @Override
   public String toString() {
-    return "br label " + label;
+    return "br label " + '%'+ label;
   }
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {

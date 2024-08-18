@@ -21,7 +21,7 @@ public class IRLoadIns extends IRIns {
 
   @Override
   public String toString() {
-    return dest.getName() + " = load " + dest.getType().toString() + ", " + addr.getName();
+    return dest.getName() + " = load " + dest.getType().toString() + ", ptr " + addr.getName();
   }
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {

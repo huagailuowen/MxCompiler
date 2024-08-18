@@ -77,8 +77,8 @@ int i=pp+1,j=3;
 string s="123";
 int main(){
 
-s=s+"123";
-  //string ss= s;
+  int i=1;
+  return i;
 
 
 }

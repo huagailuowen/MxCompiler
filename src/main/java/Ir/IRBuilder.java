@@ -112,7 +112,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
       irRoot.addGlobalDef(new IRGlobalDef(stringItem));
     }
     //handle the function
-    initInsList.add(new IRRetIns(IRBaseType.getVoidType(),new LiteralItem(IRBaseType.getIntType(),0)));
+    initInsList.add(new IRRetIns(IRBaseType.getVoidType(),null));
     irRoot.getInitFunc().setBlockList(IRBlockStmt.makeBlock(new IRStmt(initInsList),"__init__"));
     return irRoot;
   }
@@ -159,8 +159,9 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     }
 
     irStmt.addIns(new IRLable("func."+funcName+".end"));
-    irStmt.addIns(new IRLoadIns(retItem,new RegItem(retType,"%.retval."+funcName)));
-    irStmt.addIns(new IRRetIns(retType,(RegItem)node.getScope().getRetItem()));
+    var retvalItem = new RegItem(retType,"%.retval."+funcName);
+    irStmt.addIns(new IRLoadIns(retItem,retvalItem));
+    irStmt.addIns(new IRRetIns(retType,retvalItem));
 
     irFuncDef.setBlockList(IRBlockStmt.makeBlock(irStmt,funcName));
     return irFuncDef;

@@ -17,6 +17,6 @@ public class IRBranchIns extends IRIns {
   @Override
   public String toString() {
     assert condition.getType().getName().equals("i1");
-    return "br " + "i1 " + condition.getName() + ", label " + trueLabel + ", label " + falseLabel;
+    return "br " + "i1 " + condition.getName() + ", label " + '%'+ trueLabel + ", label " + '%'+ falseLabel;
   }
 }
