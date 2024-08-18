@@ -1,4 +1,5 @@
-typedef enum { false, true } bool;
+//typedef enum { false, true } bool;
+#include<stdbool.h>
 int printf(const char *format, ...);
 int scanf(const char *format, ...);
 int sprintf(char *str, const char *format, ...);

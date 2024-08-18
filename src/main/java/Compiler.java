@@ -97,13 +97,17 @@ bool f()
 {
   return true;
 }
+class A{
+  int a;
+  int b;
+};
 int main()
 {
     string s1 = "$\\$\\$$";
     string s2 = f"$$$f"\\$"$\\$"$"$$$";
     println(s1);
     println(s2);
-    println(f"$f()$");
+
     println(f"$s1 == s2$");
     return 0;
 }

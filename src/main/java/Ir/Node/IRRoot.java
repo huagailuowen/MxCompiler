@@ -58,12 +58,12 @@ public class IRRoot extends IRNode{
     }
     string.append("declare ptr @__malloc(i32, i32)\n");
     string.append("declare ptr @__malloc_array(i32, i32)\n");
-    string.append("declare ptr @__string_eq(ptr, ptr)\n");
-    string.append("declare ptr @__string_ne(ptr, ptr)\n");
-    string.append("declare ptr @__string_lt(ptr, ptr)\n");
-    string.append("declare ptr @__string_le(ptr, ptr)\n");
-    string.append("declare ptr @__string_gt(ptr, ptr)\n");
-    string.append("declare ptr @__string_ge(ptr, ptr)\n");
+    string.append("declare i1 @__string_eq(ptr, ptr)\n");
+    string.append("declare i1 @__string_ne(ptr, ptr)\n");
+    string.append("declare i1 @__string_lt(ptr, ptr)\n");
+    string.append("declare i1 @__string_le(ptr, ptr)\n");
+    string.append("declare i1 @__string_gt(ptr, ptr)\n");
+    string.append("declare i1 @__string_ge(ptr, ptr)\n");
     string.append("declare ptr @__string_concat(ptr, ptr)\n");
     string.append("declare ptr @toString_bool(i1)\n");
 
