@@ -345,13 +345,15 @@ public class Checker implements ASTVisitor<Compileinfo>{
           if(node.getRetExpr().getLabel().getValueType().equals(ExprLable.ValueType.ABANDON)){
             return info;
             //there must be some error in the expr
-          }else if(lable.getReturnType().getName().equals("void")
+          }else if((lable.getReturnType().getName().equals("void")
             || lable.getReturnType().getName().equals("int")
-            || lable.getReturnType().getName().equals("bool")){
-            info.append(new Compileinfo("Type Mismatch",node.getPosition()));
-          }else if(node.getRetExpr().getLabel().getType().getDimension() != lable.getReturnType().getDimension()){
+            || lable.getReturnType().getName().equals("bool"))
+            && lable.getReturnType().getDimension() == 0){
             info.append(new Compileinfo("Type Mismatch",node.getPosition()));
           }
+//          else if(node.getRetExpr().getLabel().getType().getDimension() != lable.getReturnType().getDimension()){
+//            info.append(new Compileinfo("Type Mismatch",node.getPosition()));
+//          }
 
         }else if(node.getRetExpr().getLabel().getType().getName().equals(lable.getReturnType().getName())
           && node.getRetExpr().getLabel().getType().getDimension() == lable.getReturnType().getDimension()){

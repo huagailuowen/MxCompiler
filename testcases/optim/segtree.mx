@@ -181,14 +181,17 @@ int query(int o, int l, int r) {
 }
 
 int main() {
+
     n = getInt();
     m = getInt();
     p = getInt();
     int i = 1;
+
     for(i = 1; i <= n; ++i)
         a[i] = RandRange(0, p);
     init();
     build(1, 1, n);
+
     while(m>0) {
         op = Rand() % 2;
         pl = RandRange(1, n);

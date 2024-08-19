@@ -114,6 +114,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
       irRoot.addGlobalDef(new IRGlobalDef(stringItem));
     }
     //handle the function
+    //handle the function
     initInsList.add(new IRRetIns(IRBaseType.getVoidType(),null));
     irRoot.getInitFunc().setBlockList(IRBlockStmt.makeBlock(new IRStmt(initInsList),"__init__"));
     return irRoot;
@@ -977,7 +978,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
         var ptrItem1 = new RegItem(IRBaseType.getPtrType(),"%malloc."+String.valueOf(counter.getMallocIndex()));
         counter.addMallocIndex();
         body.add(new IRCallIns("__malloc_array", ptrItem1, new ArrayList<Item>() {{
-          add(indexList.get(finalI).getDest());
+          add(indexList.get(finalI+1).getDest());
           add(new LiteralItem(IRBaseType.getIntType(), 4));
         }}));
         body.add(new IRStoreIns(ptrList.get(i+1), ptrItem1));

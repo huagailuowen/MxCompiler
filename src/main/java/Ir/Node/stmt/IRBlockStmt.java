@@ -47,19 +47,18 @@ public class IRBlockStmt extends IRStmt {
 //        throw new ErrorBasic("the first should be lable");
         //the block will begin with no lable
       }
-
+      if(ins instanceof IRAllocIns){
+        entryblock.addIns(ins);
+      }
       if(block.getExitIns() != null){
         System.err.println("this Ins will never be executed");
         continue;
       }
       if(ins instanceof IRJmpIns || ins instanceof IRBranchIns || ins instanceof IRRetIns){
-
         block.setExitIns(ins);
         continue;
       }
-      if(ins instanceof IRAllocIns){
-        entryblock.addIns(ins);
-      }else{
+      else if(!(ins instanceof IRAllocIns)){
         block.addIns(ins);
       }
 

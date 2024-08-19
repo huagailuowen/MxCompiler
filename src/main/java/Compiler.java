@@ -102,18 +102,17 @@ class A{
     }
   }
 };
-int pp=1;
+
+
+int[][] s = new int[][]{{1,3,3},{},{3,5,3}};
+
 int main()
 {
-pp=pp+2;
-printInt(pp);
-    string s1 = "$\\$\\$$";
-    string s2 = f"$$$f"\\$"$\\$"$"$$$";
-    println(s1);
-    println(s2);
+    printlnInt(s.size());
+    printlnInt(s[2].size());
+    printlnInt(s[0].size());
 
 
-    println(f"$ s1 == s2 $");
     return 0;
 }
  */
