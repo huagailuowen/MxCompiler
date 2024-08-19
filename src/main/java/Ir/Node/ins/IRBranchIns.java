@@ -2,6 +2,7 @@ package Ir.Node.ins;
 
 import Ir.Item.Item;
 import Ir.Item.RegItem;
+import Utility.error.ErrorBasic;
 
 @lombok.Getter
 @lombok.Setter
@@ -10,6 +11,9 @@ public class IRBranchIns extends IRIns {
   protected String trueLabel, falseLabel;
 
   public IRBranchIns(Item condition, String trueLabel, String falseLabel) {
+    if(condition == null){
+      throw new ErrorBasic("condition is null");
+    }
     this.condition = condition;
     this.trueLabel = trueLabel;
     this.falseLabel = falseLabel;

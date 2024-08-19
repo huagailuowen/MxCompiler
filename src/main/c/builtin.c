@@ -42,7 +42,7 @@ char * toString_bool(bool flag)
 void * __malloc_array(int length,int size)
 {
     int *ptr=(int *)malloc(size*length+4);
-    ptr[0]=size;
+    ptr[0]=length;
     return ptr+1;
 }
 void * __malloc(int length,int size)
@@ -64,7 +64,7 @@ int __string_length(char *s)
 }
 char * __string_substring(char *s,int left,int right)
 {
-    int len=right-left+1;
+    int len=right-left;
     char *str=(char *)malloc(len+1);
     for(int i=0;i<len;i++)
     {

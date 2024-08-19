@@ -16,6 +16,9 @@ public class IRLoadIns extends IRIns {
   public IRLoadIns(RegItem addr, RegItem dest) {
     this.addr = addr;
     this.dest = dest;
+    if(dest.getType().getName().equals("void")){
+      throw new ErrorBasic("Load to void");
+    }
 //    this.type = type;
   }
 

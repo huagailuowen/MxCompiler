@@ -45,7 +45,7 @@ public class Compiler {
     if(!info.empty())throw new RuntimeException(info.getContent());
     IRNode ir = new IRBuilder().visit((ASTRoot) ast);
     System.out.println(ir.toString());
-    var output = new PrintStream(new FileOutputStream("src/test/mx/output_imm.ll"));
+    var output = new PrintStream(new FileOutputStream("src/test/mx/output.ll"));
     output.println(ir);
     output.close();
   }
@@ -78,10 +78,8 @@ int f(int x,int y){
 
 int main(){
 //  pp+1;
-  bool a=true,b=false;
-  int i=0,j=0;
-  println(f"$a||((i++)==(j++))$");
-  printInt(~i);
+  int []a=new int[10];
+  printInt(a.size());
 
 
   return 0;

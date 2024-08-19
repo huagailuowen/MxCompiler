@@ -4,7 +4,7 @@ cd ./src/test/mx
 ##llc -align-all-functions=1 -align-all-blocks=1 output.ll -o test.s
 #reimu
 
-sed 's/string_/string./g;s/array_/array./g' output_imm.ll >output.ll
+#sed 's/string_/string./g;s/array_/array./g' output_imm.ll >output.ll
 clang -m32 builtin.ll output.ll -o test
 ./test
 echo $?

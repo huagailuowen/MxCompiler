@@ -48,11 +48,12 @@ public class IRBlockStmt extends IRStmt {
         //the block will begin with no lable
       }
 
+      if(block.getExitIns() != null){
+        System.err.println("this Ins will never be executed");
+        continue;
+      }
       if(ins instanceof IRJmpIns || ins instanceof IRBranchIns || ins instanceof IRRetIns){
-        if(block.getExitIns() != null){
-          System.err.println("this Ins will never be executed");
-          continue;
-        }
+
         block.setExitIns(ins);
         continue;
       }

@@ -1027,6 +1027,9 @@ void put(int key, int data) {
 	int p;
 	node ptr = null;
 	p = getHash(key);
+//	printlnInt(p);
+
+
 	if (table[p] == null) {
 		table[p] = new node;
 		table[p].key = key;
@@ -1035,6 +1038,8 @@ void put(int key, int data) {
 		return;
 	}
 	ptr = table[p];
+//	print(f"$ptr == null$");
+
 	while (ptr.key != key) {
 		if (ptr.next == null) {
 			ptr.next = new node;
@@ -1055,7 +1060,7 @@ int get(int key) {
 }
 int main() {
 	int i;
-	table = new node[100];
+	table = new node[200];
 	for (i = 0;i < hashsize;i++)
 		table[i] = null;
 	for (i = 0;i < 1000;i++)
