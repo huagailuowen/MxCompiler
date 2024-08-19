@@ -45,7 +45,7 @@ public class Compiler {
     if(!info.empty())throw new RuntimeException(info.getContent());
     IRNode ir = new IRBuilder().visit((ASTRoot) ast);
     System.out.println(ir.toString());
-    var output = new PrintStream(new FileOutputStream("src/test/mx/output.ll"));
+    var output = new PrintStream(new FileOutputStream("src/test/mx/output_imm.ll"));
     output.println(ir);
     output.close();
   }
@@ -75,21 +75,16 @@ string s="123";
 int f(int x,int y){
   return x+y;
 }
-int pp=2;
+
 int main(){
 //  pp+1;
-  int i=1;
-//  int j=3;
-//  i=f(j,1);
-//  for(int j=0;j<10;j=j+1){
-//    i=i+1;
-//    {
-//      int i=f(j,1);
-//    }
-//  }
+  bool a=true,b=false;
+  int i=0,j=0;
+  println(f"$a||((i++)==(j++))$");
+  printInt(~i);
 
 
-  return i;
+  return 0;
 
 
 }
@@ -99,16 +94,28 @@ bool f()
 }
 class A{
   int a;
-  int b;
+  bool b;
+  int f()
+  {
+    if(a==10)return a;
+    else{
+      a++;
+      return f();
+    }
+  }
 };
+int pp=1;
 int main()
 {
+pp=pp+2;
+printInt(pp);
     string s1 = "$\\$\\$$";
     string s2 = f"$$$f"\\$"$\\$"$"$$$";
     println(s1);
     println(s2);
 
-    println(f"$s1 == s2$");
+
+    println(f"$ s1 == s2 $");
     return 0;
 }
  */

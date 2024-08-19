@@ -1,5 +1,7 @@
 //typedef enum { false, true } bool;
-#include<stdbool.h>
+#define bool _Bool
+#define true 1
+#define false 0
 int printf(const char *format, ...);
 int scanf(const char *format, ...);
 int sprintf(char *str, const char *format, ...);
@@ -86,7 +88,7 @@ int __string_ord(char *s,int pos)
 {
     return s[pos];
 }
-bool __string_eq(char *s1,char *s2)
+int __string_eq(char *s1,char *s2)
 {
     int i=0;
     while(s1[i]!='\0' && s2[i]!='\0')
@@ -97,17 +99,18 @@ bool __string_eq(char *s1,char *s2)
         }
         i++;
     }
+
     if(s1[i]=='\0' && s2[i]=='\0')
     {
         return true;
     }
     return false;
 }
-bool __string_ne(char *s1,char *s2)
+int __string_ne(char *s1,char *s2)
 {
     return !__string_eq(s1,s2);
 }
-bool __string_lt(char *s1,char *s2)
+int __string_lt(char *s1,char *s2)
 {
     int i=0;
     while(s1[i]!='\0' && s2[i]!='\0')
@@ -124,15 +127,15 @@ bool __string_lt(char *s1,char *s2)
     }
     return true;
 }
-bool __string_le(char *s1,char *s2)
+int __string_le(char *s1,char *s2)
 {
     return !__string_lt(s2,s1);
 }
-bool __string_gt(char *s1,char *s2)
+int __string_gt(char *s1,char *s2)
 {
     return __string_lt(s2,s1);
 }
-bool __string_ge(char *s1,char *s2)
+int __string_ge(char *s1,char *s2)
 {
     return !__string_lt(s1,s2);
 }

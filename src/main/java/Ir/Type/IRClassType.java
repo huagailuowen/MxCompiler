@@ -24,7 +24,11 @@ public class IRClassType extends IRBaseType {
     public String toString() {
         StringBuilder ret = new StringBuilder("%class." + name + " = type {");
         for (int i = 0; i < memberVariables.size(); i++) {
-            ret.append(memberVariables.get(i).toString());
+            if(memberVariables.get(i).toString().equals("i1")){
+                ret.append("i8");
+            }else {
+                ret.append(memberVariables.get(i).toString());
+            }
             if (i != memberVariables.size() - 1) {
                 ret.append(", ");
             }

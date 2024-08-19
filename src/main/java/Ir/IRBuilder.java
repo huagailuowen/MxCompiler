@@ -469,6 +469,23 @@ public class IRBuilder implements ASTVisitor<IRNode>{
         //it means it is a function
         //there is noting to do with
         //it not contain 'this'
+        var info = node.getScope().getDetail(node.getLabel().getName(),true);
+        if(info.b.contains(".")){
+          //have this
+          Scope funcScope =  Scope.findFunc(node.getScope());
+          if(funcScope == null) {
+            throw new ErrorBasic("class member not in class");
+          }
+          if(funcScope.getIrThisName() == null) {
+            throw new ErrorBasic("class member not in class");
+          }
+          RegItem thisItem = (RegItem) counter.queryItem(funcScope.getIrThisName());
+          if(thisItem == null) {
+            throw new ErrorBasic("class member not in class");
+          }
+          irStmt.addIns(new IRLoadIns(thisItem,(RegItem) dest));
+          irStmt.setDest(dest);
+        }
         return irStmt;
       }else{
         //then variable or this
@@ -596,20 +613,29 @@ public class IRBuilder implements ASTVisitor<IRNode>{
       var args = new ArrayList<Item>();
       args.add(lhsStmt.getDest());
       args.add(rhsStmt.getDest());
+      var tmpdest = new RegItem(IRBaseType.getIntType(),"%arith."+String.valueOf(counter.getArithIndex()));
+      counter.addArithIndex();
+
       if(node.getOp().equals("+")){
         irStmt.addIns(new IRCallIns("__string_concat",dest,args));
       }else if(node.getOp().equals("<")) {
-        irStmt.addIns(new IRCallIns("__string_lt", dest, args));
+        irStmt.addIns(new IRCallIns("__string_lt", tmpdest, args));
+        irStmt.addIns(new IRArithIns(tmpdest,new LiteralItem(IRBaseType.getIntType(),1),dest,"=="));
       }else if(node.getOp().equals(">")) {
-        irStmt.addIns(new IRCallIns("__string_gt", dest, args));
+        irStmt.addIns(new IRCallIns("__string_gt", tmpdest, args));
+        irStmt.addIns(new IRArithIns(tmpdest,new LiteralItem(IRBaseType.getIntType(),1),dest,"=="));
       }else if(node.getOp().equals("<=")) {
-        irStmt.addIns(new IRCallIns("__string_le", dest, args));
+        irStmt.addIns(new IRCallIns("__string_le", tmpdest, args));
+        irStmt.addIns(new IRArithIns(tmpdest,new LiteralItem(IRBaseType.getIntType(),1),dest,"=="));
       }else if(node.getOp().equals(">=")) {
-        irStmt.addIns(new IRCallIns("__string_ge", dest, args));
+        irStmt.addIns(new IRCallIns("__string_ge", tmpdest, args));
+        irStmt.addIns(new IRArithIns(tmpdest,new LiteralItem(IRBaseType.getIntType(),1),dest,"=="));
       }else if(node.getOp().equals("==")) {
-        irStmt.addIns(new IRCallIns("__string_eq", dest, args));
+        irStmt.addIns(new IRCallIns("__string_eq", tmpdest, args));
+        irStmt.addIns(new IRArithIns(tmpdest,new LiteralItem(IRBaseType.getIntType(),1),dest,"=="));
       }else if(node.getOp().equals("!=")) {
-        irStmt.addIns(new IRCallIns("__string_ne", dest, args));
+        irStmt.addIns(new IRCallIns("__string_ne", tmpdest, args));
+        irStmt.addIns(new IRArithIns(tmpdest,new LiteralItem(IRBaseType.getIntType(),1),dest,"=="));
       }else{
         throw new ErrorBasic("not support string op");
       }
