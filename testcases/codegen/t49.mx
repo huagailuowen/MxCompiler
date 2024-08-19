@@ -1,5 +1,5 @@
 /*
-Test Package: Codegen
+Test Package: ASMNaive
 Author: Admin
 Time: 2020-02-02
 Input:
@@ -10,7 +10,7 @@ Output:
 === end ===
 ExitCode: 2
 InstLimit: -1
-Origin Package: Codegen Pretest-587-Modifiy
+Origin Package: ASMNaive Pretest-587-Modifiy
 */
 int main() {
     string s = "hahaha";

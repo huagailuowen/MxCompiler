@@ -1,5 +1,5 @@
 /*
-Test Package: Codegen
+Test Package: ASMNaive
 Author: 11' Tianxing Jin
 Time: 2020-02-02
 Input:
@@ -11,7 +11,7 @@ Output:
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: Codegen Pretest-570
+Origin Package: ASMNaive Pretest-570
 */
 
 

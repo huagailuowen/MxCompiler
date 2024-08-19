@@ -1,5 +1,5 @@
 /*
-Test Package: Codegen
+Test Package: ASMNaive
 Author: 14' Xingyuan Sun
 Time: 2020-02-03
 Input:
@@ -21,7 +21,7 @@ Output:
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: Codegen Pretest-901
+Origin Package: ASMNaive Pretest-901
 */
 class point {
 	int x;

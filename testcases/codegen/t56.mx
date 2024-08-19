@@ -1,5 +1,5 @@
 /*
-Test Package: Codegen
+Test Package: ASMNaive
 Author: 14' Shichao Xu
 Time: 2020-02-02
 Input:
@@ -11,7 +11,7 @@ Output:
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: Codegen Pretest-867
+Origin Package: ASMNaive Pretest-867
 */
 int gcd(int x, int y, int j0 , int j1 , int j2 , int j3 , int j4 , int j5 , int j6 , int j7 , int j8 , int j9 , int j10 , int j11 , int j12 , int j13 , int j14 , int j15 , int j16 , int j17 , int j18 , int j19 , int j20 , int j21 , int j22 , int j23 , int j24 , int j25 , int j26 , int j27 , int j28 , int j29) {
   int i;

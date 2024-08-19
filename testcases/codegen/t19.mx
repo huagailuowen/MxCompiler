@@ -1,5 +1,5 @@
 /*
-Test Package: Codegen
+Test Package: ASMNaive
 Author: Yuncong Hu
 Time: 2020-02-02
 Input:
@@ -20,7 +20,7 @@ Output:
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: Codegen Pretest-556
+Origin Package: ASMNaive Pretest-556
 */
 
 //考察点：section 9 函数，包括函数定义，内建函数

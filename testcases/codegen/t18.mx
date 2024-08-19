@@ -1,5 +1,5 @@
 /*
-Test Package: Codegen
+Test Package: ASMNaive
 Author: 10' Tianxing He
 Time: 2020-02-02
 Input:
@@ -1010,7 +1010,7 @@ Output:
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: Codegen Pretest-553
+Origin Package: ASMNaive Pretest-553
 */
 
 int hashsize = 100;

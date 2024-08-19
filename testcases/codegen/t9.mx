@@ -1,5 +1,5 @@
 /*
-Test Package: Codegen
+Test Package: ASMNaive
 Author: 14' Shichao Xu
 Time: 2020-01-25
 Input:
@@ -11,7 +11,7 @@ Output:
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: Codegen Pretest-533
+Origin Package: ASMNaive Pretest-533
 */
 int qpow(int a,int p,int mod) {
     int t = 1;

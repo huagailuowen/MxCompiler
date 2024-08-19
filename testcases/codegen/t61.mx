@@ -1,5 +1,5 @@
 /*
-Test Package: Codegen
+Test Package: ASMNaive
 Author: 14' Rongyu You
 Time: 2020-02-03
 Input:
@@ -16,7 +16,7 @@ x * y: 0
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: Codegen Pretest-900
+Origin Package: ASMNaive Pretest-900
 */
 //
 // Naive vector class for Mx*.

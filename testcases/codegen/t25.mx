@@ -1,5 +1,5 @@
 /*
-Test Package: Codegen
+Test Package: ASMNaive
 Author: 09' Xiao Jia
 Time: 2020-02-02
 Input:
@@ -283,7 +283,7 @@ Total: 272
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: Codegen Pretest-564
+Origin Package: ASMNaive Pretest-564
 */
 
 int N = 15000;

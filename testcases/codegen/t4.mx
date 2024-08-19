@@ -1,5 +1,5 @@
 /*
-Test Package: Codegen
+Test Package: ASMNaive
 Author: 10' Bo Dai
 Time: 2020-01-25
 Input:
@@ -13,7 +13,7 @@ Output:
 ExitCode: 0
 InstLimit: -1
 Comment: HeapSort
-Origin Package: Codegen Pretest-527
+Origin Package: ASMNaive Pretest-527
 */
 
 

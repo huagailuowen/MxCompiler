@@ -57,53 +57,6 @@ Undefined Identifier
 
 /*
 
-int a;
-
-class b{
-  b() {
-    this.a = a;
-  }
-  int a;
-};
-
-
-
-
-string s="123";
-
-
-int f(int x,int y){
-  return x+y;
-}
-
-int main(){
-//  pp+1;
-  int []a=new int[10];
-  printInt(a.size());
-
-
-  return 0;
-
-
-}
-bool f()
-{
-  return true;
-}
-class A{
-  int a;
-  bool b;
-  int f()
-  {
-    if(a==10)return a;
-    else{
-      a++;
-      return f();
-    }
-  }
-};
-
-
 int[][] s = new int[][]{{1,3,3},{},{3,5,3}};
 
 int main()

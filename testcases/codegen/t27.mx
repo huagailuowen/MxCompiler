@@ -1,5 +1,5 @@
 /*
-Test Package: Codegen
+Test Package: ASMNaive
 Author: 11' Hang Wu
 Time: 2020-02-02
 Input:
@@ -528,7 +528,7 @@ Total: 257 step(s)
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: Codegen Pretest-566
+Origin Package: ASMNaive Pretest-566
 */
 
 // Target: Simulate a Bulgarian-solitaire game.

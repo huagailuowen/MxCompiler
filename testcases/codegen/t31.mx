@@ -1,5 +1,5 @@
 /*
-Test Package: Codegen
+Test Package: ASMNaive
 Author: 10' Huan Yang
 Time: 2020-02-02
 Input:
@@ -1194,7 +1194,7 @@ Total: 1182
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: Codegen Pretest-569
+Origin Package: ASMNaive Pretest-569
 */
 
 int N;

@@ -1,5 +1,5 @@
 /*
-Test Package: Codegen
+Test Package: ASMNaive
 Author: 15' Haoran Ye
 Time: 2020-02-03
 Input:
@@ -11,7 +11,7 @@ eternal!
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: Codegen Pretest-876
+Origin Package: ASMNaive Pretest-876
 */
 class older{
 	int age;

@@ -1,5 +1,5 @@
 /*
-Test Package: Codegen
+Test Package: ASMNaive
 Author: 16' Yuxi Liu
 Time: 2020-02-03
 Input:
@@ -244,7 +244,7 @@ abbdbdd\\"d"c\adc"c
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: Codegen Pretest-947
+Origin Package: ASMNaive Pretest-947
 */
 
 int main() {

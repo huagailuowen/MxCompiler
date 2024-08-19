@@ -1,5 +1,5 @@
 /*
-Test Package: Codegen
+Test Package: ASMNaive
 Author: Admin
 Time: 2020-02-02
 Input:
@@ -10,7 +10,7 @@ Output:
 === end ===
 ExitCode: 10
 InstLimit: -1
-Origin Package: Codegen Pretest-577
+Origin Package: ASMNaive Pretest-577
 */
 int min(int a, int b) {
     if (a <= b) return a;

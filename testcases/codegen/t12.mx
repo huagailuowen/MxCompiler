@@ -1,5 +1,5 @@
 /*
-Test Package: Codegen
+Test Package: ASMNaive
 Author: 15' Yiran Wu
 Time: 2020-01-25
 Input:
@@ -40,7 +40,7 @@ str1str2str3str4str5str6str7str8str9str10
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: Codegen Pretest-539
+Origin Package: ASMNaive Pretest-539
 */
 
 int[][] a=new int[30][30];
