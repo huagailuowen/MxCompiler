@@ -1,13 +1,14 @@
 package ASMNaive.Node.ins;
 
+import ASMNaive.Item.ASMAddr;
 import ASMNaive.Item.ASMReg;
 
 @lombok.Getter
 @lombok.Setter
 public class ASMStoreIns extends  ASMIns{
   ASMReg src;
-  ASMReg addr;
-  public ASMStoreIns(ASMReg src, ASMReg addr){
+  ASMAddr addr;
+  public ASMStoreIns(ASMReg src, ASMAddr addr){
     this.src = src;
     this.addr = addr;
   }

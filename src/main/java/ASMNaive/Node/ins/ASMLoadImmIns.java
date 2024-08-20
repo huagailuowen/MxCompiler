@@ -1,10 +1,14 @@
 package ASMNaive.Node.ins;
+
+import ASMNaive.Item.ASMReg;
+import Ir.Item.RegItem;
+
 @lombok.Getter
 @lombok.Setter
 public class ASMLoadImmIns extends ASMIns{
-  String reg;
+  ASMReg reg;
   int imm;
-  public ASMLoadImmIns(String reg, int imm){
+  public ASMLoadImmIns(ASMReg reg, int imm){
     this.reg = reg;
     this.imm = imm;
   }

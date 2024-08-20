@@ -136,7 +136,9 @@ public class Counter {
         if(member.getName().equals("i32")) {
           size += 4;
         }else if(member.getName().equals("i1")) {
-          size += 1;
+//          size += 1;
+          size += 4;
+          //stupid alignment
         }else if(member.getName().equals("ptr")) {
           size += 4;
         }else{

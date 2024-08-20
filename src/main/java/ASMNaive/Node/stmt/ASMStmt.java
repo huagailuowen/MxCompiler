@@ -11,6 +11,9 @@ public class ASMStmt extends ASMNode {
   public ASMStmt(){
     insList = new ArrayList<>();
   }
+  public void addInsBegin(ASMIns ins){
+    insList.add(0,ins);
+  }
   public void addIns(ASMIns ins){
     insList.add(ins);
   }
