@@ -7,8 +7,12 @@ import java.util.ArrayList;
 @lombok.Getter
 @lombok.Setter
 public class ASMBlockStmt extends ASMStmt{
-  ASMLable lable;
+  String lable;
 //  ASMIns exitIns;
+  public ASMBlockStmt(String lable){
+    this.lable = lable;
+    insList = new ArrayList<>();
+  }
   @Override
   public String toString(){
     StringBuilder sb = new StringBuilder();

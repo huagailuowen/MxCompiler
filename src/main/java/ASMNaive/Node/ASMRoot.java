@@ -19,6 +19,18 @@ public class ASMRoot extends ASMNode {
     funcDefs = new ArrayList<>();
     strDefs = new ArrayList<>();
   }
+  public void addStrDef(ASMStrDef strDef)
+  {
+    strDefs.add(strDef);
+  }
+  public void addFuncDef(ASMFuncDef funcDef)
+  {
+    funcDefs.add(funcDef);
+  }
+  public void addVarDef(ASMVarDef varDef)
+  {
+    varDefs.add(varDef);
+  }
   @Override
   public String toString()
   {

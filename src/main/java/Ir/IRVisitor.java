@@ -12,6 +12,7 @@ public interface IRVisitor<T> {
   public T visit(IRNode node) throws ErrorBasic;
   public T visit(IRRoot node) throws ErrorBasic;
   public T visit(IRFuncDef node) throws ErrorBasic;
+  public T visit(IRGlobalDef node) throws ErrorBasic;
 
   public T visit(IRAllocIns node) throws ErrorBasic;
   public T visit(IRArithIns node) throws ErrorBasic;

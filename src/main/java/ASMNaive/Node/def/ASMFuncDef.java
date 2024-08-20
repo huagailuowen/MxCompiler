@@ -14,10 +14,13 @@ public class ASMFuncDef extends ASMNode {
     this.name = name;
     blockList = new ArrayList<>();
   }
+  public void addBlock(ASMBlockStmt block){
+    blockList.add(block);
+  }
   @Override
   public String toString(){
     StringBuilder sb = new StringBuilder();
-    sb.append(name+":\n");
+    sb.append("  .globl "+name+"\n");
     for (ASMBlockStmt block : blockList)
     {
       sb.append(block.toString());
