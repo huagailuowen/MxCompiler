@@ -1,5 +1,6 @@
 package Ir.Node.ins;
 
+import Ir.IRVisitor;
 import Ir.Item.Item;
 import Ir.Item.RegItem;
 import Utility.error.ErrorBasic;
@@ -22,5 +23,9 @@ public class IRBranchIns extends IRIns {
   public String toString() {
     assert condition.getType().getName().equals("i1");
     return "br " + "i1 " + condition.getName() + ", label " + '%'+ trueLabel + ", label " + '%'+ falseLabel;
+  }
+  @Override
+  public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
+    return visitor.visit(this);
   }
 }

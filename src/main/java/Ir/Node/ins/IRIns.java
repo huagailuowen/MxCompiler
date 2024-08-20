@@ -16,6 +16,11 @@ public class IRIns extends IRNode {
       || ins instanceof IRStoreIns){
       return false;
     }else{
+      if(ins instanceof IRCallIns){
+        if(((IRCallIns) ins).getDest() == null){
+          return false;
+        }
+      }
       return true;
     }
   }

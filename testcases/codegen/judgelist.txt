@@ -1,13 +1,3 @@
-../optim/segtree.mx
-../optim/sha_1.mx
-../optim/binary_tree.mx
-../optim/dijkstra.mx
-../optim/humble.mx
-../optim/kruskal.mx
-../optim/lca.mx
-../optim/lunatic.mx
-../optim/maxflow.mx
-../optim/pi.mx
 e1.mx
 e2.mx
 e3.mx
@@ -99,3 +89,13 @@ t71.mx
 t72.mx
 t73.mx
 t74.mx
+../optim/segtree.mx
+../optim/sha_1.mx
+../optim/binary_tree.mx
+../optim/dijkstra.mx
+../optim/humble.mx
+../optim/kruskal.mx
+../optim/lca.mx
+../optim/lunatic.mx
+../optim/maxflow.mx
+../optim/pi.mx

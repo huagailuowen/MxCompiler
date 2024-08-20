@@ -1,5 +1,6 @@
 package Ir.Node.stmt;
 
+import Ir.IRVisitor;
 import Ir.Node.ins.*;
 import Ir.Utility.IRLable;
 import Utility.error.ErrorBasic;
@@ -87,5 +88,8 @@ public class IRBlockStmt extends IRStmt {
     }
     sb.append("  ").append(exitIns.toString()).append('\n');
     return sb.toString();
+  }
+  public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
+    return visitor.visit(this);
   }
 }

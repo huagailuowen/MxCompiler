@@ -16,9 +16,11 @@ public class ASMBlockStmt extends ASMStmt{
   @Override
   public String toString(){
     StringBuilder sb = new StringBuilder();
-    sb.append(lable.toString()+":\n");
+    if(!lable.equals("entry") && !lable.equals("defaultStart"))
+      sb.append(lable.toString()+":\n");
     for (ASMIns ins : insList)
     {
+      sb.append("  ");
       sb.append(ins.toString());
       sb.append("\n");
     }

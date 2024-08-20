@@ -1,8 +1,11 @@
 
 
+import ASMNaive.ASMBuilder;
+import ASMNaive.Node.ASMNode;
 import Grammar.MxparserLexer;
 import Ir.IRBuilder;
 import Ir.Node.IRNode;
+import Ir.Node.IRRoot;
 import Utility.error.MyErrorListener;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
@@ -44,9 +47,15 @@ public class Compiler {
     System.out.println(info);
     if(!info.empty())throw new RuntimeException(info.getContent());
     IRNode ir = new IRBuilder().visit((ASTRoot) ast);
-    System.out.println(ir.toString());
+//    System.out.println(ir.toString());
     var output = new PrintStream(new FileOutputStream("src/test/mx/output.ll"));
     output.println(ir);
+    output.close();
+
+    ASMNode asm = new ASMBuilder().visit((IRRoot) ir);
+    System.out.println(asm);
+    output = new PrintStream(new FileOutputStream("src/test/mx/output.s"));
+    output.println(asm);
     output.close();
   }
 }
@@ -58,12 +67,17 @@ Undefined Identifier
 /*
 
 int[][] s = new int[][]{{1,3,3},{},{3,5,3}};
-
+int p=1;
 int main()
 {
-    printlnInt(s.size());
-    printlnInt(s[2].size());
-    printlnInt(s[0].size());
+  int x=1,n=10;
+  for(int i=1;i<=n;i++){
+    return -1;
+  }
+  s[4][4]=1;
+  if(x+x==x){
+    x=x%10+5;
+  }
 
 
     return 0;

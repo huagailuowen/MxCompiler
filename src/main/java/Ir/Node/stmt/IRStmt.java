@@ -1,9 +1,11 @@
 package Ir.Node.stmt;
 
+import Ir.IRVisitor;
 import Ir.Item.Item;
 import Ir.Item.RegItem;
 import Ir.Node.IRNode;
 import Ir.Node.ins.IRIns;
+import Utility.error.ErrorBasic;
 
 import java.util.ArrayList;
 @lombok.Getter
