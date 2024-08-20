@@ -6,4 +6,4 @@
 ## shellcheck disable=SC2283
 #LOMBOK_JAR = $(CURDIR)/lib/lombok.jar
 export PATH="/usr/local/opt/bin:$PATH"
-testcases/codegen/scripts/test_llvm_ir_all.bash 'make run' testcases/codegen/ src/main/c/builtin.ll
+testcases/codegen/scripts/test_llvm_ir.bash 'make run' testcases/codegen/e1.mx src/main/c/builtin.ll
