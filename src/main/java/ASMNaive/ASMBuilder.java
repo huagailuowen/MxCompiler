@@ -50,6 +50,9 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
 //      name = name.substring(1);
       stmt.addIns(new ASMLoadAddrIns(ASMPhysicReg.t6,name));
       //tmp register
+//      if(!name.startsWith("@string.")){
+//        throw new ErrorBasic("this won't happen");
+//      }
       return new ASMAddr(ASMPhysicReg.t6,0);
     }
   }
@@ -70,7 +73,9 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
       if(name.startsWith("@string.")){
         stmt.addIns(new ASMMoveIns(dest,ASMPhysicReg.t6));
       }else {
-        stmt.addIns(new ASMLoadRegIns(dest, addr));
+//        stmt.addIns(new ASMLoadRegIns(dest, addr));
+        stmt.addIns(new ASMMoveIns(dest,ASMPhysicReg.t6));
+        //        throw new ErrorBasic("this won't happen");
       }
       return addr;
     }
