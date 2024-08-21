@@ -1,0 +1,2 @@
+#!/bin/sh
+testcases/sema/scripts/test.bash 'make run'  testcases/sema

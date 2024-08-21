@@ -1,6 +1,6 @@
-package ASMNaive.Utility;
+package ASM.Utility;
 
-import ASMNaive.Item.ASMReg;
+import ASM.Item.ASMReg;
 
 public interface ASMPhysicReg {
   //these register can not be allocated
