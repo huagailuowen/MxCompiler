@@ -21,7 +21,7 @@ public class ASMFuncDef extends ASMNode {
   public String toString(){
     StringBuilder sb = new StringBuilder();
     sb.append("  .globl "+name+"\n");
-    sb.append("  .text\n");
+//    sb.append("  .text\n");
     sb.append(name+":\n");
     for (ASMBlockStmt block : blockList)
     {

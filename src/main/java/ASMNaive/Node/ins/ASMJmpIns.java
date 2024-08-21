@@ -8,6 +8,9 @@ public class ASMJmpIns extends ASMIns{
   }
   @Override
   public String toString(){
+    if(lable.equals("defaultStart")){
+      return "";
+    }
     return String.format("%-6s", "j") + lable;
   }
 }

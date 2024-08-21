@@ -57,6 +57,10 @@ public class Compiler {
     output = new PrintStream(new FileOutputStream("src/test/mx/output.s"));
     output.println(asm);
     output.close();
+    output = new PrintStream(new FileOutputStream("src/test/mx/test.s"));
+    output.println(asm);
+    output.close();
+
   }
 }
 /*

@@ -47,10 +47,10 @@ public class ASMRoot extends ASMNode {
       sb.append(strDef.toString());
       sb.append("\n");
     }
-
+    sb.append("  .text\n");
     for (ASMFuncDef funcDef : funcDefs)
     {
-//      sb.append("  .text\n");
+
       sb.append(funcDef.toString());
       sb.append("\n");
     }
