@@ -18,6 +18,29 @@ public class StringItem extends Item{
     public String globalDef() {
         return toString();
     }
+    public static String convert_string(String s)
+    {
+        StringBuilder sb = new StringBuilder();
+        for(int i=0;i<s.length();i++)
+        {
+            char c = s.charAt(i);
+            if(c=='\n') {
+                sb.append("\\n");
+            }else if(c=='\t'){
+                sb.append("\\t");
+            }else if(c=='\r'){
+                sb.append("\\r");
+            }else if(c=='\"'){
+                sb.append("\\\"");
+            }else if(c=='\\'){
+                sb.append("\\\\");
+            }else{
+                sb.append(c);
+            }
+
+        }
+        return sb.toString();
+    }
     public static String convert(String s){
         StringBuilder sb = new StringBuilder();
         for(int i=0;i<s.length();i++){

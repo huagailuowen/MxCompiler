@@ -14,6 +14,6 @@ public class ASMLoadImmIns extends ASMIns{
   }
   @Override
   public String toString(){
-    return String.format("%-6s", "li") + reg + " " + imm;
+    return String.format("%-6s", "li") + reg + ", " + imm;
   }
 }

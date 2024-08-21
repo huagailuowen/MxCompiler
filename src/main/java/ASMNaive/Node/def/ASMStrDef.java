@@ -13,6 +13,6 @@ public class ASMStrDef extends ASMNode {
   }
   @Override
   public String toString(){
-    return name+":\n  .string \""+value+ "\"";
+    return name+":\n  .string \""+value+ "\\00\"";
   }
 }

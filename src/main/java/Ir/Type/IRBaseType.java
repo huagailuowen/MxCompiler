@@ -9,7 +9,7 @@ public class IRBaseType {
     //ptr void i32 i1 func
     public int getSize()
     {
-        if(name.equals("i1"))return 1;
+//        if(name.equals("i1"))return 1;
         return 4;
     }
     public IRBaseType(String name) {
