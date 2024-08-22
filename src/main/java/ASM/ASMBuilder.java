@@ -8,7 +8,6 @@ import ASM.Node.def.ASMFuncDef;
 import ASM.Node.def.ASMStrDef;
 import ASM.Node.def.ASMVarDef;
 import ASM.Node.ins.*;
-import ASM.Node.ins.ASMNaive.Node.ins.*;
 import ASM.Node.stmt.ASMBlockStmt;
 import ASM.Node.stmt.ASMStmt;
 import ASM.Utility.ASMPhysicReg;

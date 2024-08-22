@@ -11,8 +11,9 @@ public interface ASMPhysicReg {
   public static ASMReg t0= new ASMReg("t0", 5);
   public static ASMReg t1= new ASMReg("t1", 6);
   public static ASMReg t2= new ASMReg("t2", 7);
+  public static ASMReg t5= new ASMReg("t5", 30);//for addi and sw's big number
   public static ASMReg t6= new ASMReg("t6", 31);
-  //24 available register
+  //23 available register
   public static ASMReg ra= new ASMReg("ra", 1);
   public static ASMReg s0= new ASMReg("s0", 8);
   public static ASMReg s1= new ASMReg("s1", 9);
@@ -36,7 +37,7 @@ public interface ASMPhysicReg {
   public static ASMReg s11= new ASMReg("s11", 27);
   public static ASMReg t3= new ASMReg("t3", 28);
   public static ASMReg t4= new ASMReg("t4", 29);
-  public static ASMReg t5= new ASMReg("t5", 30);
+
 
 
 

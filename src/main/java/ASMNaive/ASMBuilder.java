@@ -196,14 +196,14 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
         //actually: addi sp,sp,-curStackOffset; sw ra,0(sp)
         if(node.getName().getName().equals("__init__")){
 //          initialize the global ptr
-          for(var vardef : varDefs){
-//            if(vardef.getType().equals("i1") || vardef.getType().equals("i8") || vardef.getType().equals("i32")){
-              beginList.add(new ASMLoadAddrIns(ASMPhysicReg.t6,vardef.getName()));
-              beginList.add(new ASMUnaryIns("addi",ASMPhysicReg.t5,ASMPhysicReg.t6,4));
-              //the address of the global variable
-              beginList.add(new ASMStoreIns(ASMPhysicReg.t5,new ASMAddr(ASMPhysicReg.t6,0)));
-//            }
-          }
+//          for(var vardef : varDefs){
+////            if(vardef.getType().equals("i1") || vardef.getType().equals("i8") || vardef.getType().equals("i32")){
+//              beginList.add(new ASMLoadAddrIns(ASMPhysicReg.t6,vardef.getName()));
+//              beginList.add(new ASMUnaryIns("addi",ASMPhysicReg.t0,ASMPhysicReg.t6,4));
+//              //the address of the global variable
+//              beginList.add(new ASMStoreIns(ASMPhysicReg.t0,new ASMAddr(ASMPhysicReg.t6,0)));
+////            }
+//          }
         }
         beginList.addAll(blockStmt.getInsList());
         blockStmt.setInsList(beginList);

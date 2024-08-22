@@ -1,6 +1,9 @@
 package ASMNaive.Node.ins;
 
 import ASMNaive.Item.ASMReg;
+import ASMNaive.Utility.ASMPhysicReg;
+
+import static java.lang.Math.abs;
 
 public class ASMUnaryIns extends ASMIns{
   protected String opt;
@@ -26,6 +29,14 @@ public class ASMUnaryIns extends ASMIns{
     if(!isImm){
       return String.format("%-6s", opt) + " " + dest.toString() + ", " + src.toString();
     }else{
+
+      if(opt.equals("addi") && abs(imm) >= 2048){
+        String str = null;
+        str = new ASMLoadImmIns(ASMPhysicReg.t5, imm).toString() + "\n";
+        str += new ASMBinaryIns("add", dest, src, ASMPhysicReg.t5).toString();
+        return str;
+      }
+
       return String.format("%-6s", opt) + " " + dest.toString() + ", " + src.toString() + ", " + imm;
     }
   }
