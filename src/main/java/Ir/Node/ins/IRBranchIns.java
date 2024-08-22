@@ -28,4 +28,14 @@ public class IRBranchIns extends IRIns {
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
   }
+  @Override
+  public void redirectLable(String origin, String target) {
+    if(origin.equals(trueLabel)){
+      trueLabel = target;
+    }else if(origin.equals(falseLabel)){
+      falseLabel = target;
+    }else{
+      throw new ErrorBasic("IRBranchIns redirectLable error");
+    }
+  }
 }

@@ -44,4 +44,7 @@ public class IRIns extends IRNode {
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
   }
+  public void redirectLable(String origin, String target) {
+    throw new ErrorBasic("IRIns redirectLable error");
+  }
 }

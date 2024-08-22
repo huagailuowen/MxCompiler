@@ -15,6 +15,7 @@ public class IRBlockStmt extends IRStmt {
   ArrayList<IRBlockStmt> pred;
   ArrayList<IRBlockStmt> succ;
   //Phi
+  boolean isAbandoned;
   TreeMap<String, IRPhiIns> phi;
 
   protected String lableName;
@@ -24,11 +25,23 @@ public class IRBlockStmt extends IRStmt {
     super();
     this.lableName = null;
     this.exitIns = null;
+    pred = new ArrayList<>();
+    succ = new ArrayList<>();
+    phi = new TreeMap<>();
   }
   public IRBlockStmt(String lableName) {
     super();
     this.lableName = lableName;
     this.exitIns = null;
+    pred = new ArrayList<>();
+    succ = new ArrayList<>();
+    phi = new TreeMap<>();
+  }
+  public void addPred(IRBlockStmt predBlock) {
+    pred.add(predBlock);
+  }
+  public void addSucc(IRBlockStmt succBlock) {
+    succ.add(succBlock);
   }
   public static ArrayList<IRBlockStmt> makeBlock(IRStmt stmts,String funcname) {
     ArrayList<IRBlockStmt> blocks = new ArrayList<>();

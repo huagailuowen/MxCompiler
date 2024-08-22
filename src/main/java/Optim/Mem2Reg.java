@@ -83,8 +83,9 @@ public class Mem2Reg {
     //delete the block that is not visited
     for(int i=0;i<blockindex;i++){
       if(!visitflag.get(i)){
-        node.getBlockList().get(i).setInsList(new ArrayList<>());
+//        node.getBlockList().get(i).setInsList(new ArrayList<>());
         domList.set(i,null);
+        node.getBlockList().get(i).setAbandoned(true);
         //mark the useless block
       }
     }
@@ -222,7 +223,7 @@ public class Mem2Reg {
       }
     }
   }
-  public void dfsReplace(IRBlockStmt block, HashMap<String, Pair<Item, String>> curVarName)
+  public void dfsReplace(IRBlockStmt block, HashMap<String, Pair<Item, String>> curVarName, String fromLable)
   {
     curVarName = new HashMap<>(curVarName);
     //shallow copy
@@ -236,7 +237,8 @@ public class Mem2Reg {
       }
       //assert that the variable is defined, so the curVarName should contain the variable
       //and its value is not null
-      phi.addBranch(curVarName.get(varName).a, curVarName.get(varName).b);
+      phi.addBranch(curVarName.get(varName).a, fromLable);
+      //not the curVarName.get(varName).b
       //item and label
       curVarName.put(varName, new Pair<>(phi.getDest(), block.getLableName()));
       //overwrite the variable name
@@ -279,7 +281,7 @@ public class Mem2Reg {
     }
     block.setInsList(newInsList);
     for(var succ : block.getSucc()){
-      dfsReplace(succ, curVarName);
+      dfsReplace(succ, curVarName, block.getLableName());
     }
     visitBlockFlag.set(block.getIndex(), false);
   }
@@ -290,7 +292,7 @@ public class Mem2Reg {
     for(var var : allocVars){
       curVarName.put(var.getName(), null);
     }
-    dfsReplace(index2block.get(0), curVarName);
+    dfsReplace(index2block.get(0), curVarName, null);
   }
   public void visit(IRFuncDef node){
     makeDomList(node);

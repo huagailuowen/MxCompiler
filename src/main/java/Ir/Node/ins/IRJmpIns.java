@@ -20,4 +20,12 @@ public class IRJmpIns extends IRIns {
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
   }
+  @Override
+  public void redirectLable(String origin, String target) {
+    if(origin.equals(label)){
+      label = target;
+    }else{
+      throw new ErrorBasic("IRJmpIns redirectLable error");
+    }
+  }
 }
