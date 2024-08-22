@@ -6,12 +6,20 @@ import Ir.Utility.IRLable;
 import Utility.error.ErrorBasic;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 @lombok.Getter
 @lombok.Setter
 public class IRBlockStmt extends IRStmt {
+  //CFG
+  ArrayList<IRBlockStmt> pred;
+  ArrayList<IRBlockStmt> succ;
+  //Phi
+  TreeMap<String, IRPhiIns> phi;
+
   protected String lableName;
   protected IRIns exitIns;
+  protected int index;
   public IRBlockStmt() {
     super();
     this.lableName = null;

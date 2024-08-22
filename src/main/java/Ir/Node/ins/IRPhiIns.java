@@ -14,7 +14,12 @@ public class IRPhiIns extends IRIns {
   RegItem dest;
   IRBaseType type;
   protected ArrayList<Pair<Item,String>> valueList;
-
+  public IRPhiIns(RegItem dest, IRBaseType type)
+  {
+    this.dest = dest;
+    this.type = type;
+    valueList = new ArrayList<>();
+  }
   public IRPhiIns(RegItem dest, IRBaseType type, ArrayList<Pair<Item,String>> valueList) {
     this.dest = dest;
     this.type = type;
@@ -29,4 +34,7 @@ public class IRPhiIns extends IRIns {
     return visitor.visit(this);
   }
 
+  public void addBranch(Item item, String lableName) {
+    valueList.add(new Pair<>(item, lableName));
+  }
 }
