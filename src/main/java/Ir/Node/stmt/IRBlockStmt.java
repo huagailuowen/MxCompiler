@@ -6,6 +6,7 @@ import Ir.Utility.IRLable;
 import Utility.error.ErrorBasic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 
 @lombok.Getter
@@ -17,6 +18,7 @@ public class IRBlockStmt extends IRStmt {
   //Phi
   boolean isAbandoned;
   TreeMap<String, IRPhiIns> phi;
+  HashMap<IRBlockStmt,IRBlockStmt> replacePred;
 
   protected String lableName;
   protected IRIns exitIns;
@@ -28,6 +30,7 @@ public class IRBlockStmt extends IRStmt {
     pred = new ArrayList<>();
     succ = new ArrayList<>();
     phi = new TreeMap<>();
+    replacePred = new HashMap<>();
   }
   public IRBlockStmt(String lableName) {
     super();
@@ -36,6 +39,7 @@ public class IRBlockStmt extends IRStmt {
     pred = new ArrayList<>();
     succ = new ArrayList<>();
     phi = new TreeMap<>();
+    replacePred = new HashMap<>();
   }
   public void addPred(IRBlockStmt predBlock) {
     pred.add(predBlock);

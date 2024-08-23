@@ -38,6 +38,9 @@ public class PhiRemover {
         var var = phi.getDest();
         for(var pair : phi.getValueList()){
           var predBlock = lable2block.get(pair.b);
+          if(block.getReplacePred().containsKey(predBlock)){
+            predBlock = block.getReplacePred().get(predBlock);
+          }
           if(predBlock.isAbandoned()){
             throw new Error("phi remove error");
           }
@@ -53,6 +56,7 @@ public class PhiRemover {
             insertblock.setExitIns(new IRJmpIns(block.getLableName()));
             insertblock.addIns(new IRMoveIns(pair.a,var));
             insertBlock.add(insertblock);
+            block.getReplacePred().put(predBlock, insertblock);
           }else {
             predBlock.addIns(new IRMoveIns(pair.a, var));
           }

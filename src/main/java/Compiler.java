@@ -51,22 +51,24 @@ public class Compiler {
     IRNode ir = new IRBuilder().visit((ASTRoot) ast);
 //    System.out.println(ir.toString());
     new IROptimizer().visit((IRRoot) ir);
-    System.out.println(ir.toString());
+//    System.out.println(ir.toString());
     var output = new PrintStream(new FileOutputStream("src/test/mx/output.ll"));
     output.println(ir);
     output.close();
 
     //------------------------------------------------------------
     //erase the phi
-//    new PhiRemover().visit((IRRoot) ir);
-//    ASMNode asm = new ASMBuilder().visit((IRRoot) ir);
-//    System.out.println(asm);
-//    output = new PrintStream(new FileOutputStream("src/test/mx/output.s"));
-//    output.println(asm);
-//    output.close();
-//    output = new PrintStream(new FileOutputStream("src/test/mx/test.s"));
-//    output.println(asm);
-//    output.close();
+    new PhiRemover().visit((IRRoot) ir);
+//    System.out.println(ir.toString());
+
+    ASMNode asm = new ASMBuilder().visit((IRRoot) ir);
+    System.out.println(asm);
+    output = new PrintStream(new FileOutputStream("src/test/mx/output.s"));
+    output.println(asm);
+    output.close();
+    output = new PrintStream(new FileOutputStream("src/test/mx/test.s"));
+    output.println(asm);
+    output.close();
 
   }
 }

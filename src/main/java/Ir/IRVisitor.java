@@ -24,6 +24,7 @@ public interface IRVisitor<T> {
   public T visit(IRPhiIns node) throws ErrorBasic;
   public T visit(IRRetIns node) throws ErrorBasic;
   public T visit(IRStoreIns node) throws ErrorBasic;
+  public T visit(IRMoveIns node) throws ErrorBasic;
 
   public T visit(IRBlockStmt node) throws ErrorBasic;
 

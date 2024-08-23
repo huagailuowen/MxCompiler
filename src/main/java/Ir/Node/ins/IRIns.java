@@ -17,7 +17,8 @@ public class IRIns extends IRNode {
     if(ins instanceof IRJmpIns
       || ins instanceof IRBranchIns
       || ins instanceof IRRetIns
-      || ins instanceof IRStoreIns){
+      || ins instanceof IRStoreIns
+      || ins instanceof IRMoveIns){
       return false;
     }else{
       if(ins instanceof IRCallIns){

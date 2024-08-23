@@ -159,6 +159,15 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     //the first 4 bytes are used to store the return address
     for(var block : node.getBlockList()){
       //the exitIns do not have allocate need
+      for(var entry : block.getPhi().entrySet()){
+        var name = entry.getValue().getDest().getName();
+        if(curVarOffset.containsKey(name)){
+          throw new ErrorBasic("variable redefined");
+        }
+        curVarOffset.put(name,curStackOffset);
+//        curStackOffset += entry.getValue().getType().getSize();
+        curStackOffset += 4;
+      }
       for(var ins : block.getInsList()){
         if(IRIns.needAlloca(ins)){
           var name = IRIns.getAllocaName(ins);
@@ -530,6 +539,23 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
 //    ASMAddr addr = getAddr(node.getAddr().getName(),stmt);
     stmt.addIns(new ASMStoreIns(value,addr));
     return stmt;
+  }
+
+  @Override
+  public ASMNode visit(IRMoveIns node) throws ErrorBasic {
+    var stmt = new ASMStmt();
+    ASMReg src = ASMPhysicReg.t0;
+    Item srcItem = node.getSrc();
+    if(srcItem instanceof LiteralItem){
+      stmt.addIns(new ASMLoadImmIns(src,((LiteralItem) srcItem).getValue()));
+    }else{
+      ASMAddr addr = getAddr(srcItem.getName(),src,stmt);
+//      stmt.addIns(new ASMLoadRegIns(src,addr));
+    }
+    ASMAddr addr = getAddr(node.getDest().getName(),stmt);
+    stmt.addIns(new ASMStoreIns(src,addr));
+    return stmt;
+
   }
 
   @Override

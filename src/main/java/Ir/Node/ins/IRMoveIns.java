@@ -3,7 +3,10 @@ package Ir.Node.ins;
 import Ir.IRVisitor;
 import Ir.Item.Item;
 import Ir.Item.RegItem;
+import Utility.error.ErrorBasic;
 
+@lombok.Getter
+@lombok.Setter
 public class IRMoveIns extends IRIns {
   protected RegItem  dest;
   protected Item src;
@@ -19,12 +22,11 @@ public class IRMoveIns extends IRIns {
 
   @Override
   public String toString() {
-    return "move " + dest.getName() + " " + src.getName();
+    return dest.getName() + " = " + src.getName();
   }
 
   @Override
-  public <T> T accept(IRVisitor<T> visitor) {
+  public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
   }
-
 }
