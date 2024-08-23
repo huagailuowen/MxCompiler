@@ -8,6 +8,7 @@ import Ir.Node.ins.IRPhiIns;
 import Ir.Node.stmt.IRBlockStmt;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 
 public class PhiRemover {
@@ -28,6 +29,7 @@ public class PhiRemover {
       if(block.getLableName() != null){
         lable2block.put(block.getLableName(), block);
       }
+      block.setReplacePred(new HashMap<>());
     }
     for(var block : node.getBlockList()){
       if(block.getPhi().isEmpty()){
@@ -57,7 +59,8 @@ public class PhiRemover {
             insertblock.addIns(new IRMoveIns(pair.a,var));
             insertBlock.add(insertblock);
             block.getReplacePred().put(predBlock, insertblock);
-          }else {
+          }else
+          {
             predBlock.addIns(new IRMoveIns(pair.a, var));
           }
         }
