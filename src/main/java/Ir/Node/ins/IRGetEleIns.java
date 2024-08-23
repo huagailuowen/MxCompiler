@@ -6,6 +6,8 @@ import Ir.Item.RegItem;
 import Utility.error.ErrorBasic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 @lombok.Getter
 @lombok.Setter
 public class IRGetEleIns extends IRIns {
@@ -38,5 +40,15 @@ public class IRGetEleIns extends IRIns {
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
   }
-
+  @Override
+  public void replaceUse(HashMap<RegItem, Item> map) {
+    if(map.containsKey(src)){
+      src = map.get(src);
+    }
+    for(int i = 0; i < indexList.size(); i++){
+      if(map.containsKey(indexList.get(i))){
+        indexList.set(i, map.get(indexList.get(i)));
+      }
+    }
+  }
 }

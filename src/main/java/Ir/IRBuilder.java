@@ -135,6 +135,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
 
 
     var retItem = new RegItem(IRBaseType.getPtrType(),"%.retaddr."+funcName);
+    retItem.setValueType(retType);
     if(!retType.getName().equals("void"))
       irStmt.addIns(new IRAllocIns(retType,retItem));
 
@@ -658,6 +659,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     }
     if(node.getOp().equals("&&") || node.getOp().equals("||")) {
       var destAddr = new RegItem(IRBaseType.getPtrType(),"%arith."+String.valueOf(counter.getArithIndex())+".addr");
+      destAddr.setValueType(IRBaseType.getBoolType());
       irStmt.addIns(new IRAllocIns(IRBaseType.getBoolType(),destAddr));
       IRLable rhsLable = new IRLable("arith."+String.valueOf(counter.getArithIndex())+".rhs");
       IRLable endLable = new IRLable("arith."+String.valueOf(counter.getArithIndex())+".end");
@@ -852,7 +854,8 @@ public class IRBuilder implements ASTVisitor<IRNode>{
         type = IRBaseType.getPtrType();
       }
       counter.addLoopIndex();
-      var mallocDest = new RegItem(IRBaseType.getPtrType(), "%malloc." + String.valueOf(counter.getMallocIndex()));
+      var mallocDest = new RegItem(IRBaseType.getPtrType(), "%malloc." + String.valueOf(counter.getMallocIndex()) + ".addr");
+      mallocDest.setValueType(IRBaseType.getPtrType());
       counter.addMallocIndex();
       var classname = node.getType().getLabel().getName();
       var mallocSize = counter.queryTypeSize("%class."+classname);
@@ -878,6 +881,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     //self made the for loop to handle the new array
     //like int[10][y]
     var dest = new RegItem(IRBaseType.getPtrType(), "%malloc." + String.valueOf(counter.getMallocIndex()));
+    dest.setValueType(IRBaseType.getPtrType());
     counter.addMallocIndex();
 
 
@@ -913,7 +917,9 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     irStmt.setDest(mallocdest);
     counter.addGeteleIndex();
     for (int i = 0; i < index_length ; i++) {
-      ptrList.add(new RegItem(IRBaseType.getPtrType(), "%malloc." + String.valueOf(counter.getMallocIndex())+ ".addr"));
+      RegItem ptr = new RegItem(IRBaseType.getPtrType(), "%malloc." + String.valueOf(counter.getMallocIndex()) + ".addr");
+      ptr.setValueType(IRBaseType.getPtrType());
+      ptrList.add(ptr);
       counter.addMallocIndex();
 //      counter.addItem(ptrList.get(i).getName(), ptrList.get(i));
       irStmt.addIns(new IRAllocIns(IRBaseType.getPtrType(), ptrList.get(i)));
@@ -1099,7 +1105,8 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     IRStmt irStmt = new IRStmt();
     irStmt.setDest(dest);
     irStmt.setDestAddr(destAddr);
-    irStmt.addIns(new IRAllocIns(IRBaseType.getPtrType(),destAddr));
+    if(!node.getLabel().getType().getName().equals("void"))
+      irStmt.addIns(new IRAllocIns(destAddr.getValueType(),destAddr));
 
     var condStmt = (IRStmt)node.getCond().accept(this);
     irStmt.addStmt(condStmt);

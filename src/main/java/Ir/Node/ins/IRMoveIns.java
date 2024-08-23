@@ -26,4 +26,5 @@ public class IRMoveIns extends IRIns {
   public <T> T accept(IRVisitor<T> visitor) {
     return visitor.visit(this);
   }
+
 }

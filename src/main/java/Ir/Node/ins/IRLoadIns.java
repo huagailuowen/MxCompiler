@@ -6,6 +6,8 @@ import Ir.Item.RegItem;
 import Ir.Type.IRBaseType;
 import Utility.error.ErrorBasic;
 
+import java.util.HashMap;
+
 @lombok.Getter
 @lombok.Setter
 public class IRLoadIns extends IRIns {
@@ -29,5 +31,11 @@ public class IRLoadIns extends IRIns {
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
+  }
+  @Override
+  public void replaceUse(HashMap<RegItem, Item> map) {
+    if(map.containsKey(addr)){
+      addr = (RegItem) map.get(addr);
+    }
   }
 }

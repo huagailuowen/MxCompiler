@@ -6,6 +6,8 @@ import Grammar.MxparserLexer;
 import Ir.IRBuilder;
 import Ir.Node.IRNode;
 import Ir.Node.IRRoot;
+import Optim.IROptimizer;
+import Optim.PhiRemover;
 import Utility.error.MyErrorListener;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
@@ -48,18 +50,23 @@ public class Compiler {
     if(!info.empty())throw new RuntimeException(info.getContent());
     IRNode ir = new IRBuilder().visit((ASTRoot) ast);
 //    System.out.println(ir.toString());
+    new IROptimizer().visit((IRRoot) ir);
+    System.out.println(ir.toString());
     var output = new PrintStream(new FileOutputStream("src/test/mx/output.ll"));
     output.println(ir);
     output.close();
 
-    ASMNode asm = new ASMBuilder().visit((IRRoot) ir);
-    System.out.println(asm);
-    output = new PrintStream(new FileOutputStream("src/test/mx/output.s"));
-    output.println(asm);
-    output.close();
-    output = new PrintStream(new FileOutputStream("src/test/mx/test.s"));
-    output.println(asm);
-    output.close();
+    //------------------------------------------------------------
+    //erase the phi
+//    new PhiRemover().visit((IRRoot) ir);
+//    ASMNode asm = new ASMBuilder().visit((IRRoot) ir);
+//    System.out.println(asm);
+//    output = new PrintStream(new FileOutputStream("src/test/mx/output.s"));
+//    output.println(asm);
+//    output.close();
+//    output = new PrintStream(new FileOutputStream("src/test/mx/test.s"));
+//    output.println(asm);
+//    output.close();
 
   }
 }

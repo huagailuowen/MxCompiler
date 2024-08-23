@@ -17,6 +17,9 @@ public class IRPhiIns extends IRIns {
   public IRPhiIns(RegItem dest, IRBaseType type)
   {
     this.dest = dest;
+    if(type == null){
+      throw new ErrorBasic("IRPhiIns type is null");
+    }
     this.type = type;
     valueList = new ArrayList<>();
   }
@@ -27,7 +30,7 @@ public class IRPhiIns extends IRIns {
   }
   @Override
   public String toString() {
-    return dest.getName() + " = phi " + type.toString() + " " + valueList.stream().map(pair -> "[" + pair.a.toString() + ", " + pair.b + "]").reduce((a, b) -> a + ", " + b).orElse("");
+    return dest.getName() + " = phi " + type.toString() + " " + valueList.stream().map(pair -> "[" + pair.a.getName() + ", %" + pair.b + "]").reduce((a, b) -> a + ", " + b).orElse("");
   }
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {

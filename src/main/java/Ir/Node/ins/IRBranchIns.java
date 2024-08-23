@@ -5,6 +5,8 @@ import Ir.Item.Item;
 import Ir.Item.RegItem;
 import Utility.error.ErrorBasic;
 
+import java.util.HashMap;
+
 @lombok.Getter
 @lombok.Setter
 public class IRBranchIns extends IRIns {
@@ -36,6 +38,12 @@ public class IRBranchIns extends IRIns {
       falseLabel = target;
     }else{
       throw new ErrorBasic("IRBranchIns redirectLable error");
+    }
+  }
+  @Override
+  public void replaceUse(HashMap<RegItem, Item> map) {
+    if(map.containsKey(condition)){
+      condition = map.get(condition);
     }
   }
 }

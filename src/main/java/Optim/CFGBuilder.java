@@ -8,6 +8,8 @@ import Ir.Node.ins.IRRetIns;
 import Ir.Node.stmt.IRBlockStmt;
 import Utility.error.ErrorBasic;
 
+import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.TreeMap;
 
 public class CFGBuilder {
@@ -17,7 +19,33 @@ public class CFGBuilder {
       visit(func);
     }
   }
-  public void visit(IRFuncDef node) {
+  void searchBlock(IRBlockStmt block, BitSet visitBlockFlag)
+  {
+    if(visitBlockFlag.get(block.getIndex())){
+      return;
+    }
+    visitBlockFlag.set(block.getIndex(), true);
+    for(var succ : block.getSucc()){
+      searchBlock(succ, visitBlockFlag);
+    }
+  }
+  public void removeUnreachable(IRFuncDef node)
+  {
+    BitSet visitFlag = new BitSet(node.getBlockList().size());
+    for(int i=0;i<node.getBlockList().size();i++){
+      node.getBlockList().get(i).setIndex(i);
+    }
+    searchBlock(node.getBlockList().get(0), visitFlag);
+    var newBlockList = new ArrayList<IRBlockStmt>();
+    for(var block : node.getBlockList()){
+      if(visitFlag.get(block.getIndex())){
+        newBlockList.add(block);
+      }
+    }
+    node.setBlockList(newBlockList);
+  }
+  public void tryBuild(IRFuncDef node)
+  {
     TreeMap<String, IRBlockStmt> lable2block = new TreeMap<>();
     for(var block : node.getBlockList()){
       if(block.getLableName() != null){
@@ -25,6 +53,8 @@ public class CFGBuilder {
       }else{
         throw new ErrorBasic("block without lable");
       }
+      block.setPred(new ArrayList<>());
+      block.setSucc(new ArrayList<>());
     }
     for(var block : node.getBlockList()){
       if(block.getExitIns() == null){
@@ -51,7 +81,8 @@ public class CFGBuilder {
           throw new ErrorBasic("lable not found");
         }
       }else if(exitins instanceof IRRetIns) {
-        block.getSucc().add(null);
+//        block.getSucc().add(null);
+        continue;
         //the return block
       }else{
         throw new ErrorBasic("exitins error");
@@ -64,6 +95,12 @@ public class CFGBuilder {
         }
       }
     }
+  }
+  public void visit(IRFuncDef node) {
+    tryBuild(node);
+    removeUnreachable(node);
+    tryBuild(node);
+
   }
 
 }

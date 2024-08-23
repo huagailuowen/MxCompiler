@@ -7,6 +7,7 @@ import Ir.Type.IRBaseType;
 import Utility.error.ErrorBasic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @lombok.Getter
 @lombok.Setter
@@ -33,4 +34,16 @@ public class IRCallIns extends IRIns {
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
   }
+  @Override
+  public void replaceUse(HashMap<RegItem, Item> map) {
+    for(int i = 0; i < args.size(); i++){
+      if(map.containsKey(dest)){
+        throw new ErrorBasic("IRCallIns replaceUse error");
+      }
+      if(map.containsKey(args.get(i))){
+        args.set(i, map.get(args.get(i)));
+      }
+    }
+  }
+
 }

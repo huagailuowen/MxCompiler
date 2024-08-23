@@ -25,6 +25,7 @@ public class Mem2Reg {
   HashMap<RegItem,Integer>var2index;
   ArrayList<ArrayList<Integer>>defList;
   BitSet visitBlockFlag;
+  HashMap<RegItem, Item>replaceMap;
 
   public void visit(IRRoot node){
     visit(node.getInitFunc());
@@ -34,6 +35,7 @@ public class Mem2Reg {
   }
   public void makeDomList(IRFuncDef node)
   {
+//    removeUnreachable(node);
     int blockindex = 0;
     index2block = new TreeMap<>();
     for(var block : node.getBlockList()){
@@ -47,10 +49,10 @@ public class Mem2Reg {
       domList.add(dom);
     }
     boolean changed = true;
-    ArrayList<Boolean> visitflag = null;
+    BitSet visitflag = null;
     while(changed){
       changed = false;
-      visitflag = new ArrayList<Boolean>(node.getBlockList().size());
+      visitflag = new BitSet(node.getBlockList().size());
       var blockQueue = new LinkedList<Integer >();
       blockQueue.add(0);
       //the entry block
@@ -94,6 +96,9 @@ public class Mem2Reg {
   {
     int totalBlock = domList.size();
     parentIndex = new ArrayList<>(totalBlock);
+    for(int i=0;i<totalBlock;i++){
+      parentIndex.add(-1);
+    }
     parentIndex.set(0, -1);
     for(int i=1;i<totalBlock;i++){
       if(domList.get(i) == null){
@@ -103,6 +108,10 @@ public class Mem2Reg {
       int domsize = dom.cardinality();
       int parent = -1;
       for(int j=0;j<totalBlock;j++){
+        if(domList.get(j) == null){
+          //abandoned block
+          continue;
+        }
         if(dom.get(j) && domList.get(j).cardinality() == domsize - 1) {
           parent = j;
           break;
@@ -113,21 +122,21 @@ public class Mem2Reg {
       }
       parentIndex.set(i, parent);
     }
-    for(int i=0;i<index2block.size();i++){
-      int parent = -1;
-      for(int j=0;j<index2block.size();j++){
-        if(domList.get(i).get(j)){
-          if(parent == -1){
-            parent = j;
-          }else{
-            while(parent != -1 && !domList.get(parent).get(j)){
-              parent = parentIndex.get(parent);
-            }
-          }
-        }
-      }
-      parentIndex.set(i, parent);
-    }
+//    for(int i=0;i<index2block.size();i++){
+//      int parent = -1;
+//      for(int j=0;j<index2block.size();j++){
+//        if(domList.get(i).get(j)){
+//          if(parent == -1){
+//            parent = j;
+//          }else{
+//            while(parent != -1 && !domList.get(parent).get(j)){
+//              parent = parentIndex.get(parent);
+//            }
+//          }
+//        }
+//      }
+//      parentIndex.set(i, parent);
+//    }
   }
   void calcDomFrontier()
   {
@@ -146,13 +155,16 @@ public class Mem2Reg {
       tmpdom.flip(0, totalBlock);
 //      frontier.set(0, totalBlock, false);
       for(var pred : index2block.get(i).getPred()){
+        if(pred.isAbandoned()){
+          continue;
+        }
         BitSet tmp = (BitSet) domList.get(pred.getIndex()).clone();
         tmp.and(tmpdom);
         frontier.or(tmp);
       }
       for(int j=0;j<totalBlock;j++){
         if(frontier.get(j)){
-          domFrontier.get(i).add(j);
+          domFrontier.get(j).add(i);
         }
       }
     }
@@ -217,7 +229,7 @@ public class Mem2Reg {
           if(frontierBlock.getPhi().containsKey(varName)){
             continue;
           }
-          var phi = new IRPhiIns(new RegItem(var.getType(),varName + "._"+blockIndex),var.getValueType());
+          var phi = new IRPhiIns(new RegItem(var.getValueType(),varName + "._"+frontier),var.getValueType());
           frontierBlock.getPhi().put(varName, phi);
         }
       }
@@ -252,7 +264,9 @@ public class Mem2Reg {
       var ins = block.getInsList().get(i);
       if(ins instanceof IRAllocIns) {
         continue;
-      }else if(ins instanceof IRStoreIns){
+      }
+      ins.replaceUse(replaceMap);
+      if(ins instanceof IRStoreIns){
         var storeIns = (IRStoreIns) ins;
         var addr = storeIns.getAddr();
         if(!curVarName.containsKey(addr.getName())){
@@ -272,33 +286,59 @@ public class Mem2Reg {
         if(entry == null){
           throw new Error("load error");
         }
+        replaceMap.put(loadIns.getDest(), entry.a);
         //remove the load instruction by move instruction
         //may be it can be optimized by the register allocation
-        newInsList.add(new IRArithIns(entry.a,new LiteralItem(IRBaseType.getIntType(),0),loadIns.getDest(),"add"));
+//        newInsList.add(new IRArithIns(entry.a,new LiteralItem(entry.a.getType(),0),loadIns.getDest(),"+"));
         continue;
       }
+
       newInsList.add(ins);
     }
     block.setInsList(newInsList);
+    var exitIns = block.getExitIns();
+
+    exitIns.replaceUse(replaceMap);
+
     for(var succ : block.getSucc()){
       dfsReplace(succ, curVarName, block.getLableName());
     }
-    visitBlockFlag.set(block.getIndex(), false);
   }
   public void replaceVar()
   {
+    replaceMap = new HashMap<>();
     visitBlockFlag = new BitSet(domList.size());
     var curVarName = new HashMap<String, Pair<Item, String>>();
     for(var var : allocVars){
-      curVarName.put(var.getName(), null);
+
+      curVarName.put(var.getName(), new Pair<>(new LiteralItem(var.getValueType(),0), null));
     }
     dfsReplace(index2block.get(0), curVarName, null);
   }
+
+
   public void visit(IRFuncDef node){
     makeDomList(node);
-    buildDomTree();
+//    buildDomTree();
     calcDomFrontier();
     placePhi();
     replaceVar();
+    for(var block : node.getBlockList()){
+      if(block.isAbandoned()){
+        continue;
+      }
+      int num = 0;
+      for(var pred : block.getPred()){
+        if(pred.isAbandoned()){
+          continue;
+        }
+        num++;
+      }
+      for(var phi : block.getPhi().values()){
+        if(phi.getValueList().size()!=num){
+          throw new Error("phi error");
+        }
+      }
+    }
   }
 }

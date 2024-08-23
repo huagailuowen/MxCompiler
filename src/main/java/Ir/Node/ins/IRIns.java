@@ -1,9 +1,13 @@
 package Ir.Node.ins;
 
 import Ir.IRVisitor;
+import Ir.Item.Item;
+import Ir.Item.RegItem;
 import Ir.Node.IRNode;
 import Ir.Node.def.IRClassDef;
 import Utility.error.ErrorBasic;
+
+import java.util.HashMap;
 
 @lombok.Getter
 @lombok.Setter
@@ -46,5 +50,8 @@ public class IRIns extends IRNode {
   }
   public void redirectLable(String origin, String target) {
     throw new ErrorBasic("IRIns redirectLable error");
+  }
+  public void replaceUse(HashMap<RegItem, Item> map) {
+    throw new ErrorBasic("IRIns replaceUse error");
   }
 }

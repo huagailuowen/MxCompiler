@@ -1,4 +1,5 @@
-
+../optim/segtree.mx
+t57.mx
 t1.mx
 t2.mx
 t3.mx
@@ -24,7 +25,9 @@ t22.mx
 t23.mx
 t24.mx
 t25.mx
-
+t26.mx
+t27.mx
+t28.mx
 t29.mx
 t30.mx
 t31.mx
@@ -53,7 +56,6 @@ t53.mx
 t54.mx
 t55.mx
 t56.mx
-t57.mx
 t58.mx
 t59.mx
 t60.mx
@@ -70,9 +72,7 @@ t71.mx
 t72.mx
 t73.mx
 t74.mx
-t26.mx
-t27.mx
-t28.mx
+
 e1.mx
 e2.mx
 e3.mx
@@ -91,7 +91,6 @@ sorting/merge_sort.mx
 sorting/quick_sort.mx
 sorting/selection_sort.mx
 std/queue.mt
-../optim/segtree.mx
 ../optim/sha_1.mx
 ../optim/binary_tree.mx
 ../optim/dijkstra.mx

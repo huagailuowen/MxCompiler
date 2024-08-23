@@ -101,8 +101,14 @@ public class IRBlockStmt extends IRStmt {
   @Override
   public String toString()
   {
+    if(this.isAbandoned){
+      return "";
+    }
     StringBuilder sb = new StringBuilder();
     sb.append(lableName).append(":\n");
+    for(var entry : phi.entrySet()){
+      sb.append("  ").append(entry.getValue().toString()).append('\n');
+    }
     for(IRIns ins : insList)
     {
       sb.append("  ").append(ins.toString()).append('\n');

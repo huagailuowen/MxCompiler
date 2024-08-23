@@ -1,7 +1,11 @@
 package Ir.Node.ins;
 
 import Ir.IRVisitor;
+import Ir.Item.Item;
+import Ir.Item.RegItem;
 import Utility.error.ErrorBasic;
+
+import java.util.HashMap;
 
 @lombok.Getter
 @lombok.Setter
@@ -27,5 +31,9 @@ public class IRJmpIns extends IRIns {
     }else{
       throw new ErrorBasic("IRJmpIns redirectLable error");
     }
+  }
+  @Override
+  public void replaceUse(HashMap<RegItem, Item> map) {
+    return ;
   }
 }

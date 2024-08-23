@@ -5,6 +5,8 @@ import Ir.Item.Item;
 import Ir.Item.RegItem;
 import Utility.error.ErrorBasic;
 
+import java.util.HashMap;
+
 @lombok.Getter
 @lombok.Setter
 public class IRArithIns extends IRIns {
@@ -74,5 +76,14 @@ public class IRArithIns extends IRIns {
       return dest.getName() + " = icmp " + op + " " + lhs.getType().toString() + " " + lhs.getName() + ", " + rhs.getName();
     }
     return dest.getName() + " = " + op + " " + lhs.getType().toString() + " " + lhs.getName() + ", " + rhs.getName();
+  }
+  @Override
+  public void replaceUse(HashMap<RegItem, Item> map) {
+    if(map.containsKey(lhs)){
+      lhs = map.get(lhs);
+    }
+    if(map.containsKey(rhs)){
+      rhs = map.get(rhs);
+    }
   }
 }
