@@ -1,3 +1,12 @@
+../optim/sha_1.mx
+../optim/binary_tree.mx
+../optim/dijkstra.mx
+../optim/humble.mx
+../optim/kruskal.mx
+../optim/lca.mx
+../optim/lunatic.mx
+../optim/maxflow.mx
+../optim/pi.mx
 ../optim/segtree.mx
 t57.mx
 t1.mx
@@ -72,7 +81,6 @@ t71.mx
 t72.mx
 t73.mx
 t74.mx
-
 e1.mx
 e2.mx
 e3.mx
@@ -91,12 +99,3 @@ sorting/merge_sort.mx
 sorting/quick_sort.mx
 sorting/selection_sort.mx
 std/queue.mt
-../optim/sha_1.mx
-../optim/binary_tree.mx
-../optim/dijkstra.mx
-../optim/humble.mx
-../optim/kruskal.mx
-../optim/lca.mx
-../optim/lunatic.mx
-../optim/maxflow.mx
-../optim/pi.mx
