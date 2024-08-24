@@ -1,5 +1,5 @@
 /*
-Test Package: ASMNaive
+Test Package: Codegen
 Author: 10' Huan Yang
 Time: 2020-02-02
 Input:
@@ -40,10 +40,11 @@ Output:
 6 7 2 
 
 8
+
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: ASMNaive Pretest-563
+Origin Package: Codegen Pretest-563
 */
 int[][] make;
 int[] color = new int[10];

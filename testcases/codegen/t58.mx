@@ -1,5 +1,5 @@
 /*
-Test Package: ASMNaive
+Test Package: Codegen
 Author: 14' Rongyu You
 Time: 2020-02-03
 Input:
@@ -10012,7 +10012,7 @@ Output:
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: ASMNaive Pretest-872
+Origin Package: Codegen Pretest-872
 */
 // USACO 3.1.2 inflate
 int MAXN = 10005;

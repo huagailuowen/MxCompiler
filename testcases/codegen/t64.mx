@@ -1,5 +1,5 @@
 /*
-Test Package: ASMNaive
+Test Package: Codegen
 Author: 16' Kaiyi Zhang
 Time: 2020-02-03
 Input:
@@ -189,10 +189,11 @@ for(i=0;i<32;i++)println(s2(i)+a2q+s[i]+a2q+co);
 for(i=1;i<32;i++)println(s[i]);
 return 0;
 }
+
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: ASMNaive Pretest-925
+Origin Package: Codegen Pretest-925
 */
 
 string digt(int x){

@@ -1,5 +1,5 @@
 /*
-Test Package: ASMNaive
+Test Package: Codegen
 Author: Haojun Mao
 Time: 2020-01-25
 Input:
@@ -17,7 +17,7 @@ Output:
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: ASMNaive Pretest-532
+Origin Package: Codegen Pretest-532
 */
 // input: 1 2 3 4
 

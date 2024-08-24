@@ -1,5 +1,5 @@
 /*
-Test Package: ASMNaive
+Test Package: Codegen
 Author: 10' Huan Yang
 Time: 2020-02-02
 Input:
@@ -1032,10 +1032,11 @@ move A --> B
 move A --> C
 move B --> C
 1023
+
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: ASMNaive Pretest-562
+Origin Package: Codegen Pretest-562
 */
 int cd(int d, string a, string b, string c, int sum) {
     if (d == 1) {

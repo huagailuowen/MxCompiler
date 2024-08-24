@@ -1,6 +1,6 @@
 /*
 The same as t28.xm
-Test Package: ASMNaive
+Test Package: Codegen
 Author: 09' Xiao Jia
 Time: 2020-02-02
 Input:
@@ -11,10 +11,11 @@ Output:
 1
 1029
 171
+
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: ASMNaive Pretest-567
+Origin Package: Codegen Pretest-567
 */
 int gcd(int x, int y) {
   if (x%y == 0) return y;

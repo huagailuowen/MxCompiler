@@ -1,5 +1,5 @@
 /*
-Test Package: ASMNaive
+Test Package: Codegen
 Author: 21' LIU Yiyu
 Time: 2023-08-07
 Input:
@@ -9,6 +9,7 @@ Input:
 Output:
 === output ===
 2
+
 === end ===
 ExitCode: 0
 InstLimit: -1

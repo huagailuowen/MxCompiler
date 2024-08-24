@@ -1,5 +1,5 @@
 /*
-//#dump Test Package: ASMNaive
+//#dump Test Package: Codegen
 //#dump Author: Yunwei Ren
 //#input sorting.in
 //#output sorting.ans

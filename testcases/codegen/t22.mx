@@ -1,5 +1,5 @@
 /*
-Test Package: ASMNaive
+Test Package: Codegen
 Author: 10' Huan Yang
 Time: 2020-02-02
 Input:
@@ -51,10 +51,11 @@ Output:
 0
 -10
 -1
+
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: ASMNaive Pretest-560
+Origin Package: Codegen Pretest-560
 */
 
 int[][] a = new int[4][];

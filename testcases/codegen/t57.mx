@@ -1,5 +1,5 @@
 /*
-Test Package: ASMNaive
+Test Package: Codegen
 Author: 15' Bowen Tan
 Time: 2020-02-03
 Input:
@@ -10,10 +10,11 @@ Output:
 === output ===
 3
 989898983 2 2
+
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: ASMNaive Pretest-871
+Origin Package: Codegen Pretest-871
 */
 int n;
 

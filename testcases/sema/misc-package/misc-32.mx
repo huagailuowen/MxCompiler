@@ -12,7 +12,7 @@ int maxr = 25;
 int maxc = 20005;
 int INF = -1 >> 1;
 
-int main(int a, int b) {
+int mmin(int a, int b) { 
     if (a + b) {
         return a;
     } else {

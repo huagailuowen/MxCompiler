@@ -1,5 +1,5 @@
 /*
-//#dump Test Package: ASMNaive
+//#dump Test Package: Codegen
 //#dump Author: Yunwei Ren
 //#input shortest_path.1.in
 //#output shortest_path.1.ans

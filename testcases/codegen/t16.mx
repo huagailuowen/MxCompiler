@@ -1,5 +1,5 @@
 /*
-Test Package: ASMNaive
+Test Package: Codegen
 Author: Admin
 Time: 2020-02-02
 Input:
@@ -10,10 +10,11 @@ Output:
 7053
 1035
 7035
+
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: ASMNaive Pretest-544
+Origin Package: Codegen Pretest-544
 */
 
 void foo(int d, int x, int y) {

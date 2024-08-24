@@ -1,5 +1,5 @@
 /*
-Test Package: ASMNaive
+Test Package: Codegen
 Author: Pikachu
 Time: 2020-02-03
 Input:
@@ -14,6 +14,7 @@ Output:
 n20n
 j27b
 k15d
+
 === end ===
 ExitCode: 0
 InstLimit: -1

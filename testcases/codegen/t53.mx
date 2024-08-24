@@ -1,5 +1,5 @@
 /*
-Test Package: ASMNaive
+Test Package: Codegen
 Author: Admin
 Time: 2020-02-02
 Input:
@@ -10,7 +10,7 @@ Output:
 === end ===
 ExitCode: 120
 InstLimit: -1
-Origin Package: ASMNaive Pretest-592
+Origin Package: Codegen Pretest-592
 */
 int main() {
     int la = 5;

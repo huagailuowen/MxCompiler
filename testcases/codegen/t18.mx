@@ -1,5 +1,5 @@
 /*
-Test Package: ASMNaive
+Test Package: Codegen
 Author: 10' Tianxing He
 Time: 2020-02-02
 Input:
@@ -1007,10 +1007,11 @@ Output:
 997 997
 998 998
 999 999
+
 === end ===
 ExitCode: 0
 InstLimit: -1
-Origin Package: ASMNaive Pretest-553
+Origin Package: Codegen Pretest-553
 */
 
 int hashsize = 100;
@@ -1027,9 +1028,6 @@ void put(int key, int data) {
 	int p;
 	node ptr = null;
 	p = getHash(key);
-//	printlnInt(p);
-
-
 	if (table[p] == null) {
 		table[p] = new node;
 		table[p].key = key;
@@ -1038,8 +1036,6 @@ void put(int key, int data) {
 		return;
 	}
 	ptr = table[p];
-//	print(f"$ptr == null$");
-
 	while (ptr.key != key) {
 		if (ptr.next == null) {
 			ptr.next = new node;
@@ -1060,7 +1056,7 @@ int get(int key) {
 }
 int main() {
 	int i;
-	table = new node[200];
+	table = new node[100];
 	for (i = 0;i < hashsize;i++)
 		table[i] = null;
 	for (i = 0;i < 1000;i++)
