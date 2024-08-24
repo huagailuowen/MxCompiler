@@ -1,3 +1,4 @@
+../optim/sha_1.mx
 ../optim/binary_tree.mx
 ../optim/dijkstra.mx
 ../optim/humble.mx
@@ -7,7 +8,6 @@
 ../optim/maxflow.mx
 ../optim/pi.mx
 ../optim/segtree.mx
-../optim/sha_1.mx
 t57.mx
 t1.mx
 t2.mx

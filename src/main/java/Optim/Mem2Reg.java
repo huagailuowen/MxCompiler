@@ -230,6 +230,7 @@ public class Mem2Reg {
             continue;
           }
           var phi = new IRPhiIns(new RegItem(var.getValueType(),varName + "._"+frontier),var.getValueType());
+          phi.setTmpreg(new RegItem(phi.getDest().getType(),phi.getDest().getName()+"_tmp"));
           frontierBlock.getPhi().put(varName, phi);
         }
       }

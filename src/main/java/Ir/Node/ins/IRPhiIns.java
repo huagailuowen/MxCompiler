@@ -12,6 +12,7 @@ import java.util.ArrayList;
 @lombok.Setter
 public class IRPhiIns extends IRIns {
   RegItem dest;
+  RegItem tmpreg;
   IRBaseType type;
   protected ArrayList<Pair<Item,String>> valueList;
   public IRPhiIns(RegItem dest, IRBaseType type)

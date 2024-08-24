@@ -167,6 +167,8 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
         curVarOffset.put(name,curStackOffset);
 //        curStackOffset += entry.getValue().getType().getSize();
         curStackOffset += 4;
+        curVarOffset.put(name+"_tmp",curStackOffset);
+        curStackOffset += 4;
       }
       for(var ins : block.getInsList()){
         if(IRIns.needAlloca(ins)){

@@ -22,22 +22,14 @@ import Semantic.Collector;
 import Semantic.Compileinfo;
 import org.antlr.v4.runtime.CommonTokenStream;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
 public class Compiler {
-  public static void main(String[] args) throws IOException {
-    var input = CharStreams.fromStream(System.in);
-    var lexer = new MxparserLexer(input);
-    lexer.removeErrorListeners();
-    lexer.addErrorListener(new MyErrorListener());
-    CommonTokenStream tokens = new CommonTokenStream(lexer);
-    var parser = new MxparserParser(tokens);
-    parser.removeErrorListeners();
-    parser.addErrorListener(new MyErrorListener());
-    var tree = parser.program();
-    ASTNode ast = new ASTBuilder().visit(tree);
+  public static void run(MxparserParser.ProgramContext root, boolean opt) throws FileNotFoundException {
+    ASTNode ast = new ASTBuilder().visit(root);
 //    int i=1;
 //    System.out.print(ast.toString());
 //    System.out.println("Collector:");
@@ -50,7 +42,11 @@ public class Compiler {
     if(!info.empty())throw new RuntimeException(info.getContent());
     IRNode ir = new IRBuilder().visit((ASTRoot) ast);
 //    System.out.println(ir.toString());
-    new IROptimizer().visit((IRRoot) ir);
+    if(opt){
+      new IROptimizer().visit((IRRoot) ir);
+    }
+
+
 //    System.out.println(ir.toString());
     var output = new PrintStream(new FileOutputStream("src/test/mx/output.ll"));
     output.println(ir);
@@ -58,17 +54,39 @@ public class Compiler {
 
     //------------------------------------------------------------
     //erase the phi
-    new PhiRemover().visit((IRRoot) ir);
+    if(opt){
+      new PhiRemover().visit((IRRoot) ir);
+    }
+
 //    System.out.println(ir.toString());
 
     ASMNode asm = new ASMBuilder().visit((IRRoot) ir);
     System.out.println(asm);
-    output = new PrintStream(new FileOutputStream("src/test/mx/output.s"));
-    output.println(asm);
-    output.close();
+    if(!opt){
+      output = new PrintStream(new FileOutputStream("src/test/mx/output.s"));
+      output.println(asm);
+      output.close();
+      return;
+    }
+
     output = new PrintStream(new FileOutputStream("src/test/mx/test.s"));
     output.println(asm);
     output.close();
+
+  }
+  public static void main(String[] args) throws IOException {
+    boolean opt = false;
+    var input = CharStreams.fromStream(System.in);
+    var lexer = new MxparserLexer(input);
+    lexer.removeErrorListeners();
+    lexer.addErrorListener(new MyErrorListener());
+    CommonTokenStream tokens = new CommonTokenStream(lexer);
+    var parser = new MxparserParser(tokens);
+    parser.removeErrorListeners();
+    parser.addErrorListener(new MyErrorListener());
+    var tree = parser.program();
+//    run(tree,false);
+    run(tree, true);
 
   }
 }

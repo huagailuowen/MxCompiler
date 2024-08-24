@@ -7,8 +7,8 @@ cd ./src/test/mx
 
 #sed 's/string_/string./g;s/array_/array./g' output_imm.ll >output.ll
 #clang -m32 builtin.s output.s -o test
-cp output.s test.s
 #./test
+#cp output.s test.s
 export PATH="/usr/local/opt/bin:$PATH"
 ravel test.s builtin.s
 #reimu

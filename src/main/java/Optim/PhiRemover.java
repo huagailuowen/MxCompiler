@@ -2,6 +2,7 @@ package Optim;
 
 import Ir.Node.IRRoot;
 import Ir.Node.def.IRFuncDef;
+import Ir.Node.ins.IRIns;
 import Ir.Node.ins.IRJmpIns;
 import Ir.Node.ins.IRMoveIns;
 import Ir.Node.ins.IRPhiIns;
@@ -46,26 +47,39 @@ public class PhiRemover {
           if(predBlock.isAbandoned()){
             throw new Error("phi remove error");
           }
-          if(predBlock.getSucc().size()>1 && block.getPred().size() >1){
-            var insertblock = new IRBlockStmt(".PHI."+phiCount++);
-            insertblock.addPred(predBlock);
-            predBlock.getSucc().remove(block);
-            predBlock.addSucc(insertblock);
-            insertblock.addSucc(block);
-            block.getPred().remove(predBlock);
-            block.addPred(insertblock);
-            predBlock.getExitIns().redirectLable(block.getLableName(), insertblock.getLableName());
-            insertblock.setExitIns(new IRJmpIns(block.getLableName()));
-            insertblock.addIns(new IRMoveIns(pair.a,var));
-            insertBlock.add(insertblock);
-            block.getReplacePred().put(predBlock, insertblock);
-          }else
+//          if(predBlock.getSucc().size()>1 && block.getPred().size() >1){
+//            var insertblock = new IRBlockStmt(".PHI."+phiCount++);
+//            insertblock.addPred(predBlock);
+//            predBlock.getSucc().remove(block);
+//            predBlock.addSucc(insertblock);
+//            insertblock.addSucc(block);
+//            block.getPred().remove(predBlock);
+//            block.addPred(insertblock);
+//            predBlock.getExitIns().redirectLable(block.getLableName(), insertblock.getLableName());
+//            insertblock.setExitIns(new IRJmpIns(block.getLableName()));
+//            insertblock.addIns(new IRMoveIns(pair.a,var));
+//            insertBlock.add(insertblock);
+//            block.getReplacePred().put(predBlock, insertblock);
+//          }else
           {
-            predBlock.addIns(new IRMoveIns(pair.a, var));
+            predBlock.addIns(new IRMoveIns(pair.a, phi.getTmpreg()));
           }
         }
 
       }
+    }
+    for(var block : node.getBlockList()){
+      if(block.getPhi().isEmpty()){
+        continue;
+      }
+      ArrayList<IRIns> newIns = new ArrayList<>();
+      for(var entry : block.getPhi().entrySet()){
+        var phi = entry.getValue();
+
+        newIns.add(new IRMoveIns(phi.getTmpreg(),phi.getDest()));
+      }
+      newIns.addAll(block.getInsList());
+      block.setInsList(newIns);
     }
     node.getBlockList().addAll(insertBlock);
   }
