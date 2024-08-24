@@ -26,9 +26,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
 public class Compiler {
   public static void run(MxparserParser.ProgramContext root, boolean opt) throws FileNotFoundException {
+    boolean fileout = false;
     ASTNode ast = new ASTBuilder().visit(root);
 //    int i=1;
 //    System.out.print(ast.toString());
@@ -49,7 +49,9 @@ public class Compiler {
 
 //    System.out.println(ir.toString());
     var output = new PrintStream(new FileOutputStream("src/test/mx/output.ll"));
-    output.println(ir);
+    if(fileout){
+      output.println(ir);
+    }
     output.close();
 
     //------------------------------------------------------------
@@ -64,13 +66,17 @@ public class Compiler {
     System.out.println(asm);
     if(!opt){
       output = new PrintStream(new FileOutputStream("src/test/mx/output.s"));
-      output.println(asm);
+      if(fileout){
+        output.println(asm);
+      }
       output.close();
       return;
     }
 
     output = new PrintStream(new FileOutputStream("src/test/mx/test.s"));
-    output.println(asm);
+    if(fileout){
+      output.println(asm);
+    }
     output.close();
 
   }
@@ -87,7 +93,9 @@ public class Compiler {
     var tree = parser.program();
 //    run(tree,false);
     run(tree, true);
-
+    var builtin = CharStreams.fromFileName("src/main/c/builtin.s");
+    //print the builtin
+    System.out.println(builtin);
   }
 }
 /*
