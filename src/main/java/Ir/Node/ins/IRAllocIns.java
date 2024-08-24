@@ -6,6 +6,8 @@ import Ir.Item.RegItem;
 import Ir.Type.IRBaseType;
 import Utility.error.ErrorBasic;
 
+import java.util.ArrayList;
+
 @lombok.Getter
 @lombok.Setter
 public class IRAllocIns extends IRIns {
@@ -23,5 +25,15 @@ public class IRAllocIns extends IRIns {
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
+  }
+  @Override
+  public ArrayList<RegItem> getUseRegs() {
+    return new ArrayList<>();
+  }
+  @Override
+  public ArrayList<RegItem> getDefRegs() {
+    ArrayList<RegItem> ret = new ArrayList<>();
+    ret.add(dest);
+    return ret;
   }
 }

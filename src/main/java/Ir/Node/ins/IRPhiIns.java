@@ -15,6 +15,14 @@ public class IRPhiIns extends IRIns {
   RegItem tmpreg;
   IRBaseType type;
   protected ArrayList<Pair<Item,String>> valueList;
+  public String findBlock(RegItem item){
+    for(Pair<Item,String> pair : valueList){
+      if(pair.a == item){
+        return pair.b;
+      }
+    }
+    return null;
+  }
   public IRPhiIns(RegItem dest, IRBaseType type)
   {
     this.dest = dest;
@@ -41,4 +49,21 @@ public class IRPhiIns extends IRIns {
   public void addBranch(Item item, String lableName) {
     valueList.add(new Pair<>(item, lableName));
   }
+  @Override
+  public ArrayList<RegItem> getUseRegs() {
+    ArrayList<RegItem> ret = new ArrayList<>();
+    for(Pair<Item,String> pair : valueList){
+      if(pair.a instanceof RegItem){
+        ret.add((RegItem)pair.a);
+      }
+    }
+    return ret;
+  }
+  @Override
+  public ArrayList<RegItem> getDefRegs() {
+    ArrayList<RegItem> ret = new ArrayList<>();
+    ret.add(dest);
+    return ret;
+  }
+
 }

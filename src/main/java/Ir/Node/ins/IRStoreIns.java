@@ -5,6 +5,7 @@ import Ir.Item.Item;
 import Ir.Item.RegItem;
 import Utility.error.ErrorBasic;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @lombok.Getter
@@ -35,4 +36,18 @@ public class IRStoreIns extends IRIns {
       value = map.get(value);
     }
   }
+  @Override
+  public ArrayList<RegItem> getUseRegs() {
+    ArrayList<RegItem> ret = new ArrayList<>();
+    if(value instanceof RegItem){
+      ret.add((RegItem)value);
+    }
+    ret.add(addr);
+    return ret;
+  }
+  @Override
+  public ArrayList<RegItem> getDefRegs() {
+    return new ArrayList<>();
+  }
+
 }

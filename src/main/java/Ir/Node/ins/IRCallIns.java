@@ -45,5 +45,23 @@ public class IRCallIns extends IRIns {
       }
     }
   }
+  @Override
+  public ArrayList<RegItem> getUseRegs() {
+    ArrayList<RegItem> ret = new ArrayList<>();
+    for(Item item : args){
+      if(item instanceof RegItem){
+        ret.add((RegItem)item);
+      }
+    }
+    return ret;
+  }
+  @Override
+  public ArrayList<RegItem> getDefRegs() {
+    ArrayList<RegItem> ret = new ArrayList<>();
+    if(dest != null){
+      ret.add(dest);
+    }
+    return ret;
+  }
 
 }

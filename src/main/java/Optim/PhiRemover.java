@@ -7,6 +7,7 @@ import Ir.Node.ins.IRJmpIns;
 import Ir.Node.ins.IRMoveIns;
 import Ir.Node.ins.IRPhiIns;
 import Ir.Node.stmt.IRBlockStmt;
+import Utility.error.ErrorBasic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,5 +83,6 @@ public class PhiRemover {
       block.setInsList(newIns);
     }
     node.getBlockList().addAll(insertBlock);
+    throw new ErrorBasic("1. the permutation algorithm is not implemented yet. 2. do not forget to insert the block inorder to avoid the side effect of the permutation algorithm");
   }
 }

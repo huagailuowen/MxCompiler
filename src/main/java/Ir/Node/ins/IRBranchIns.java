@@ -5,6 +5,7 @@ import Ir.Item.Item;
 import Ir.Item.RegItem;
 import Utility.error.ErrorBasic;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @lombok.Getter
@@ -45,5 +46,17 @@ public class IRBranchIns extends IRIns {
     if(map.containsKey(condition)){
       condition = map.get(condition);
     }
+  }
+  @Override
+  public ArrayList<RegItem> getUseRegs() {
+    ArrayList<RegItem> ret = new ArrayList<>();
+    if(condition instanceof RegItem){
+      ret.add((RegItem)condition);
+    }
+    return ret;
+  }
+  @Override
+  public ArrayList<RegItem> getDefRegs() {
+    return new ArrayList<>();
   }
 }

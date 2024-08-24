@@ -6,6 +6,7 @@ import Ir.Item.RegItem;
 import Ir.Type.IRBaseType;
 import Utility.error.ErrorBasic;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @lombok.Getter
@@ -32,5 +33,20 @@ public class IRRetIns extends IRIns {
     if(map.containsKey(value)){
       value = map.get(value);
     }
+  }
+  @Override
+  public ArrayList<RegItem> getUseRegs() {
+    ArrayList<RegItem> ret = new ArrayList<>();
+    if(type.getName().equals("void")){
+      return ret;
+    }
+    if(value instanceof RegItem){
+      ret.add((RegItem)value);
+    }
+    return ret;
+  }
+  @Override
+  public ArrayList<RegItem> getDefRegs() {
+    return new ArrayList<>();
   }
 }

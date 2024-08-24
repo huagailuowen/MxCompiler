@@ -51,4 +51,23 @@ public class IRGetEleIns extends IRIns {
       }
     }
   }
+  @Override
+  public ArrayList<RegItem> getUseRegs() {
+    ArrayList<RegItem> ret = new ArrayList<>();
+    if(src instanceof RegItem){
+      ret.add((RegItem)src);
+    }
+    for(Item item : indexList){
+      if(item instanceof RegItem){
+        ret.add((RegItem)item);
+      }
+    }
+    return ret;
+  }
+  @Override
+  public ArrayList<RegItem> getDefRegs() {
+    ArrayList<RegItem> ret = new ArrayList<>();
+    ret.add(dest);
+    return ret;
+  }
 }

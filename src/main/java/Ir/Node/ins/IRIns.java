@@ -7,6 +7,7 @@ import Ir.Node.IRNode;
 import Ir.Node.def.IRClassDef;
 import Utility.error.ErrorBasic;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @lombok.Getter
@@ -55,4 +56,11 @@ public class IRIns extends IRNode {
   public void replaceUse(HashMap<RegItem, Item> map) {
     throw new ErrorBasic("IRIns replaceUse error");
   }
+  public ArrayList<RegItem> getUseRegs() {
+    throw new ErrorBasic("IRIns getUseRegs error");
+  }
+  public ArrayList<RegItem> getDefRegs() {
+    throw new ErrorBasic("IRIns getDefRegs error");
+  }
+
 }

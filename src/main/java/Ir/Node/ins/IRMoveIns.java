@@ -5,6 +5,8 @@ import Ir.Item.Item;
 import Ir.Item.RegItem;
 import Utility.error.ErrorBasic;
 
+import java.util.ArrayList;
+
 @lombok.Getter
 @lombok.Setter
 public class IRMoveIns extends IRIns {
@@ -28,5 +30,13 @@ public class IRMoveIns extends IRIns {
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
+  }
+  @Override
+  public ArrayList<RegItem> getUseRegs() {
+    throw new ErrorBasic("IRMoveIns getUseRegs error, not SSA");
+  }
+  @Override
+  public ArrayList<RegItem> getDefRegs() {
+    throw new ErrorBasic("IRMoveIns getUseRegs error, not SSA");
   }
 }
