@@ -48,11 +48,13 @@ public class Compiler {
 
 
 //    System.out.println(ir.toString());
-    var output = new PrintStream(new FileOutputStream("src/test/mx/output.ll"));
+    PrintStream output = null;
     if(fileout){
+      output= new PrintStream(new FileOutputStream("src/test/mx/output.ll"));
       output.println(ir);
+      output.close();
     }
-    output.close();
+
 
     //------------------------------------------------------------
     //erase the phi
@@ -65,19 +67,19 @@ public class Compiler {
     ASMNode asm = new ASMBuilder().visit((IRRoot) ir);
     System.out.println(asm);
     if(!opt){
-      output = new PrintStream(new FileOutputStream("src/test/mx/output.s"));
       if(fileout){
+        output = new PrintStream(new FileOutputStream("src/test/mx/output.s"));
         output.println(asm);
+        output.close();
       }
-      output.close();
       return;
     }
 
-    output = new PrintStream(new FileOutputStream("src/test/mx/test.s"));
     if(fileout){
+      output = new PrintStream(new FileOutputStream("src/test/mx/test.s"));
       output.println(asm);
+      output.close();
     }
-    output.close();
 
   }
   public static void main(String[] args) throws IOException {
