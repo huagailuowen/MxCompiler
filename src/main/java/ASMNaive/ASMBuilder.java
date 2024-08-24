@@ -29,6 +29,8 @@ import Utility.error.ErrorBasic;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import static java.lang.System.exit;
+
 public class ASMBuilder implements IRVisitor<ASMNode> {
   TreeMap<String,Integer> curVarOffset;
   //relative to the origin sp register
@@ -64,6 +66,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     }else{
       //must be a global variable
       if(!name.startsWith("@")){
+        exit(0);
         throw new ErrorBasic("variable not found");
       }
 //      name = name.substring(1);

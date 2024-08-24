@@ -667,7 +667,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
       var lhsStmt = (IRStmt)node.getLhs().accept(this);
       irStmt.addStmt(lhsStmt);
       //storelhs
-      irStmt.addIns(new IRStoreIns(destAddr,(RegItem)lhsStmt.getDest()));
+      irStmt.addIns(new IRStoreIns(destAddr,lhsStmt.getDest()));
 
       irStmt.addIns(new IRBranchIns(lhsStmt.getDest(),node.getOp().equals("&&")?rhsLable.getName():endLable.getName(),node.getOp().equals("&&")?endLable.getName():rhsLable.getName()));
 
@@ -675,7 +675,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
       var rhsStmt = (IRStmt)node.getRhs().accept(this);
       irStmt.addStmt(rhsStmt);
       //storerhs
-      irStmt.addIns(new IRStoreIns(destAddr,(RegItem)rhsStmt.getDest()));
+      irStmt.addIns(new IRStoreIns(destAddr,rhsStmt.getDest()));
       irStmt.addIns(new IRJmpIns(endLable.getName()));
       irStmt.addIns(endLable);
       irStmt.addIns(new IRLoadIns(destAddr,dest));
