@@ -14,21 +14,21 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LifeTimeMonitor {
+public class LifeTimeMonitor extends CostEvaluator{
   public Set<IRBlockStmt> scannedBlock;
-  public HashMap<RegItem, IRIns> def;
-  public HashMap<RegItem, ArrayList<IRIns>> use;
-  public HashMap<IRIns, IRBlockStmt> ins2Block;
+
+
   public HashMap<String, IRBlockStmt> lable2Block;
   public HashMap<IRIns,IRIns> preIns;
   public HashMap<IRBlockStmt, IRIns> firstIns;
   public HashMap<IRBlockStmt, IRIns> lastIns;
   public ArrayList<Pair<RegItem,RegItem>> Edge;
 
-  public HashMap<RegItem, Integer> var2index;
-  public HashMap<Integer, RegItem> index2var;
+
   public void addInterference(RegItem a, RegItem b)
   {
+    a.addDegree();
+    b.addDegree();
     Edge.add(new Pair<>(a,b));
     Edge.add(new Pair<>(b,a));
   }

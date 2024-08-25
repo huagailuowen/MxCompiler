@@ -2,6 +2,7 @@
 
 import ASMNaive.ASMBuilder;
 import ASMNaive.Node.ASMNode;
+import Allocator.GraphAllocator;
 import Grammar.MxparserLexer;
 import Ir.IRBuilder;
 import Ir.Node.IRNode;
@@ -44,6 +45,7 @@ public class Compiler {
 //    System.out.println(ir.toString());
     if(opt){
       new IROptimizer().visit((IRRoot) ir);
+      new GraphAllocator().visit((IRRoot) ir);
     }
 
 

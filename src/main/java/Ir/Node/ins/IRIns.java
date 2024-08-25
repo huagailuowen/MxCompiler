@@ -15,8 +15,8 @@ import java.util.Set;
 @lombok.Getter
 @lombok.Setter
 public class IRIns extends IRNode {
-  Set<RegItem> liveIn;
-  Set<RegItem> liveOut;
+  HashSet<RegItem> liveIn;
+  HashSet<RegItem> liveOut;
   public void addLiveIn(RegItem reg)
   {
     liveIn.add(reg);

@@ -19,6 +19,9 @@ public class IRBlockStmt extends IRStmt {
   ArrayList<IRBlockStmt> succ;
   //Phi
   IRBlockStmt iDom;
+  int treeDepth;
+  int loopDepth;
+  boolean isLoopEntry;
   ArrayList<IRBlockStmt> domChild;
   boolean isAbandoned;
   TreeMap<String, IRPhiIns> phi;
@@ -38,6 +41,7 @@ public class IRBlockStmt extends IRStmt {
     phiDef = new HashSet<>();
     replacePred = new HashMap<>();
     domChild = new ArrayList<>();
+    treeDepth = -1;
   }
   public IRBlockStmt(String lableName) {
     super();
@@ -49,6 +53,7 @@ public class IRBlockStmt extends IRStmt {
     phiDef = new HashSet<>();
     replacePred = new HashMap<>();
     domChild = new ArrayList<>();
+    treeDepth = -1;
   }
   public void addPred(IRBlockStmt predBlock) {
     pred.add(predBlock);
