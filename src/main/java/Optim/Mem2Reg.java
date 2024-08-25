@@ -121,6 +121,10 @@ public class Mem2Reg {
         throw new Error("dom error");
       }
       parentIndex.set(i, parent);
+      var parentBlock = index2block.get(parent);
+      var childBlock = index2block.get(i);
+      parentBlock.addDomChild(childBlock);
+      childBlock.setIDom(parentBlock);
     }
 //    for(int i=0;i<index2block.size();i++){
 //      int parent = -1;

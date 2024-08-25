@@ -1,12 +1,14 @@
 package Ir.Node.stmt;
 
 import Ir.IRVisitor;
+import Ir.Item.RegItem;
 import Ir.Node.ins.*;
 import Ir.Utility.IRLable;
 import Utility.error.ErrorBasic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.TreeMap;
 
 @lombok.Getter
@@ -16,8 +18,11 @@ public class IRBlockStmt extends IRStmt {
   ArrayList<IRBlockStmt> pred;
   ArrayList<IRBlockStmt> succ;
   //Phi
+  IRBlockStmt iDom;
+  ArrayList<IRBlockStmt> domChild;
   boolean isAbandoned;
   TreeMap<String, IRPhiIns> phi;
+  HashSet<RegItem> phiDef;
   HashMap<IRBlockStmt,IRBlockStmt> replacePred;
 
   protected String lableName;
@@ -30,7 +35,9 @@ public class IRBlockStmt extends IRStmt {
     pred = new ArrayList<>();
     succ = new ArrayList<>();
     phi = new TreeMap<>();
+    phiDef = new HashSet<>();
     replacePred = new HashMap<>();
+    domChild = new ArrayList<>();
   }
   public IRBlockStmt(String lableName) {
     super();
@@ -39,13 +46,18 @@ public class IRBlockStmt extends IRStmt {
     pred = new ArrayList<>();
     succ = new ArrayList<>();
     phi = new TreeMap<>();
+    phiDef = new HashSet<>();
     replacePred = new HashMap<>();
+    domChild = new ArrayList<>();
   }
   public void addPred(IRBlockStmt predBlock) {
     pred.add(predBlock);
   }
   public void addSucc(IRBlockStmt succBlock) {
     succ.add(succBlock);
+  }
+  public void addDomChild(IRBlockStmt domChildBlock) {
+    domChild.add(domChildBlock);
   }
   public static ArrayList<IRBlockStmt> makeBlock(IRStmt stmts,String funcname) {
     ArrayList<IRBlockStmt> blocks = new ArrayList<>();

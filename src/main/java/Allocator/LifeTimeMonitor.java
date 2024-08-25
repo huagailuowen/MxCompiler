@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.misc.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 public class LifeTimeMonitor {
@@ -20,8 +21,12 @@ public class LifeTimeMonitor {
   public HashMap<IRIns, IRBlockStmt> ins2Block;
   public HashMap<String, IRBlockStmt> lable2Block;
   public HashMap<IRIns,IRIns> preIns;
+  public HashMap<IRBlockStmt, IRIns> firstIns;
   public HashMap<IRBlockStmt, IRIns> lastIns;
   public ArrayList<Pair<RegItem,RegItem>> Edge;
+
+  public HashMap<RegItem, Integer> var2index;
+  public HashMap<Integer, RegItem> index2var;
   public void addInterference(RegItem a, RegItem b)
   {
     Edge.add(new Pair<>(a,b));
@@ -54,24 +59,35 @@ public class LifeTimeMonitor {
     ins2Block = new HashMap<>();
     lable2Block = new HashMap<>();
     preIns = new HashMap<>();
+    firstIns = new HashMap<>();
     lastIns = new HashMap<>();
     Edge = new ArrayList<>();
+    var2index = new HashMap<>();
+    index2var = new HashMap<>();
     for(var block : node.getBlockList()){
       IRIns lasIns = null;
+      block.setPhiDef(new HashSet<>());
       lable2Block.put(block.getLableName(),block);
       for(var entry : block.getPhi().entrySet()){
         var ins = entry.getValue();
+        block.getPhiDef().add(ins.getDest());
         ins2Block.put(ins,block);
         adddef(ins);
         adduse(ins);
-        preIns.put(ins,lasIns);
-        lasIns = ins;
+//        preIns.put(ins,lasIns);
+//        if(lasIns == null){
+//          firstIns.put(block,ins);
+//        }
+//        lasIns = ins;
       }
       for(var ins : block.getInsList()){
         ins2Block.put(ins,block);
         adddef(ins);
         adduse(ins);
         preIns.put(ins,lasIns);
+        if(lasIns == null){
+          firstIns.put(block,ins);
+        }
         lasIns = ins;
       }
       var exitIns = block.getExitIns();
@@ -79,12 +95,19 @@ public class LifeTimeMonitor {
       adddef(exitIns);
       adduse(exitIns);
       preIns.put(exitIns,lasIns);
+      if(lasIns == null){
+        firstIns.put(block,exitIns);
+      }
       lastIns.put(block,exitIns);
     }
+    int cnt = 0;
     for(var entry : def.entrySet()){
       scannedBlock = new java.util.HashSet<>();
 
       var reg = entry.getKey();
+      var2index.put(reg,cnt);
+      index2var.put(cnt,reg);
+      cnt++;
       var ins = entry.getValue();
       if(!use.containsKey(reg)){
         throw new ErrorBasic("LifeTimeMonitor visit IRFuncDef error");
@@ -113,9 +136,20 @@ public class LifeTimeMonitor {
     scanLiveOut(lastIns.get(block),v);
   }
   public void scanLiveIn(IRIns ins, RegItem v){
+    ins.addLiveIn(v);
     var pre = preIns.get(ins);
     if(pre == null){
+      //first handle the PHI
       var block = ins2Block.get(ins);
+      if(block.getPhiDef().contains(v)){
+        //find the def, then handle and return
+        for(var entry : block.getPhi().entrySet()){
+          var phi = entry.getValue();
+          //the phi assignation happens at the very same time
+          phi.addLiveOut(v);
+        }
+        return;
+      }
       for(var pred : block.getPred()) {
         scanBlock(pred, v);
       }
@@ -124,6 +158,7 @@ public class LifeTimeMonitor {
     }
   }
   public void scanLiveOut(IRIns ins, RegItem v){
+    ins.addLiveOut(v);
     var defs = ins.getDefRegs();
     boolean flag = false;
     for(var def : defs){

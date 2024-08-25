@@ -9,10 +9,27 @@ import Utility.error.ErrorBasic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 @lombok.Getter
 @lombok.Setter
 public class IRIns extends IRNode {
+  Set<RegItem> liveIn;
+  Set<RegItem> liveOut;
+  public void addLiveIn(RegItem reg)
+  {
+    liveIn.add(reg);
+  }
+  public void addLiveOut(RegItem reg)
+  {
+    liveOut.add(reg);
+  }
+  IRIns()
+  {
+    liveIn = new HashSet<>();
+    liveOut = new HashSet<>();
+  }
   public static boolean needAlloca(IRIns ins)
   {
     if(ins instanceof IRJmpIns
