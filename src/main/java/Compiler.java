@@ -1,5 +1,6 @@
 
 
+import ASM.ASMBuilder;
 import ASM.NaiveASMBuilder;
 import ASM.Node.ASMNode;
 import Allocator.GraphAllocator;
@@ -9,6 +10,7 @@ import Ir.Node.IRNode;
 import Ir.Node.IRRoot;
 import Optim.IROptimizer;
 import Optim.NaivePhiRemover;
+import Optim.PhiRemover;
 import Utility.error.MyErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 
@@ -59,12 +61,12 @@ public class Compiler {
     //------------------------------------------------------------
     //erase the phi
     if(opt){
-      new NaivePhiRemover().visit((IRRoot) ir);
+      new PhiRemover().visit((IRRoot) ir);
     }
 
 //    System.out.println(ir.toString());
 
-    ASMNode asm = new NaiveASMBuilder().visit((IRRoot) ir);
+    ASMNode asm = new ASMBuilder().visit((IRRoot) ir);
     System.out.println(asm);
     if(!opt){
       if(fileout){

@@ -23,26 +23,38 @@ import Ir.Node.def.IRGlobalDef;
 import Ir.Node.ins.*;
 import Ir.Node.stmt.IRBlockStmt;
 import Ir.Type.IRClassType;
+import Ir.Utility.RegAddr;
 import Utility.error.ErrorBasic;
 
 import java.util.ArrayList;
 import java.util.TreeMap;
 
 import static java.lang.System.exit;
+import static java.lang.System.in;
 
 public class ASMBuilder implements IRVisitor<ASMNode> {
   TreeMap<String,Integer> curVarOffset;
   //relative to the origin sp register
   int curStackOffset;
   int calloffset;
+  boolean haveCalled;
   protected ArrayList<ASMVarDef>  varDefs;
   //total stack offset, relative to the origin sp register
   TreeMap<String,Integer> memberOffset;
   //"class.[name].index" -> offset
-  public ASMAddr getAddr(String name, ASMStmt stmt)
+  public void storeRes(RegItem reg, ASMStmt stmt, ASMReg res)
   {
-    if(curVarOffset.containsKey(name)){
-      return new ASMAddr(ASMPhysicReg.sp,calloffset+curVarOffset.get(name));
+    if(haveCalled){
+      throw new ErrorBasic("this should not happen");
+    }
+    var name = reg.getName();
+    if (!name.startsWith("@") && !reg.getRegAddr().isSpilled()) {
+      if(ASMPhysicReg.availableReg[reg.getRegAddr().getRegIndex()] != res){
+        stmt.addIns(new ASMMoveIns(ASMPhysicReg.availableReg[reg.getRegAddr().getRegIndex()],res));
+      }
+    } else if(curVarOffset.containsKey(name)){
+      var addr = new ASMAddr(ASMPhysicReg.sp,calloffset+curVarOffset.get(name));
+      stmt.addIns(new ASMStoreIns(res,addr));
     }else{
       //must be a global variable
       if(!name.startsWith("@")){
@@ -54,16 +66,49 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
 //      if(!name.startsWith("@string.")){
 //        throw new ErrorBasic("this won't happen");
 //      }
-      return new ASMAddr(ASMPhysicReg.t6,0);
+      var addr = new ASMAddr(ASMPhysicReg.t6,0);
+      if(name.startsWith("@string.")) {
+        throw new ErrorBasic("this won't happen");
+      }
+      stmt.addIns(new ASMStoreIns(res,addr));
     }
   }
-  public ASMAddr getAddr(String name,ASMReg dest,ASMStmt stmt){
-    if(curVarOffset.containsKey(name)){
+  public ASMReg findAddr(RegItem reg, ASMReg dest)
+  {
+    var name = reg.getName();
+    if (!name.startsWith("@") && !reg.getRegAddr().isSpilled()) {
+      if(ASMPhysicReg.availableReg[reg.getRegAddr().getRegIndex()] != dest){
+        dest = ASMPhysicReg.availableReg[reg.getRegAddr().getRegIndex()];
+      }
+    }
+    return dest;
+  }
+  public ASMReg getAddr(RegItem reg,ASMReg dest,ASMStmt stmt, boolean replace){
+    var name = reg.getName();
+    if (!name.startsWith("@") && !reg.getRegAddr().isSpilled()) {
+      var tmp = ASMPhysicReg.availableReg[reg.getRegAddr().getRegIndex()];
+      if(haveCalled && tmp.getStackOffset()>=1 && tmp.getStackOffset()<=10){
+        //the caller saved register
+        if(replace){
+          throw new ErrorBasic("caller saved register should not be replaced");
+        }
+        stmt.addIns(new ASMLoadRegIns(dest,new ASMAddr(ASMPhysicReg.sp,4*tmp.getStackOffset())));
+        return dest;
+      }
+      if(ASMPhysicReg.availableReg[reg.getRegAddr().getRegIndex()] != dest){
+        if(replace) {
+          dest = ASMPhysicReg.availableReg[reg.getRegAddr().getRegIndex()];
+        }else{
+          stmt.addIns(new ASMMoveIns(dest,ASMPhysicReg.availableReg[reg.getRegAddr().getRegIndex()]));
+        }
+      }
+    } else if(curVarOffset.containsKey(name)){
       var addr = new ASMAddr(ASMPhysicReg.sp,calloffset+curVarOffset.get(name));
       stmt.addIns(new ASMLoadRegIns(dest,addr));
-      return addr;
     }else{
       //must be a global variable
+      //therefore, the ins must be load or store
+      //just let the dest be the value of its address
       if(!name.startsWith("@")){
         exit(0);
         throw new ErrorBasic("variable not found");
@@ -71,16 +116,16 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
 //      name = name.substring(1);
       stmt.addIns(new ASMLoadAddrIns(ASMPhysicReg.t6,name));
       //tmp register
-      var addr = new ASMAddr(ASMPhysicReg.t6,0);
-      if(name.startsWith("@string.")){
-        stmt.addIns(new ASMMoveIns(dest,ASMPhysicReg.t6));
-      }else {
-//        stmt.addIns(new ASMLoadRegIns(dest, addr));
-        stmt.addIns(new ASMMoveIns(dest,ASMPhysicReg.t6));
-        //        throw new ErrorBasic("this won't happen");
-      }
-      return addr;
+      dest = ASMPhysicReg.t6;
+//      if(name.startsWith("@string.")){
+//        stmt.addIns(new ASMMoveIns(dest,ASMPhysicReg.t6));
+//      }else {
+////        stmt.addIns(new ASMLoadRegIns(dest, addr));
+//        stmt.addIns(new ASMMoveIns(dest,ASMPhysicReg.t6));
+//        //        throw new ErrorBasic("this won't happen");
+//      }
     }
+    return dest;
   }
   public void init()
   {
@@ -146,30 +191,38 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     //but the return value is stored in ra
 
     //handle the entry block: parameters and local variables
-    ASMBlockStmt initBlock = new ASMBlockStmt("init");
     int paramSize = 0;
     ArrayList<Integer>paramOffset = new ArrayList<>();
+    int cnt = 0;
     for(var param : node.getParamList()){
       //mark the offset of the parameter
       paramOffset.add(paramSize);
 //      paramSize += param.getType().getSize();
-      paramSize += 4;
+      if(cnt>=8){
+        paramSize += 4;
+      }else{
+//        param.setRegAddr(new RegAddr(cnt+10));
+        //a0 ~ a7
+        //we are sure they won't conflict with other registers
+      }
+      cnt++;
     }
 
 
-    curStackOffset = 4;
+    curStackOffset = 4*23;
     //the first 4 bytes are used to store the return address
     for(var block : node.getBlockList()){
       //the exitIns do not have allocate need
       for(var entry : block.getPhi().entrySet()){
+        if(!entry.getValue().getDest().getRegAddr().isSpilled()){
+          continue;
+        }
         var name = entry.getValue().getDest().getName();
         if(curVarOffset.containsKey(name)){
           throw new ErrorBasic("variable redefined");
         }
         curVarOffset.put(name,curStackOffset);
 //        curStackOffset += entry.getValue().getType().getSize();
-        curStackOffset += 4;
-        curVarOffset.put(name+"_tmp",curStackOffset);
         curStackOffset += 4;
       }
       for(var ins : block.getInsList()){
@@ -189,7 +242,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
       }
     }
     curStackOffset = (curStackOffset + 15) / 16 * 16;
-    for(int i=0;i< node.getParamList().size();i++){
+    for(int i=8;i< node.getParamList().size();i++){
       var param = node.getParamList().get(i);
       var offset = paramOffset.get(i) + curStackOffset;
       curVarOffset.put(param.getName(),offset);
@@ -203,21 +256,12 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
         first = false;
         ArrayList<ASMIns>beginList = new ArrayList<>();
         beginList.add(new ASMUnaryIns("addi", ASMPhysicReg.sp, ASMPhysicReg.sp, -curStackOffset));
-        beginList.add(new ASMStoreIns(ASMPhysicReg.ra,new ASMAddr(ASMPhysicReg.sp,0)));
 
+        for(var reg : ASMPhysicReg.calleeReg){
+          beginList.add(new ASMStoreIns(reg,new ASMAddr(ASMPhysicReg.sp,4*reg.getStackOffset())));
+        }
         //the put ins order is reversed
         //actually: addi sp,sp,-curStackOffset; sw ra,0(sp)
-        if(node.getName().getName().equals("__init__")){
-//          initialize the global ptr
-//          for(var vardef : varDefs){
-////            if(vardef.getType().equals("i1") || vardef.getType().equals("i8") || vardef.getType().equals("i32")){
-//              beginList.add(new ASMLoadAddrIns(ASMPhysicReg.t6,vardef.getName()));
-//              beginList.add(new ASMUnaryIns("addi",ASMPhysicReg.t0,ASMPhysicReg.t6,4));
-//              //the address of the global variable
-//              beginList.add(new ASMStoreIns(ASMPhysicReg.t0,new ASMAddr(ASMPhysicReg.t6,0)));
-////            }
-//          }
-        }
         beginList.addAll(blockStmt.getInsList());
         blockStmt.setInsList(beginList);
       }
@@ -246,8 +290,8 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
   @Override
   public ASMNode visit(IRAllocIns node) throws ErrorBasic {
     var stmt = new ASMStmt();
-    stmt.addIns(new ASMUnaryIns("addi",ASMPhysicReg.t0,ASMPhysicReg.sp,4+curVarOffset.get(node.getDest().getName())));
-    var addr = new ASMAddr(ASMPhysicReg.sp,curVarOffset.get(node.getDest().getName()));
+    stmt.addIns(new ASMUnaryIns("addi",ASMPhysicReg.t0,ASMPhysicReg.sp,4+curVarOffset.get(node.getDest())));
+    var addr = new ASMAddr(ASMPhysicReg.sp,curVarOffset.get(node.getDest()));
     stmt.addIns(new ASMStoreIns(ASMPhysicReg.t0,addr));
     return stmt;
   }
@@ -282,7 +326,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
         stmt.addIns(new ASMLoadImmIns(dest,val));
       }else if(src2Item instanceof LiteralItem) {
         //one constant
-        ASMAddr addr1 = getAddr(src1Item.getName(),src1,stmt);
+        src1 = getAddr((RegItem) src1Item,src1,stmt,true);
 //        stmt.addIns(new ASMLoadRegIns(src1,addr1));
         if(opt.equals("add")){
           stmt.addIns(new ASMUnaryIns("addi",dest,src1,((LiteralItem) src2Item).getValue()));
@@ -292,50 +336,51 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
 //        }
       }else{
         //two variable
-        ASMAddr addr1 = getAddr(src1Item.getName(),src1,stmt);
+        src1 = getAddr((RegItem) src1Item,src1,stmt,true);
 //        stmt.addIns(new ASMLoadRegIns(src1,addr1));
-        ASMAddr addr2 = getAddr(src2Item.getName(),src2,stmt);
+        src2 = getAddr((RegItem) src2Item,src2,stmt,true);
 //        stmt.addIns(new ASMLoadRegIns(src2,addr2));
         stmt.addIns(new ASMBinaryIns(opt,dest,src1,src2));
       }
-      ASMAddr addr0 = getAddr(destItem.getName(),stmt);
-      stmt.addIns(new ASMStoreIns(dest,addr0));
+      storeRes(destItem,stmt,dest);
     }else{
       if(src1Item instanceof LiteralItem){
         stmt.addIns(new ASMLoadImmIns(src1,((LiteralItem) src1Item).getValue()));
       }else{
-        ASMAddr addr1 = getAddr(src1Item.getName(),src1,stmt);
+        src1 = getAddr((RegItem) src1Item,src1,stmt,true);
 //        stmt.addIns(new ASMLoadRegIns(src1,addr1));
       }
       if(src2Item instanceof LiteralItem){
         stmt.addIns(new ASMLoadImmIns(src2,((LiteralItem) src2Item).getValue()));
       }else{
-        ASMAddr addr2 =  getAddr(src2Item.getName(),src2,stmt);
+        src2 = getAddr((RegItem) src2Item,src2,stmt,true);
 //        stmt.addIns(new ASMLoadRegIns(src2,addr2));
       }
-      ASMAddr addr0 = getAddr(destItem.getName(),stmt);
+//      ASMAddr addr0 = getAddr(destItem,stmt);
       if(opt.equals("eq")){
         stmt.addIns(new ASMBinaryIns("sub",dest,src1,src2));
         stmt.addIns(new ASMUnaryIns("seqz",dest,dest));
-        stmt.addIns(new ASMStoreIns(dest,addr0));
+//        stmt.addIns(new ASMStoreIns(dest,addr0));
+        storeRes(destItem,stmt,dest);
       }else if(opt.equals("ne")){
+
         stmt.addIns(new ASMBinaryIns("sub",dest,src1,src2));
         stmt.addIns(new ASMUnaryIns("snez",dest,dest));
-        stmt.addIns(new ASMStoreIns(dest,addr0));
+        storeRes(destItem,stmt,dest);
       }else if(opt.equals("slt")) {
         stmt.addIns(new ASMBinaryIns("slt", dest, src1, src2));
-        stmt.addIns(new ASMStoreIns(dest, addr0));
+        storeRes(destItem,stmt,dest);
       }else if(opt.equals("sle")) {
         stmt.addIns(new ASMBinaryIns("sgt", dest, src1, src2));
         stmt.addIns(new ASMUnaryIns("seqz", dest, dest));
-        stmt.addIns(new ASMStoreIns(dest, addr0));
+        storeRes(destItem,stmt,dest);
       }else if(opt.equals("sgt")) {
         stmt.addIns(new ASMBinaryIns("sgt", dest, src1, src2));
-        stmt.addIns(new ASMStoreIns(dest, addr0));
+        storeRes(destItem,stmt,dest);
       }else if(opt.equals("sge")) {
         stmt.addIns(new ASMBinaryIns("slt", dest, src1, src2));
         stmt.addIns(new ASMUnaryIns("seqz", dest, dest));
-        stmt.addIns(new ASMStoreIns(dest, addr0));
+        storeRes(destItem,stmt,dest);
       }
       else{
         //the other operation
@@ -349,7 +394,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
           opt = "sra";
         }
         stmt.addIns(new ASMBinaryIns(opt,dest,src1,src2));
-        stmt.addIns(new ASMStoreIns(dest,addr0));
+        storeRes(destItem,stmt,dest);
       }
     }
 
@@ -363,7 +408,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     if(node.getCondition() instanceof LiteralItem) {
       stmt.addIns(new ASMLoadImmIns(cond, ((LiteralItem) node.getCondition()).getValue()));
     }else{
-      ASMAddr addr = getAddr(node.getCondition().getName(),cond,stmt);
+      cond = getAddr((RegItem) node.getCondition(),cond,stmt,true);
 //      stmt.addIns(new ASMLoadRegIns(cond,addr));
     }
     stmt.addIns(new ASMBeqzIns(cond,node.getFalseLabel()));
@@ -376,41 +421,57 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     var stmt = new ASMStmt();
     int paramSize = 0;
     ArrayList<Integer>paramOffset = new ArrayList<>();
+    int cnt = 0;
     for(var param : node.getArgs()) {
       paramOffset.add(paramSize);
 //      paramSize += param.getType().getSize();
-      paramSize += 4;
+      if(cnt>=8){
+        paramSize += 4;
+      }
+      cnt++;
     }
-    paramSize = (paramSize + 15) / 16 * 16;
     //align the stack
+    paramSize = (paramSize + 15) / 16 * 16;
+
+    //store the reg
+    for(var reg : ASMPhysicReg.callerReg){
+      stmt.addIns(new ASMStoreIns(reg,new ASMAddr(ASMPhysicReg.sp,4*reg.getStackOffset())));
+    }
     stmt.addIns(new ASMUnaryIns("addi",ASMPhysicReg.sp,ASMPhysicReg.sp,-paramSize));
     calloffset = paramSize;
+    haveCalled = true;
+    var dest = ASMPhysicReg.t0;
     for(int i=0;i<node.getArgs().size();i++){
       var param = node.getArgs().get(i);
-      if(param instanceof LiteralItem){
-        stmt.addIns(new ASMLoadImmIns(ASMPhysicReg.t0,((LiteralItem) param).getValue()));
+      if(i<8){
+        dest = ASMPhysicReg.callerReg[i];
       }else{
-        var addr = getAddr(param.getName(),ASMPhysicReg.t0,stmt);
+        dest = ASMPhysicReg.t0;
+      }
+      if(param instanceof LiteralItem){
+        stmt.addIns(new ASMLoadImmIns(dest,((LiteralItem) param).getValue()));
+      }else{
+        dest = getAddr((RegItem) param, dest, stmt,false);
 //        stmt.addIns(new ASMLoadRegIns(ASMPhysicReg.t0,addr));
       }
-      if(i==0) {
-        stmt.addIns(new ASMMoveIns(ASMPhysicReg.a0, ASMPhysicReg.t0));
+      if(i>=8) {
+        stmt.addIns(new ASMStoreIns(dest,new ASMAddr(ASMPhysicReg.sp,paramOffset.get(i))));
       }
-      if(i==1){
-        stmt.addIns(new ASMMoveIns(ASMPhysicReg.a1,ASMPhysicReg.t0));
-      }
-      if(i==2){
-        stmt.addIns(new ASMMoveIns(ASMPhysicReg.a2,ASMPhysicReg.t0));
-      }
-      stmt.addIns(new ASMStoreIns(ASMPhysicReg.t0,new ASMAddr(ASMPhysicReg.sp,paramOffset.get(i))));
     }
-    calloffset = 0;
     stmt.addIns(new ASMCallIns(node.getFuncName()));
     stmt.addIns(new ASMUnaryIns("addi",ASMPhysicReg.sp,ASMPhysicReg.sp,paramSize));
+    calloffset = 0;
+    haveCalled = false;
     if(node.getDest()!=null){
-      var addr = getAddr(node.getDest().getName(),stmt);
-      stmt.addIns(new ASMStoreIns(ASMPhysicReg.a0,addr));
+//      var addr = getAddr(node.getDest(),stmt);
+//      stmt.addIns(new ASMStoreIns(ASMPhysicReg.a0,addr));
+      storeRes(node.getDest(),stmt,ASMPhysicReg.a0);
     }
+    //load the reg
+    for(var reg : ASMPhysicReg.callerReg){
+      stmt.addIns(new ASMLoadRegIns(reg,new ASMAddr(ASMPhysicReg.sp,4*reg.getStackOffset())));
+    }
+
 
     return stmt;
   }
@@ -421,9 +482,13 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     ASMReg dest = ASMPhysicReg.t0;
     ASMReg base = ASMPhysicReg.t1;
     ASMReg index = ASMPhysicReg.t2;
-//    ASMReg tmp = ASMPhysicReg.t3;
+//    ASMReg tmp = ASMPhysicReg.t6;
 //    stmt.addIns(new ASMLoadRegIns(base,getAddr(node.getSrc().getName())));
-    getAddr(node.getSrc().getName(),base,stmt);
+    if(node.getSrc() instanceof LiteralItem){
+      stmt.addIns(new ASMLoadImmIns(base,((LiteralItem) node.getSrc()).getValue()));
+    }else {
+      base = getAddr((RegItem) node.getSrc(), base, stmt,false);
+    }
     boolean first = true;
     var typename = node.getType();
     int typesize = 0;
@@ -445,7 +510,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
           stmt.addIns(new ASMLoadImmIns(index,((LiteralItem) indexItem).getValue()));
         }else{
 //          stmt.addIns(new ASMLoadRegIns(index,getAddr(indexItem.getName())));
-          getAddr(indexItem.getName(),index,stmt);
+          index = getAddr((RegItem) indexItem,index,stmt,false);
         }
         stmt.addIns(new ASMLoadImmIns(dest,typesize));
         stmt.addIns(new ASMBinaryIns("mul",index,index,dest));
@@ -455,7 +520,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
           stmt.addIns(new ASMLoadImmIns(index,((LiteralItem) indexItem).getValue()));
         }else{
 //          stmt.addIns(new ASMLoadRegIns(index,getAddr(indexItem.getName())));
-          getAddr(indexItem.getName(),index,stmt);
+          index = getAddr((RegItem) indexItem,index,stmt,false);
         }
 
         stmt.addIns(new ASMLoadImmIns(base,4));
@@ -464,8 +529,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
         stmt.addIns(new ASMBinaryIns("add",dest,dest,index));
       }
     }
-    var addr = getAddr(node.getDest().getName(),stmt);
-    stmt.addIns(new ASMStoreIns(dest,addr));
+    storeRes(node.getDest(),stmt,dest);
     return stmt;
   }
 
@@ -480,16 +544,15 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
   public ASMNode visit(IRLoadIns node) throws ErrorBasic {
     var stmt = new ASMStmt();
     ASMReg addrdest = ASMPhysicReg.t0;
-    ASMAddr addr = getAddr(node.getAddr().getName(),addrdest,stmt);
+    addrdest = getAddr(node.getAddr(),addrdest,stmt,true);
 //    stmt.addIns(new ASMLoadRegIns(dest,addr));
     ASMReg tmp = ASMPhysicReg.t1;
 //    if(addr.getBase().equals(ASMPhysicReg.sp)) {
 //
 //    }
+    tmp = findAddr(node.getDest(),tmp);
     stmt.addIns(new ASMLoadRegIns(tmp, new ASMAddr(addrdest, 0)));
-    ASMAddr addr0 = getAddr(node.getDest().getName(),stmt);
-//    stmt.addIns(new ASMStoreIns(tmp,addr0));
-    stmt.addIns(new ASMStoreIns(tmp,addr0));
+    storeRes(node.getDest(),stmt,tmp);
     return stmt;
   }
 
@@ -507,15 +570,17 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
       if(node.getValue() instanceof LiteralItem) {
         stmt.addIns(new ASMLoadImmIns(dest, ((LiteralItem) node.getValue()).getValue()));
       }else if (node.getValue() instanceof RegItem){
-        var addr = getAddr(node.getValue().getName(),dest,stmt);
+        getAddr((RegItem) node.getValue(),dest,stmt,false);
 //        stmt.addIns(new ASMLoadRegIns(dest,addr));
       }else{
         throw new ErrorBasic("return value error");
       }
     }
     var retAddr = new ASMAddr(ASMPhysicReg.sp,0);
-    //must store the value into the ra
-    stmt.addIns(new ASMLoadRegIns(ASMPhysicReg.ra,retAddr));
+    //must load the value into the callee
+    for(var reg : ASMPhysicReg.calleeReg){
+      stmt.addIns(new ASMLoadRegIns(reg,new ASMAddr(ASMPhysicReg.sp,4*reg.getStackOffset())));
+    }
     //change the sp
     stmt.addIns(new ASMUnaryIns("addi",ASMPhysicReg.sp,ASMPhysicReg.sp,curStackOffset));
     stmt.addIns(new ASMRetIns());
@@ -531,11 +596,11 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     if(val instanceof LiteralItem){
       stmt.addIns(new ASMLoadImmIns(value,((LiteralItem) val).getValue()));
     }else{
-      ASMAddr addr1 = getAddr(val.getName(),value,stmt);
+      value = getAddr((RegItem) val,value,stmt,true);
 //      stmt.addIns(new ASMLoadRegIns(value,addr1));
     }
     ASMReg addrdest = ASMPhysicReg.t0;
-    getAddr(node.getAddr().getName(),addrdest,stmt);
+    addrdest = getAddr(node.getAddr(),addrdest,stmt,true);
 //    if(addr.getBase().equals(ASMPhysicReg.sp)) {
 //
 //    }
@@ -553,11 +618,10 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     if(srcItem instanceof LiteralItem){
       stmt.addIns(new ASMLoadImmIns(src,((LiteralItem) srcItem).getValue()));
     }else{
-      ASMAddr addr = getAddr(srcItem.getName(),src,stmt);
+      src = getAddr((RegItem) srcItem,src,stmt,true);
 //      stmt.addIns(new ASMLoadRegIns(src,addr));
     }
-    ASMAddr addr = getAddr(node.getDest().getName(),stmt);
-    stmt.addIns(new ASMStoreIns(src,addr));
+    storeRes(node.getDest(),stmt,src);
     return stmt;
 
   }

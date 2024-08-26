@@ -40,11 +40,21 @@ public class IRIns extends IRNode {
       return false;
     }else{
       if(ins instanceof IRCallIns){
-        if(((IRCallIns) ins).getDest() == null){
-          return false;
-        }
+        return ((IRCallIns) ins).getDest() != null && ((IRCallIns) ins).getDest().getRegAddr().isSpilled();
       }
-      return true;
+      if(ins instanceof IRAllocIns){
+        throw new ErrorBasic("IRAllocIns should not be here");
+      }
+      if(ins instanceof IRArithIns){
+        return ((IRArithIns) ins).getDest().getRegAddr().isSpilled();
+      }
+      if(ins instanceof IRGetEleIns){
+        return ((IRGetEleIns) ins).getDest().getRegAddr().isSpilled();
+      }
+      if(ins instanceof IRLoadIns){
+        return ((IRLoadIns) ins).getDest().getRegAddr().isSpilled();
+      }
+      throw new ErrorBasic("needAlloca error");
     }
   }
   public static String getAllocaName(IRIns ins)

@@ -13,7 +13,7 @@ import java.util.*;
 
 public class GraphAllocator{
   LifeTimeMonitor lifeTimeMonitor;
-  static int K = 24;
+  static int K = 23;
   //largest number of registers
   ArrayList<HashSet<Integer>>edge;
   //by index
@@ -81,6 +81,10 @@ public class GraphAllocator{
       }
     }
     for (var var : def) {
+      if(var.getRegAddr().getRegIndex() == -1){
+        var.getRegAddr().setSpilled(true);
+        //dead variable
+      }
       if(var.getRegAddr().isSpilled()){
         continue;
       }
@@ -128,6 +132,13 @@ public class GraphAllocator{
     dfsGraph(node.getBlockList().getFirst());
   }
   public void spillVar(IRFuncDef node) {
+    int cnt = 0;
+    for(var param : node.getParamList()){
+      if(cnt<8){
+        param.setRegAddr(new RegAddr(cnt+10));
+      }
+      cnt++;
+    }
     lifeTimeMonitor.loopFinder(node);
     lifeTimeMonitor.calcCost(node);
     for(var ins : insList){
@@ -139,7 +150,7 @@ public class GraphAllocator{
   {
     var queue = new PriorityQueue<Pair<Float,RegItem>>();
     for(var var : set){
-      if(var.getRegAddr() !=null && var.getRegAddr().isSpilled()){
+      if(var.getRegAddr() !=null && (var.getRegAddr().isSpilled() || var.getRegAddr().getRegIndex() != -1)){
         continue;
       }
       var index = lifeTimeMonitor.var2index.get(var);

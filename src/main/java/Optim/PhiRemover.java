@@ -23,8 +23,8 @@ public class PhiRemover {
   public void visit(IRRoot node)
   {
     tmpReg = new RegItem(IRBaseType.getIntType(), "..TMP_SWAP..");
-    tmpReg.setRegAddr(new RegAddr(28));
-    //means using the reserved register
+    tmpReg.setRegAddr(new RegAddr(23));
+    //means using the reserved register t0
     visit(node.getInitFunc());
     for(var func : node.getFuncList()){
       visit(func);
