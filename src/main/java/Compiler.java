@@ -1,22 +1,20 @@
 
 
-import ASMNaive.ASMBuilder;
-import ASMNaive.Node.ASMNode;
+import ASM.NaiveASMBuilder;
+import ASM.Node.ASMNode;
 import Allocator.GraphAllocator;
 import Grammar.MxparserLexer;
 import Ir.IRBuilder;
 import Ir.Node.IRNode;
 import Ir.Node.IRRoot;
 import Optim.IROptimizer;
-import Optim.PhiRemover;
+import Optim.NaivePhiRemover;
 import Utility.error.MyErrorListener;
-import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 
 import AST.ASTBuilder;
 import AST.Node.ASTNode;
 import AST.Node.ASTRoot;
-import Grammar.MxparserBaseListener;
 import Grammar.MxparserParser;
 import Semantic.Checker;
 import Semantic.Collector;
@@ -61,12 +59,12 @@ public class Compiler {
     //------------------------------------------------------------
     //erase the phi
     if(opt){
-      new PhiRemover().visit((IRRoot) ir);
+      new NaivePhiRemover().visit((IRRoot) ir);
     }
 
 //    System.out.println(ir.toString());
 
-    ASMNode asm = new ASMBuilder().visit((IRRoot) ir);
+    ASMNode asm = new NaiveASMBuilder().visit((IRRoot) ir);
     System.out.println(asm);
     if(!opt){
       if(fileout){
