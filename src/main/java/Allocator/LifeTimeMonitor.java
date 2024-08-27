@@ -6,6 +6,7 @@ import Ir.Node.def.IRFuncDef;
 import Ir.Node.ins.IRIns;
 import Ir.Node.ins.IRPhiIns;
 import Ir.Node.stmt.IRBlockStmt;
+import Ir.Utility.RegAddr;
 import Utility.error.ErrorBasic;
 import org.antlr.v4.runtime.misc.Pair;
 
@@ -64,6 +65,9 @@ public class LifeTimeMonitor extends CostEvaluator{
     Edge = new ArrayList<>();
     var2index = new HashMap<>();
     index2var = new HashMap<>();
+    for(var reg : node.getParamList()){
+      def.put(reg,null);
+    }
     for(var block : node.getBlockList()){
       IRIns lasIns = null;
       block.setPhiDef(new HashSet<>());
@@ -110,7 +114,8 @@ public class LifeTimeMonitor extends CostEvaluator{
       cnt++;
       var ins = entry.getValue();
       if(!use.containsKey(reg)){
-        throw new ErrorBasic("LifeTimeMonitor visit IRFuncDef error");
+        reg.setRegAddr(new RegAddr(-1));
+        continue;
       }
       var useList = use.get(reg);
       for(var useIns : useList){

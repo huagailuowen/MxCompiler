@@ -7,9 +7,26 @@ import Ir.Node.ins.IRIns;
 import Ir.Node.stmt.IRBlockStmt;
 import Ir.Utility.RegAddr;
 import Utility.error.ErrorBasic;
-import org.antlr.v4.runtime.misc.Pair;
 
 import java.util.*;
+class ComparablePair implements Comparable<ComparablePair>{
+  public float a;
+  public RegItem b;
+  public ComparablePair(float a, RegItem b){
+    this.a = a;
+    this.b = b;
+  }
+  @Override
+  public int compareTo(ComparablePair o) {
+    if(this.a < o.a){
+      return -1;
+    }else if(this.a > o.a){
+      return 1;
+    }else{
+      return 0;
+    }
+  }
+}
 
 public class GraphAllocator{
   LifeTimeMonitor lifeTimeMonitor;
@@ -81,7 +98,7 @@ public class GraphAllocator{
       }
     }
     for (var var : def) {
-      if(var.getRegAddr().getRegIndex() == -1){
+      if(!lifeTimeMonitor.use.containsKey(var)){
         var.getRegAddr().setSpilled(true);
         //dead variable
       }
@@ -129,13 +146,13 @@ public class GraphAllocator{
   }
   public void colorGraph(IRFuncDef node) {
 
-    dfsGraph(node.getBlockList().getFirst());
+    dfsGraph(node.getBlockList().get(0));
   }
   public void spillVar(IRFuncDef node) {
     int cnt = 0;
     for(var param : node.getParamList()){
       if(cnt<8){
-        param.setRegAddr(new RegAddr(cnt+10));
+        param.setRegAddr(new RegAddr(cnt+3));
       }
       cnt++;
     }
@@ -148,13 +165,13 @@ public class GraphAllocator{
   }
   public void spillVar(HashSet<RegItem> set)
   {
-    var queue = new PriorityQueue<Pair<Float,RegItem>>();
+    var queue = new PriorityQueue<ComparablePair>();
     for(var var : set){
       if(var.getRegAddr() !=null && (var.getRegAddr().isSpilled() || var.getRegAddr().getRegIndex() != -1)){
         continue;
       }
       var index = lifeTimeMonitor.var2index.get(var);
-      queue.add(new Pair<>(lifeTimeMonitor.cost.get(index),var));
+      queue.add(new ComparablePair(lifeTimeMonitor.cost.get(index),var));
     }
     while (queue.size()>K){
       var var = Objects.requireNonNull(queue.poll()).b;
@@ -163,6 +180,7 @@ public class GraphAllocator{
     }
   }
   public void insCollect(IRFuncDef node){
+    insList = new ArrayList<>();
     for (var block : node.getBlockList()) {
       for(var entry : block.getPhi().entrySet()){
         var ins = entry.getValue();

@@ -324,7 +324,7 @@ public class Mem2Reg {
 
   public void visit(IRFuncDef node){
     makeDomList(node);
-//    buildDomTree();
+    buildDomTree();
     calcDomFrontier();
     placePhi();
     replaceVar();

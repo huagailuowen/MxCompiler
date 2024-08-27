@@ -5,6 +5,7 @@ import Ir.Item.Item;
 import Ir.Item.RegItem;
 import Ir.Node.IRNode;
 import Ir.Node.ins.IRIns;
+import Ir.Node.ins.IRMoveIns;
 import Utility.error.ErrorBasic;
 
 import java.util.ArrayList;
@@ -15,6 +16,8 @@ public class IRStmt extends IRNode {
   protected Item destAddr;
   //the key res will store in this.dest
   protected ArrayList<IRIns>  insList;
+  protected ArrayList<IRIns>  moveList;
+
   public IRStmt() {
     this.dest = null;
     this.destAddr = null;
@@ -39,6 +42,10 @@ public class IRStmt extends IRNode {
   public void addIns(IRIns ins){
     insList.add(ins);
   }
+  public void addMoveIns(IRIns ins){
+    moveList.add(ins);
+  }
+
   public void addIns(ArrayList<IRIns> ins){
     insList.addAll(ins);
   }

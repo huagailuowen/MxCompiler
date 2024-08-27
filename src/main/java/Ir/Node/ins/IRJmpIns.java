@@ -5,6 +5,7 @@ import Ir.Item.Item;
 import Ir.Item.RegItem;
 import Utility.error.ErrorBasic;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @lombok.Getter
@@ -35,5 +36,13 @@ public class IRJmpIns extends IRIns {
   @Override
   public void replaceUse(HashMap<RegItem, Item> map) {
     return ;
+  }
+  @Override
+  public ArrayList<RegItem> getUseRegs() {
+    return new ArrayList<>();
+  }
+  @Override
+  public ArrayList<RegItem> getDefRegs() {
+    return new ArrayList<>();
   }
 }

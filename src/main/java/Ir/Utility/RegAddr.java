@@ -15,5 +15,8 @@ public class RegAddr {
   {
     this.regIndex = regIndex;
     isSpilled = false;
+    if(regIndex == -1){
+      isSpilled = true;
+    }
   }
 }

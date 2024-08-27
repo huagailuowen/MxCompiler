@@ -159,6 +159,8 @@ public class NaiveASMBuilder implements IRVisitor<ASMNode> {
 
     curStackOffset = 4;
     //the first 4 bytes are used to store the return address
+    curVarOffset.put("%..TMP_SWAP..",curStackOffset);
+    curStackOffset += 4;
     for(var block : node.getBlockList()){
       //the exitIns do not have allocate need
       for(var entry : block.getPhi().entrySet()){

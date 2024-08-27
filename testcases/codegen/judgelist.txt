@@ -1,6 +1,3 @@
-t75.mx
-t76.mx
-t77.mx
 e1.mx
 e2.mx
 e3.mx
@@ -92,3 +89,16 @@ t71.mx
 t72.mx
 t73.mx
 t74.mx
+t75.mx
+t76.mx
+t77.mx
+../optim/lunatic.mx
+../optim/binary_tree.mx
+../optim/dijkstra.mx
+../optim/humble.mx
+../optim/kruskal.mx
+../optim/lca.mx
+../optim/maxflow.mx
+../optim/pi.mx
+../optim/segtree.mx
+../optim/sha_1.mx

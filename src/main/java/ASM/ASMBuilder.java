@@ -114,9 +114,9 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
         throw new ErrorBasic("variable not found");
       }
 //      name = name.substring(1);
-      stmt.addIns(new ASMLoadAddrIns(ASMPhysicReg.t6,name));
+      stmt.addIns(new ASMLoadAddrIns(dest,name));
       //tmp register
-      dest = ASMPhysicReg.t6;
+
 //      if(name.startsWith("@string.")){
 //        stmt.addIns(new ASMMoveIns(dest,ASMPhysicReg.t6));
 //      }else {

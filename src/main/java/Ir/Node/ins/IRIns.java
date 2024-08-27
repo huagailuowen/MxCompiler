@@ -25,7 +25,7 @@ public class IRIns extends IRNode {
   {
     liveOut.add(reg);
   }
-  IRIns()
+  public IRIns()
   {
     liveIn = new HashSet<>();
     liveOut = new HashSet<>();

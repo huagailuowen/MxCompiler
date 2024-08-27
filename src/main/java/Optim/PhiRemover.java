@@ -22,7 +22,7 @@ public class PhiRemover {
   RegItem tmpReg ;
   public void visit(IRRoot node)
   {
-    tmpReg = new RegItem(IRBaseType.getIntType(), "..TMP_SWAP..");
+    tmpReg = new RegItem(IRBaseType.getIntType(), "%..TMP_SWAP..");
     tmpReg.setRegAddr(new RegAddr(23));
     //means using the reserved register t0
     visit(node.getInitFunc());
@@ -42,22 +42,22 @@ public class PhiRemover {
         return;
       }
       //there must be a cycle
-      block.addIns(new IRMoveIns(srcs.get(index), tmpReg));
+      block.addMoveIns(new IRMoveIns(srcs.get(index), tmpReg));
       //save the src value
       loopEnd = dests.get(index);
       return ;
     }
     visited.set(index);
     if(from.get(index) == -1){
-      block.addIns(new IRMoveIns(srcs.get(index), dests.get(index)));
+      block.addMoveIns(new IRMoveIns(srcs.get(index), dests.get(index)));
       moved.set(index);
     }else{
       addMove(block, from.get(index), dests, srcs);
       moved.set(index);
       if(loopEnd == dests.get(index)){
-        block.addIns(new IRMoveIns(tmpReg, dests.get(index)));
+        block.addMoveIns(new IRMoveIns(tmpReg, dests.get(index)));
       }else{
-        block.addIns(new IRMoveIns(srcs.get(index), dests.get(index)));
+        block.addMoveIns(new IRMoveIns(srcs.get(index), dests.get(index)));
       }
     }
   }
@@ -67,6 +67,7 @@ public class PhiRemover {
     moved = new BitSet(dests.size());
     reg2index = new HashMap<RegItem, Integer>();
     from = new ArrayList<Integer>();
+    block.setMoveList(new ArrayList<>());
     for(int i = 0; i < dests.size(); i++)
     {
       reg2index.put(dests.get(i), i);
@@ -84,6 +85,9 @@ public class PhiRemover {
     {
       loopEnd = null;
       addMove(block, i, dests, srcs);
+    }
+    for(int i = block.getMoveList().size()-1; i >= 0; i--){
+      block.addIns(block.getMoveList().get(i));
     }
   }
 

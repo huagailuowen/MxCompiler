@@ -6,7 +6,7 @@ import Utility.error.ErrorBasic;
 
 @lombok.Getter
 @lombok.Setter
-public class RegItem extends Item {
+public class RegItem extends Item implements java.lang.Comparable<RegItem>{
     IRBaseType valueType;
     RegAddr regAddr;
     int degree;
@@ -33,4 +33,8 @@ public class RegItem extends Item {
         return name + " = global " + valueType.toString()  + " " + (valueType.getName().equals("ptr")?"null":"0");
     }
 
+    @Override
+    public int compareTo(RegItem o) {
+        return 0;
+    }
 }
