@@ -44,11 +44,14 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
   //"class.[name].index" -> offset
   public void storeRes(RegItem reg, ASMStmt stmt, ASMReg res)
   {
-    if(haveCalled){
-      throw new ErrorBasic("this should not happen");
-    }
     var name = reg.getName();
     if (!name.startsWith("@") && !reg.getRegAddr().isSpilled()) {
+      var tmp = ASMPhysicReg.availableReg[reg.getRegAddr().getRegIndex()];
+      if(haveCalled && (tmp.getStackOffset()>=1 && tmp.getStackOffset()<=10 || tmp.getStackOffset()== 23)){
+        //the caller saved register
+        stmt.addIns(new ASMStoreIns(res,new ASMAddr(ASMPhysicReg.sp,calloffset+4*tmp.getStackOffset())));
+        return ;
+      }
       if(ASMPhysicReg.availableReg[reg.getRegAddr().getRegIndex()] != res){
         stmt.addIns(new ASMMoveIns(ASMPhysicReg.availableReg[reg.getRegAddr().getRegIndex()],res));
       }
@@ -87,12 +90,12 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     var name = reg.getName();
     if (!name.startsWith("@") && !reg.getRegAddr().isSpilled()) {
       var tmp = ASMPhysicReg.availableReg[reg.getRegAddr().getRegIndex()];
-      if(haveCalled && tmp.getStackOffset()>=1 && tmp.getStackOffset()<=10){
+      if(haveCalled && (tmp.getStackOffset()>=1 && tmp.getStackOffset()<=10 || tmp.getStackOffset()== 23)){
         //the caller saved register
         if(replace){
           throw new ErrorBasic("caller saved register should not be replaced");
         }
-        stmt.addIns(new ASMLoadRegIns(dest,new ASMAddr(ASMPhysicReg.sp,4*tmp.getStackOffset())));
+        stmt.addIns(new ASMLoadRegIns(dest,new ASMAddr(ASMPhysicReg.sp,calloffset+4*tmp.getStackOffset())));
         return dest;
       }
       if(ASMPhysicReg.availableReg[reg.getRegAddr().getRegIndex()] != dest){
@@ -208,8 +211,9 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
       cnt++;
     }
 
-
-    curStackOffset = 4*23;
+    curStackOffset = 4;
+    // the ra
+    curStackOffset += 4*23;
     //the first 4 bytes are used to store the return address
     for(var block : node.getBlockList()){
       //the exitIns do not have allocate need
@@ -256,7 +260,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
         first = false;
         ArrayList<ASMIns>beginList = new ArrayList<>();
         beginList.add(new ASMUnaryIns("addi", ASMPhysicReg.sp, ASMPhysicReg.sp, -curStackOffset));
-
+        beginList.add(new ASMStoreIns(ASMPhysicReg.ra,new ASMAddr(ASMPhysicReg.sp,0)));
         for(var reg : ASMPhysicReg.calleeReg){
           beginList.add(new ASMStoreIns(reg,new ASMAddr(ASMPhysicReg.sp,4*reg.getStackOffset())));
         }
@@ -307,6 +311,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     Item src2Item = node.getRhs();
     RegItem destItem = node.getDest();
     var opt = node.getOp();
+    dest = findAddr(destItem,dest);
     if(opt.equals("add") ){
       if(src1Item instanceof LiteralItem){
         var tmp = src1Item;
@@ -461,12 +466,12 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     stmt.addIns(new ASMCallIns(node.getFuncName()));
     stmt.addIns(new ASMUnaryIns("addi",ASMPhysicReg.sp,ASMPhysicReg.sp,paramSize));
     calloffset = 0;
-    haveCalled = false;
     if(node.getDest()!=null){
 //      var addr = getAddr(node.getDest(),stmt);
 //      stmt.addIns(new ASMStoreIns(ASMPhysicReg.a0,addr));
       storeRes(node.getDest(),stmt,ASMPhysicReg.a0);
     }
+    haveCalled = false;
     //load the reg
     for(var reg : ASMPhysicReg.callerReg){
       stmt.addIns(new ASMLoadRegIns(reg,new ASMAddr(ASMPhysicReg.sp,4*reg.getStackOffset())));
@@ -578,6 +583,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     }
     var retAddr = new ASMAddr(ASMPhysicReg.sp,0);
     //must load the value into the callee
+    stmt.addIns(new ASMLoadRegIns(ASMPhysicReg.ra,retAddr));
     for(var reg : ASMPhysicReg.calleeReg){
       stmt.addIns(new ASMLoadRegIns(reg,new ASMAddr(ASMPhysicReg.sp,4*reg.getStackOffset())));
     }

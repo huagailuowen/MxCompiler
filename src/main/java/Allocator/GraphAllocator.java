@@ -111,6 +111,7 @@ public class GraphAllocator{
           throw new ErrorBasic("No enough registers");
         }
         var.setRegAddr(new RegAddr(index));
+//        var.setRegAddr(new RegAddr(-1));
       }
 
       int index = var.getRegAddr().getRegIndex();

@@ -25,8 +25,11 @@ public class RegItem extends Item implements java.lang.Comparable<RegItem>{
 
     @Override
     public String toString() {
-        return type.getName() + " " + name;
+//        return type.getName() + " " + name;
+        return type.getName() + " " + name + " : " + (regAddr== null?" Stack ": regAddr.getRegIndex());
+
     }
+
     @Override
     public String globalDef() {
         //if call this, must be global variable
