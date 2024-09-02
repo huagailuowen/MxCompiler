@@ -38,27 +38,35 @@ public class PhiRemover {
   public void addMove(IRBlockStmt block, int index, ArrayList<RegItem> dests, ArrayList<Item> srcs)
   {
     if(visited.get(index)){
-      if(moved.get(index)){
-        return;
+      if(!moved.get(index)){
+        throw new ErrorBasic("There must be a unhandled cycle in the phi function");
       }
       //there must be a cycle
-      block.addMoveIns(new IRMoveIns(srcs.get(index), tmpReg));
-      //save the src value
-      loopEnd = dests.get(index);
       return ;
     }
     visited.set(index);
+    if(dests.get(index) == srcs.get(index)){
+      moved.set(index);
+      //do nothing
+      return;
+    }
     if(from.get(index) == -1){
       block.addMoveIns(new IRMoveIns(srcs.get(index), dests.get(index)));
       moved.set(index);
     }else{
-      addMove(block, from.get(index), dests, srcs);
-      moved.set(index);
-      if(loopEnd == dests.get(index)){
+      if(visited.get(from.get(index))&& !moved.get(from.get(index))){
+        loopEnd = (RegItem) srcs.get(index);
         block.addMoveIns(new IRMoveIns(tmpReg, dests.get(index)));
       }else{
-        block.addMoveIns(new IRMoveIns(srcs.get(index), dests.get(index)));
+        addMove(block, from.get(index), dests, srcs);
       }
+
+      moved.set(index);
+      block.addMoveIns(new IRMoveIns(srcs.get(index), dests.get(index)));
+      if(loopEnd == dests.get(index)){
+        block.addMoveIns(new IRMoveIns(dests.get(index), tmpReg));
+      }
+
     }
   }
   public void addMove(IRBlockStmt block, ArrayList<RegItem> dests, ArrayList<Item> srcs)
@@ -68,15 +76,29 @@ public class PhiRemover {
     reg2index = new HashMap<RegItem, Integer>();
     from = new ArrayList<Integer>();
     block.setMoveList(new ArrayList<>());
+    var srcReplace = new HashMap<Integer, RegItem>();
     for(int i = 0; i < dests.size(); i++)
     {
-      reg2index.put(dests.get(i), i);
+      var dest = dests.get(i);
+      reg2index.put(dest, i);
+      if(dest.getRegAddr().getRegIndex() == -1){
+        dest.getRegAddr().setSpilled(true);
+      }else {
+        srcReplace.put(dest.getRegAddr().getRegIndex(), dest);
+      }
     }
-    for (Item src : srcs) {
+    for (int i = 0; i < srcs.size(); i++) {
+      var src = srcs.get(i);
       int index = -1;
       if (src instanceof RegItem) {
         if (reg2index.containsKey((RegItem) src)) {
           index = reg2index.get((RegItem) src);
+        }else if(((RegItem) src).getRegAddr().getRegIndex() != -1){
+          if(srcReplace.containsKey(((RegItem) src).getRegAddr().getRegIndex())){
+            src = srcReplace.get(((RegItem) src).getRegAddr().getRegIndex());
+            index = reg2index.get(src);
+            srcs.set(i, src);
+          }
         }
       }
       from.add(index);
