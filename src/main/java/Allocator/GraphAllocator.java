@@ -119,6 +119,45 @@ public class GraphAllocator{
 
     }
   }
+  public void handlePhiIns(IRIns ins, BitSet used) {
+//    var liveOutList = ins.getLiveOut();
+    var def = ins.getDefRegs();
+//    var use = ins.getUseRegs();
+
+//    for (var var : use) {
+//      if(liveOutList.contains(var)){
+//        continue;
+//      }
+//      var index = -1;
+//      if(!var.getRegAddr().isSpilled()){
+//        index = var.getRegAddr().getRegIndex();
+//      }
+//      if(index != -1){
+//        used.set(index,false);
+//      }
+//    }
+    for (var var : def) {
+      if(!lifeTimeMonitor.use.containsKey(var)){
+        var.getRegAddr().setSpilled(true);
+        //dead variable
+      }
+      if(var.getRegAddr().isSpilled()){
+        continue;
+      }
+      if(var.getRegAddr().getRegIndex() == -1){
+        int index = used.nextClearBit(0);
+        if(index >= K){
+          throw new ErrorBasic("No enough registers");
+        }
+        var.setRegAddr(new RegAddr(index));
+//        var.setRegAddr(new RegAddr(-1));
+      }
+
+      int index = var.getRegAddr().getRegIndex();
+      used.set(index);
+
+    }
+  }
   public void dfsGraph(IRBlockStmt block) {
     var liveInList = lifeTimeMonitor.firstIns.get(block).getLiveIn();
     var used = new BitSet(K);
@@ -134,8 +173,9 @@ public class GraphAllocator{
     //do we need to add the phi ins?
     for(var entry : block.getPhi().entrySet()){
       var ins = entry.getValue();
-      handleIns(ins,used);
+      handlePhiIns(ins,used);
     }
+
     for (var ins : block.getInsList()) {
       handleIns(ins,used);
     }
@@ -154,6 +194,8 @@ public class GraphAllocator{
     for(var param : node.getParamList()){
       if(cnt<8){
         param.setRegAddr(new RegAddr(cnt+3));
+      }else{
+        param.setRegAddr(new RegAddr(-1));
       }
       cnt++;
     }

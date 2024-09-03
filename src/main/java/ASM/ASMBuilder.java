@@ -89,6 +89,9 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
   public ASMReg getAddr(RegItem reg,ASMReg dest,ASMStmt stmt, boolean replace){
     var name = reg.getName();
     if (!name.startsWith("@") && !reg.getRegAddr().isSpilled()) {
+      if(reg.getRegAddr().getRegIndex()==-1){
+        int y=1;
+      }
       var tmp = ASMPhysicReg.availableReg[reg.getRegAddr().getRegIndex()];
       if(haveCalled && (tmp.getStackOffset()>=1 && tmp.getStackOffset()<=10 || tmp.getStackOffset()== 23)){
         //the caller saved register

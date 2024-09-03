@@ -129,6 +129,9 @@ public class LifeTimeMonitor extends CostEvaluator{
           scanLiveIn(useIns,reg);
         }
       }
+      if(useList.isEmpty()){
+        reg.setRegAddr(new RegAddr(-1));
+      }
 
     }
 //    return Edge;
