@@ -101,7 +101,7 @@ public class Compiler {
     run(tree, true);
     var builtin = CharStreams.fromFileName("src/main/c/builtin.s");
     //print the builtin
-//    System.out.println(builtin);
+    System.out.println(builtin);
   }
 }
 /*
