@@ -11,5 +11,5 @@ cd ./src/test/mx
 #cp output.s test.s
 export PATH="/usr/local/opt/bin:$PATH"
 #ravel test.s builtin.s
-reimu < /tmp/mxc.xSWoi5adzb
+reimu
 echo $?

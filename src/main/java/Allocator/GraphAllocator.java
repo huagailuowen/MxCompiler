@@ -159,6 +159,7 @@ public class GraphAllocator{
     }
   }
   public void dfsGraph(IRBlockStmt block) {
+
     var liveInList = lifeTimeMonitor.firstIns.get(block).getLiveIn();
     var used = new BitSet(K);
     for (var var : liveInList) {
@@ -239,6 +240,9 @@ public class GraphAllocator{
     spillVar(node);
     buildGraph();
     colorGraph(node);
+    for(var var : lifeTimeMonitor.var2index.keySet()){
+      System.err.println(var);
+    }
   }
   /*TO DO List:
    * 1. Implement the Graph Builder

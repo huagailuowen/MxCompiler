@@ -74,9 +74,9 @@ public class IRArithIns extends IRIns {
     }
     if(op.equals("eq") || op.equals("ne") || op.equals("slt") || op.equals("sgt") || op.equals("sle") || op.equals("sge")){
 
-      return dest.getName() + " = icmp " + op + " " + lhs.getType().toString() + " " + lhs.getName() + ", " + rhs.getName();
+      return dest.getNameReg() + " = icmp " + op + " " + lhs.getType().toString() + " " + lhs.getName() + ", " + rhs.getName();
     }
-    return dest.getName() + " = " + op + " " + lhs.getType().toString() + " " + lhs.getName() + ", " + rhs.getName();
+    return dest.getNameReg() + " = " + op + " " + lhs.getType().toString() + " " + lhs.getName() + ", " + rhs.getName();
   }
   @Override
   public void replaceUse(HashMap<RegItem, Item> map) {

@@ -10,6 +10,11 @@ public class RegItem extends Item implements java.lang.Comparable<RegItem>{
     IRBaseType valueType;
     RegAddr regAddr;
     int degree;
+
+    public String getNameReg() {
+        return name + " : " + (regAddr== null?" Stack ": regAddr.getRegIndex());
+    }
+
     public RegItem(IRBaseType type, String name) {
         super(type, name);
         //it is very sepcial that the name of register should start with % or @
@@ -26,7 +31,7 @@ public class RegItem extends Item implements java.lang.Comparable<RegItem>{
     @Override
     public String toString() {
 //        return type.getName() + " " + name;
-        return type.getName() + " " + name + " : " + (regAddr== null?" Stack ": regAddr.getRegIndex());
+        return type.getName() + " " + getName();
 
     }
 

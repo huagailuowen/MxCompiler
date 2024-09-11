@@ -119,12 +119,16 @@ public class LifeTimeMonitor extends CostEvaluator{
       }
       var useList = use.get(reg);
       for(var useIns : useList){
+
         if(useIns instanceof IRPhiIns){
-          String blockname = ((IRPhiIns) useIns).findBlock(reg);
-          if(blockname == null){
+          //the var may be used in many blocks
+          ArrayList<String> blockname = ((IRPhiIns) useIns).findBlock(reg);
+          if(blockname.isEmpty()){
             throw new ErrorBasic("LifeTimeMonitor visit IRFuncDef error");
           }
-          scanBlock(lable2Block.get(blockname),reg);
+          for(var block : blockname){
+            scanBlock(lable2Block.get(block),reg);
+          }
         }else{
           scanLiveIn(useIns,reg);
         }

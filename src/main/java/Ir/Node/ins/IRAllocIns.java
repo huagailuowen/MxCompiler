@@ -20,7 +20,7 @@ public class IRAllocIns extends IRIns {
   }
   @Override
   public String toString() {
-    return dest.getName() + " = alloca " + type.toString();
+    return dest.getNameReg() + " = alloca " + type.toString();
   }
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {

@@ -15,13 +15,14 @@ public class IRPhiIns extends IRIns {
   RegItem tmpreg;
   IRBaseType type;
   protected ArrayList<Pair<Item,String>> valueList;
-  public String findBlock(RegItem item){
+  public ArrayList<String> findBlock(RegItem item){
+    ArrayList<String> ret = new ArrayList<>();
     for(Pair<Item,String> pair : valueList){
       if(pair.a == item){
-        return pair.b;
+        ret.add(pair.b);
       }
     }
-    return null;
+    return ret;
   }
   public IRPhiIns(RegItem dest, IRBaseType type)
   {
@@ -39,7 +40,7 @@ public class IRPhiIns extends IRIns {
   }
   @Override
   public String toString() {
-    return dest.getName() + " = phi " + type.toString() + " " + valueList.stream().map(pair -> "[" + pair.a.getName() + ", %" + pair.b + "]").reduce((a, b) -> a + ", " + b).orElse("");
+    return dest.getNameReg() + " = phi " + type.toString() + " " + valueList.stream().map(pair -> "[" + pair.a.getName() + ", %" + pair.b + "]").reduce((a, b) -> a + ", " + b).orElse("");
   }
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {

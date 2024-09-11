@@ -34,7 +34,7 @@ public class IRGetEleIns extends IRIns {
   }
   @Override
   public String toString() {
-    return dest.getName() + " = getelementptr " + type + ", " + src.getType().toString() + " " + src.getName() + ", " + indexList.stream().map(Item::toString).reduce((a, b) -> a + ", " + b).orElse("");
+    return dest.getNameReg() + " = getelementptr " + type + ", " + src.getType().toString() + " " + src.getName() + ", " + indexList.stream().map(Item::toString).reduce((a, b) -> a + ", " + b).orElse("");
   }
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
