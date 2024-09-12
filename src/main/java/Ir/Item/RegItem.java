@@ -3,19 +3,21 @@ package Ir.Item;
 import Ir.Type.IRBaseType;
 import Ir.Utility.RegAddr;
 import Utility.error.ErrorBasic;
+import Utility.label.TypeLable;
 
 @lombok.Getter
 @lombok.Setter
 public class RegItem extends Item implements java.lang.Comparable<RegItem>{
     IRBaseType valueType;
+    TypeLable realType;
     RegAddr regAddr;
     int degree;
 
     public String getNameReg() {
-        return name + " : " + (regAddr== null?" Stack ": regAddr.getRegIndex());
+        return name ;//+ " : " + (regAddr== null?" Stack ": regAddr.getRegIndex());
     }
 
-    public RegItem(IRBaseType type, String name) {
+    public RegItem(IRBaseType type, String name ,TypeLable realType) {
         super(type, name);
         //it is very sepcial that the name of register should start with % or @
         if(!name.startsWith("%") && !name.startsWith("@")) {
@@ -23,6 +25,7 @@ public class RegItem extends Item implements java.lang.Comparable<RegItem>{
         }
         degree = 0;
         regAddr = new RegAddr();
+        this.realType = realType;
     }
     public void addDegree() {
         degree++;

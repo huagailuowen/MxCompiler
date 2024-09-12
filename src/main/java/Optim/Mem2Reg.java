@@ -233,8 +233,8 @@ public class Mem2Reg {
           if(frontierBlock.getPhi().containsKey(varName)){
             continue;
           }
-          var phi = new IRPhiIns(new RegItem(var.getValueType(),varName + "._"+frontier),var.getValueType());
-          phi.setTmpreg(new RegItem(phi.getDest().getType(),phi.getDest().getName()+"_tmp"));
+          var phi = new IRPhiIns(new RegItem(var.getValueType(),varName + "._"+frontier,var.getRealType().getvalType()),var.getValueType());
+          phi.setTmpreg(new RegItem(phi.getDest().getType(),phi.getDest().getName()+"_tmp",phi.getDest().getRealType()));
           frontierBlock.getPhi().put(varName, phi);
         }
       }

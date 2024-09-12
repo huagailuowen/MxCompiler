@@ -24,8 +24,8 @@ public class IRMoveIns extends IRIns {
 
   @Override
   public String toString() {
-//    return "";
-    return dest.getNameReg() + " = " + src.getName();
+    return "";
+//    return dest.getNameReg() + " = " + src.getName();
   }
 
   @Override

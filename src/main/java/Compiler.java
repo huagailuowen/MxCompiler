@@ -48,20 +48,21 @@ public class Compiler {
       new GraphAllocator().visit((IRRoot) ir);
     }
 
-
+    PrintStream output = null;
+    if(fileout){
+      output= new PrintStream(new FileOutputStream("src/test/mx/output.ll"));
+      output.println(ir);
+      output.close();
+    }
 //    System.out.println(ir.toString());
     //------------------------------------------------------------
     //erase the phi
     if(opt){
       new PhiRemover().visit((IRRoot) ir);
     }
-    PrintStream output = null;
 
-    if(fileout){
-      output= new PrintStream(new FileOutputStream("src/test/mx/output.ll"));
-      output.println(ir);
-      output.close();
-    }
+
+
 
 
 
@@ -101,7 +102,7 @@ public class Compiler {
     run(tree, true);
     var builtin = CharStreams.fromFileName("src/main/c/builtin.s");
     //print the builtin
-    System.out.println(builtin);
+//    System.out.println(builtin);
   }
 }
 /*
@@ -112,17 +113,13 @@ Undefined Identifier
 /*
 
 int[][] s = new int[][]{{1,3,3},{},{3,5,3}};
-int p=1;
+int a=0,b=0;
 int main()
 {
-  int x=1,n=10;
-  for(int i=1;i<=n;i++){
-    x = x+i;
+  if((a++==b++)&&(a++==b++)){
+  print("97987");
   }
-
-
-
-    return x;
+  printInt(a);
 }
 
  */

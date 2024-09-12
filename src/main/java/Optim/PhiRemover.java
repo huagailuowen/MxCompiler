@@ -11,6 +11,7 @@ import Ir.Node.stmt.IRBlockStmt;
 import Ir.Type.IRBaseType;
 import Ir.Utility.RegAddr;
 import Utility.error.ErrorBasic;
+import Utility.label.TypeLable;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -22,7 +23,7 @@ public class PhiRemover {
   RegItem tmpReg ;
   public void visit(IRRoot node)
   {
-    tmpReg = new RegItem(IRBaseType.getIntType(), "%..TMP_SWAP..");
+    tmpReg = new RegItem(IRBaseType.getIntType(), "%..TMP_SWAP..", new TypeLable("int"));
     tmpReg.setRegAddr(new RegAddr(23));
     //means using the reserved register t0
     visit(node.getInitFunc());

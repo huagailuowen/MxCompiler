@@ -8,6 +8,13 @@ public class TypeLable extends Lable {
   public boolean getIsBaseType(){
     return this.isBaseType;
   }
+  public TypeLable getPtrType(){
+    return new TypeLable(this.name,this.dimension + 1);
+  }
+  public TypeLable getvalType(){
+    return new TypeLable(this.name,this.dimension - 1);
+  }
+
   public TypeLable(String name) {
     super(name);
     if(name.equals("int")||name.equals("bool")||name.equals("void")){
