@@ -40,4 +40,8 @@ public class IRMoveIns extends IRIns {
   public ArrayList<RegItem> getDefRegs() {
     throw new ErrorBasic("IRMoveIns getUseRegs error, not SSA");
   }
+  @Override
+  public IRMoveIns copy() {
+    return new IRMoveIns(src, dest);
+  }
 }

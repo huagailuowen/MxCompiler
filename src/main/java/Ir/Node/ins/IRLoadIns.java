@@ -40,6 +40,10 @@ public class IRLoadIns extends IRIns {
     }
   }
   @Override
+  public void replaceDef(RegItem newReg) {
+    dest = newReg;
+  }
+  @Override
   public ArrayList<RegItem> getUseRegs() {
     ArrayList<RegItem> ret = new ArrayList<>();
     ret.add(addr);
@@ -50,6 +54,10 @@ public class IRLoadIns extends IRIns {
     ArrayList<RegItem> ret = new ArrayList<>();
     ret.add(dest);
     return ret;
+  }
+  @Override
+  public IRLoadIns copy() {
+    return new IRLoadIns(addr, dest);
   }
 
 }

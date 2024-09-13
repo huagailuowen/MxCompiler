@@ -46,6 +46,12 @@ public class IRCallIns extends IRIns {
     }
   }
   @Override
+  public void replaceDef(RegItem newReg) {
+    if(dest == null)
+      return;
+    dest = newReg;
+  }
+  @Override
   public ArrayList<RegItem> getUseRegs() {
     ArrayList<RegItem> ret = new ArrayList<>();
     for(Item item : args){
@@ -62,6 +68,11 @@ public class IRCallIns extends IRIns {
       ret.add(dest);
     }
     return ret;
+  }
+  @Override
+  public IRCallIns copy() {
+    ArrayList<Item> newArgs = new ArrayList<>(args);
+    return new IRCallIns(funcName, dest, newArgs);
   }
 
 }

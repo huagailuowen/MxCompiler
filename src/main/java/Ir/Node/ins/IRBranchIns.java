@@ -48,6 +48,9 @@ public class IRBranchIns extends IRIns {
     }
   }
   @Override
+  public void replaceDef(RegItem newReg) {
+  }
+  @Override
   public ArrayList<RegItem> getUseRegs() {
     ArrayList<RegItem> ret = new ArrayList<>();
     if(condition instanceof RegItem){
@@ -58,5 +61,9 @@ public class IRBranchIns extends IRIns {
   @Override
   public ArrayList<RegItem> getDefRegs() {
     return new ArrayList<>();
+  }
+  @Override
+  public IRBranchIns copy() {
+    return new IRBranchIns(condition, trueLabel, falseLabel);
   }
 }

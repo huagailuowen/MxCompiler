@@ -88,6 +88,10 @@ public class IRArithIns extends IRIns {
     }
   }
   @Override
+  public void replaceDef(RegItem newReg) {
+    dest = newReg;
+  }
+  @Override
   public ArrayList<RegItem> getUseRegs() {
     ArrayList<RegItem> ret = new ArrayList<>();
     if(lhs instanceof RegItem){
@@ -103,5 +107,9 @@ public class IRArithIns extends IRIns {
     ArrayList<RegItem> ret = new ArrayList<>();
     ret.add(dest);
     return ret;
+  }
+  @Override
+  public IRArithIns copy() {
+    return new IRArithIns(lhs, rhs, dest, op);
   }
 }

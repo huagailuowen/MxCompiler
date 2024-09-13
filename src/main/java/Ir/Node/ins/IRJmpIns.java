@@ -35,7 +35,9 @@ public class IRJmpIns extends IRIns {
   }
   @Override
   public void replaceUse(HashMap<RegItem, Item> map) {
-    return ;
+  }
+  @Override
+  public void replaceDef(RegItem newReg) {
   }
   @Override
   public ArrayList<RegItem> getUseRegs() {
@@ -44,5 +46,9 @@ public class IRJmpIns extends IRIns {
   @Override
   public ArrayList<RegItem> getDefRegs() {
     return new ArrayList<>();
+  }
+  @Override
+  public IRJmpIns copy() {
+    return new IRJmpIns(label);
   }
 }

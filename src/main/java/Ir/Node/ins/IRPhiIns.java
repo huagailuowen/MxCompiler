@@ -66,5 +66,13 @@ public class IRPhiIns extends IRIns {
     ret.add(dest);
     return ret;
   }
+  @Override
+  public IRPhiIns copy() {
+    ArrayList<Pair<Item,String>> newValueList = new ArrayList<>();
+    for(Pair<Item,String> pair : valueList){
+      newValueList.add(new Pair<>(pair.a, pair.b));
+    }
+    return new IRPhiIns(dest, type, newValueList);
+  }
 
 }

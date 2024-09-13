@@ -83,11 +83,18 @@ public class IRIns extends IRNode {
   public void replaceUse(HashMap<RegItem, Item> map) {
     throw new ErrorBasic("IRIns replaceUse error");
   }
+  public void replaceDef(RegItem newReg) {
+    throw new ErrorBasic("IRIns replaceDef error");
+  }
   public ArrayList<RegItem> getUseRegs() {
     throw new ErrorBasic("IRIns getUseRegs error");
   }
   public ArrayList<RegItem> getDefRegs() {
     throw new ErrorBasic("IRIns getDefRegs error");
+  }
+  public IRIns copy()
+  {
+    throw new ErrorBasic("IRIns copy error");
   }
 
 }

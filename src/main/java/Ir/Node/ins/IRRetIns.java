@@ -35,6 +35,9 @@ public class IRRetIns extends IRIns {
     }
   }
   @Override
+  public void replaceDef(RegItem newReg) {
+  }
+  @Override
   public ArrayList<RegItem> getUseRegs() {
     ArrayList<RegItem> ret = new ArrayList<>();
     if(type.getName().equals("void")){
@@ -48,5 +51,9 @@ public class IRRetIns extends IRIns {
   @Override
   public ArrayList<RegItem> getDefRegs() {
     return new ArrayList<>();
+  }
+  @Override
+  public IRRetIns copy() {
+    return new IRRetIns(type, value);
   }
 }

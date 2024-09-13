@@ -37,6 +37,9 @@ public class IRStoreIns extends IRIns {
     }
   }
   @Override
+  public void replaceDef(RegItem newReg) {
+  }
+  @Override
   public ArrayList<RegItem> getUseRegs() {
     ArrayList<RegItem> ret = new ArrayList<>();
     if(value instanceof RegItem){
@@ -48,6 +51,10 @@ public class IRStoreIns extends IRIns {
   @Override
   public ArrayList<RegItem> getDefRegs() {
     return new ArrayList<>();
+  }
+  @Override
+  public IRStoreIns copy() {
+    return new IRStoreIns(addr, value);
   }
 
 }

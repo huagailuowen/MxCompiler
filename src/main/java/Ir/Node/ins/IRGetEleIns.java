@@ -52,6 +52,10 @@ public class IRGetEleIns extends IRIns {
     }
   }
   @Override
+  public void replaceDef(RegItem newReg) {
+    dest = newReg;
+  }
+  @Override
   public ArrayList<RegItem> getUseRegs() {
     ArrayList<RegItem> ret = new ArrayList<>();
     if(src instanceof RegItem){
@@ -69,5 +73,10 @@ public class IRGetEleIns extends IRIns {
     ArrayList<RegItem> ret = new ArrayList<>();
     ret.add(dest);
     return ret;
+  }
+  @Override
+  public IRGetEleIns copy() {
+    ArrayList<Item> newIndexList = new ArrayList<>(indexList);
+    return new IRGetEleIns(dest, type, src, newIndexList);
   }
 }

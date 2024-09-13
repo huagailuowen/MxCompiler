@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 public class Compiler {
   public static void run(MxparserParser.ProgramContext root, boolean opt) throws FileNotFoundException {
-    boolean fileout = false;
+    boolean fileout = true;
     ASTNode ast = new ASTBuilder().visit(root);
 //    int i=1;
 //    System.out.print(ast.toString());
@@ -102,7 +102,7 @@ public class Compiler {
     run(tree, true);
     var builtin = CharStreams.fromFileName("src/main/c/builtin.s");
     //print the builtin
-    System.out.println(builtin);
+//    System.out.println(builtin);
   }
 }
 /*
