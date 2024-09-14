@@ -59,7 +59,8 @@ public class IRArithIns extends IRIns {
     }else if(op.equals(">=")){
       this.op = "sge";
     } else{
-      throw new ErrorBasic("Invalid op in IRArithIns");
+      this.op = op;
+//      throw new ErrorBasic("Invalid op in IRArithIns");
     }
   }
 

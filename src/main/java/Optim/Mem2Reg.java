@@ -224,11 +224,7 @@ public class Mem2Reg {
         num++;
         var block = index2block.get(blockIndex);
         for(var frontier : domFrontier.get(blockIndex)){
-          if(visitFlag.get(frontier)){
-            continue;
-          }
-          visitFlag.set(frontier);
-          list.add(frontier);
+
           var frontierBlock = index2block.get(frontier);
           if(frontierBlock.getPhi().containsKey(varName)){
             continue;
@@ -236,6 +232,11 @@ public class Mem2Reg {
           var phi = new IRPhiIns(new RegItem(var.getValueType(),varName + "._"+frontier,var.getRealType().getvalType()),var.getValueType());
           phi.setTmpreg(new RegItem(phi.getDest().getType(),phi.getDest().getName()+"_tmp",phi.getDest().getRealType()));
           frontierBlock.getPhi().put(varName, phi);
+          if(visitFlag.get(frontier)){
+            continue;
+          }
+          visitFlag.set(frontier);
+          list.add(frontier);
         }
       }
     }
