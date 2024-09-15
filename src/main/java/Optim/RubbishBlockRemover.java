@@ -5,12 +5,13 @@ import Ir.Node.def.IRFuncDef;
 import Ir.Node.ins.IRBranchIns;
 import Ir.Node.ins.IRJmpIns;
 import Ir.Node.stmt.IRBlockStmt;
+import org.antlr.v4.runtime.misc.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class RubbishBlockRemover {
-  void visit(IRRoot node) {
+  public void visit(IRRoot node) {
     visit(node.getInitFunc());
     for (var func : node.getFuncList()) {
       visit(func);
@@ -44,6 +45,14 @@ public class RubbishBlockRemover {
       dfsDest(block);
     }
     for(var block : node.getBlockList()){
+      for(var phiIns : block.getPhi().values()){
+        for(int i=0;i<phiIns.getValueList().size();i++){
+          var pair = phiIns.getValueList().get(i);
+          if(newLables.containsKey(pair.b)){
+            phiIns.getValueList().set(i,new Pair<>(pair.a,newLables.get(pair.b)));
+          }
+        }
+      }
       var exitIns = block.getExitIns();
       if(exitIns instanceof IRJmpIns jmpIns){
         if(newLables.containsKey(jmpIns.getLabel())){
@@ -66,5 +75,7 @@ public class RubbishBlockRemover {
       newBlocks.add(block);
     }
     node.setBlockList(newBlocks);
+    new CFGBuilder().visit(node);
+    new Mem2Reg().calcDom(node);
   }
 }

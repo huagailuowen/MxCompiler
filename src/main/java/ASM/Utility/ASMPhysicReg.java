@@ -2,6 +2,8 @@ package ASM.Utility;
 
 import ASM.Item.ASMReg;
 
+import java.util.HashMap;
+
 public interface ASMPhysicReg {
   //these register can not be allocated
   public static ASMReg zero= new ASMReg("zero", 0,-1);

@@ -1,5 +1,7 @@
 package Ir.Node.ins;
 
+import ASM.ASMBuilder;
+import ASM.Utility.ASMPhysicReg;
 import Ir.IRVisitor;
 import Ir.Item.Item;
 import Ir.Item.RegItem;
@@ -7,10 +9,7 @@ import Ir.Node.IRNode;
 import Ir.Node.def.IRClassDef;
 import Utility.error.ErrorBasic;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @lombok.Getter
 @lombok.Setter
@@ -30,28 +29,53 @@ public class IRIns extends IRNode {
     liveIn = new HashSet<>();
     liveOut = new HashSet<>();
   }
-  public static boolean needAlloca(IRIns ins)
+  public static boolean needAlloca(IRIns ins, BitSet usedCallee)
   {
     if(ins instanceof IRJmpIns
       || ins instanceof IRBranchIns
       || ins instanceof IRRetIns
       || ins instanceof IRStoreIns
-      || ins instanceof IRMoveIns){
+      ){
       return false;
     }else{
+
+      if(ins instanceof IRMoveIns){
+        int id=((IRMoveIns) ins).getDest().getRegAddr().getRegIndex();
+        if(ASMBuilder.calleeMap.containsKey(id)){
+          usedCallee.set(ASMBuilder.calleeMap.get(id),true);
+        }
+
+        return ((IRMoveIns) ins).getDest().getRegAddr().isSpilled();
+      }
       if(ins instanceof IRCallIns){
+        int id=((IRCallIns) ins).getDest() == null ? -1 : ((IRCallIns) ins).getDest().getRegAddr().getRegIndex();
+        if(ASMBuilder.calleeMap.containsKey(id)){
+          usedCallee.set(ASMBuilder.calleeMap.get(id),true);
+        }
         return ((IRCallIns) ins).getDest() != null && ((IRCallIns) ins).getDest().getRegAddr().isSpilled();
       }
       if(ins instanceof IRAllocIns){
         throw new ErrorBasic("IRAllocIns should not be here");
       }
       if(ins instanceof IRArithIns){
+        int id=((IRArithIns) ins).getDest().getRegAddr().getRegIndex();
+        if(ASMBuilder.calleeMap.containsKey(id)){
+          usedCallee.set(ASMBuilder.calleeMap.get(id),true);
+        }
         return ((IRArithIns) ins).getDest().getRegAddr().isSpilled();
       }
       if(ins instanceof IRGetEleIns){
+        int id=((IRGetEleIns) ins).getDest().getRegAddr().getRegIndex();
+        if(ASMBuilder.calleeMap.containsKey(id)){
+          usedCallee.set(ASMBuilder.calleeMap.get(id),true);
+        }
         return ((IRGetEleIns) ins).getDest().getRegAddr().isSpilled();
       }
       if(ins instanceof IRLoadIns){
+        int id=((IRLoadIns) ins).getDest().getRegAddr().getRegIndex();
+        if(ASMBuilder.calleeMap.containsKey(id)){
+          usedCallee.set(ASMBuilder.calleeMap.get(id),true);
+        }
         return ((IRLoadIns) ins).getDest().getRegAddr().isSpilled();
       }
       throw new ErrorBasic("needAlloca error");
@@ -69,7 +93,9 @@ public class IRIns extends IRNode {
       return ((IRCallIns) ins).getDest().getName();
     }else if(ins instanceof IRLoadIns){
       return ((IRLoadIns) ins).getDest().getName();
-    }else{
+    }else if(ins instanceof IRMoveIns){
+      return ((IRMoveIns) ins).getDest().getName();
+    } else{
       throw new ErrorBasic("getAllocaName error");
     }
   }

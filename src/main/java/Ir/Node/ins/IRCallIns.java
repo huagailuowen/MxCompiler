@@ -7,6 +7,7 @@ import Ir.Type.IRBaseType;
 import Utility.error.ErrorBasic;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
 
 @lombok.Getter

@@ -26,6 +26,7 @@ import Ir.Type.IRClassType;
 import Utility.error.ErrorBasic;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.TreeMap;
 
 import static java.lang.System.exit;
@@ -140,6 +141,7 @@ public class NaiveASMBuilder implements IRVisitor<ASMNode> {
 
   @Override
   public ASMNode visit(IRFuncDef node) throws ErrorBasic {
+    BitSet usedCallee = new BitSet(ASMPhysicReg.calleeReg.length);
     var func = new ASMFuncDef(node.getName().getName());
     curVarOffset = new TreeMap<>();
     //design for every function, in naive version, all the parameters are stored in the stack
@@ -175,7 +177,7 @@ public class NaiveASMBuilder implements IRVisitor<ASMNode> {
         curStackOffset += 4;
       }
       for(var ins : block.getInsList()){
-        if(IRIns.needAlloca(ins)){
+        if(IRIns.needAlloca(ins,usedCallee)){
           var name = IRIns.getAllocaName(ins);
           if(curVarOffset.containsKey(name)){
             throw new ErrorBasic("variable redefined");

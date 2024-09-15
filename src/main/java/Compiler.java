@@ -8,9 +8,7 @@ import Grammar.MxparserLexer;
 import Ir.IRBuilder;
 import Ir.Node.IRNode;
 import Ir.Node.IRRoot;
-import Optim.IROptimizer;
-import Optim.NaivePhiRemover;
-import Optim.PhiRemover;
+import Optim.*;
 import Utility.error.MyErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 
@@ -60,7 +58,7 @@ public class Compiler {
     if(opt){
       new PhiRemover().visit((IRRoot) ir);
     }
-
+    new RubbishBlockRemover().visit((IRRoot) ir);
 
 
 
