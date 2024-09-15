@@ -31,6 +31,7 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.TreeMap;
 
+import static java.lang.Math.min;
 import static java.lang.System.exit;
 import static java.lang.System.in;
 
@@ -107,7 +108,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
         int y=1;
       }
       var tmp = ASMPhysicReg.availableReg[reg.getRegAddr().getRegIndex()];
-      if(haveCalled && ASMBuilder.callerMap.containsKey(reg.getRegAddr().getRegIndex()) && needStore.get(ASMBuilder.callerMap.get(reg.getRegAddr().getRegIndex()))){
+      if(haveCalled && ASMBuilder.callerMap.containsKey(tmp.getIndex()) && needStore.get(ASMBuilder.callerMap.get(tmp.getIndex()))){
         //the caller saved register
         if(replace){
           throw new ErrorBasic("caller saved register should not be replaced");
@@ -207,7 +208,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
   @Override
   public ASMNode visit(IRFuncDef node) throws ErrorBasic {
     usedCallee = new BitSet(ASMPhysicReg.calleeReg.length);
-
+    usedCallee.set(0,ASMPhysicReg.calleeReg.length);
     var func = new ASMFuncDef(node.getName().getName());
     curVarOffset = new TreeMap<>();
     //design for every function, in naive version, all the parameters are stored in the stack
@@ -290,7 +291,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
         int index = 0;
         for(var reg : ASMPhysicReg.calleeReg){
           if(usedCallee.get(index)){
-            beginList.add(new ASMLoadRegIns(reg,new ASMAddr(ASMPhysicReg.sp,4*reg.getStackOffset())));
+            beginList.add(new ASMStoreIns(reg,new ASMAddr(ASMPhysicReg.sp,4*reg.getStackOffset())));
           }
           index++;
         }
@@ -489,10 +490,14 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
 
     //store the reg
     needStore = new BitSet(ASMPhysicReg.callerReg.length);
-    for(var reg : node.getLiveOut()){
-      if(!node.getLiveIn().contains(reg)){
-        continue;
-      }
+    needStore.set(0,ASMPhysicReg.callerReg.length);
+//    for(int i=0;i<min(node.getArgs().size(),8);i++){
+//      needStore.set(i,true);
+//    }
+    for(var reg : node.getLiveIn()){
+//      if(!node.getLiveIn().contains(reg)){
+//        continue;
+//      }
       int id = reg.getRegAddr().getRegIndex();
       if(callerMap.containsKey(id)){
         needStore.set(callerMap.get(id),true);
