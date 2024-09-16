@@ -1,1 +1,2 @@
-1. 加法运算的asm化
+1. asm中的call,其实只需liveout,不需要livein,因为livein是在call之前的,而call之后的livein是不需要的,因为call之后的livein是call之前的liveout
+2. 

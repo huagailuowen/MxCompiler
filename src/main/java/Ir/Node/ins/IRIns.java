@@ -41,6 +41,9 @@ public class IRIns extends IRNode {
 
       if(ins instanceof IRMoveIns){
         int id=((IRMoveIns) ins).getDest().getRegAddr().getRegIndex();
+        if(id != -1){
+          id = ASMPhysicReg.availableReg[id].getIndex();
+        }
         if(ASMBuilder.calleeMap.containsKey(id)){
           usedCallee.set(ASMBuilder.calleeMap.get(id),true);
         }
@@ -49,6 +52,9 @@ public class IRIns extends IRNode {
       }
       if(ins instanceof IRCallIns){
         int id=((IRCallIns) ins).getDest() == null ? -1 : ((IRCallIns) ins).getDest().getRegAddr().getRegIndex();
+        if(id != -1){
+          id = ASMPhysicReg.availableReg[id].getIndex();
+        }
         if(ASMBuilder.calleeMap.containsKey(id)){
           usedCallee.set(ASMBuilder.calleeMap.get(id),true);
         }
@@ -59,6 +65,9 @@ public class IRIns extends IRNode {
       }
       if(ins instanceof IRArithIns){
         int id=((IRArithIns) ins).getDest().getRegAddr().getRegIndex();
+        if(id != -1){
+          id = ASMPhysicReg.availableReg[id].getIndex();
+        }
         if(ASMBuilder.calleeMap.containsKey(id)){
           usedCallee.set(ASMBuilder.calleeMap.get(id),true);
         }
@@ -66,6 +75,9 @@ public class IRIns extends IRNode {
       }
       if(ins instanceof IRGetEleIns){
         int id=((IRGetEleIns) ins).getDest().getRegAddr().getRegIndex();
+        if(id != -1){
+          id = ASMPhysicReg.availableReg[id].getIndex();
+        }
         if(ASMBuilder.calleeMap.containsKey(id)){
           usedCallee.set(ASMBuilder.calleeMap.get(id),true);
         }
@@ -73,6 +85,9 @@ public class IRIns extends IRNode {
       }
       if(ins instanceof IRLoadIns){
         int id=((IRLoadIns) ins).getDest().getRegAddr().getRegIndex();
+        if(id != -1){
+          id = ASMPhysicReg.availableReg[id].getIndex();
+        }
         if(ASMBuilder.calleeMap.containsKey(id)){
           usedCallee.set(ASMBuilder.calleeMap.get(id),true);
         }

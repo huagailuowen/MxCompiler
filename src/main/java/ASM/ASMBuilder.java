@@ -62,7 +62,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     var name = reg.getName();
     if (!name.startsWith("@") && !reg.getRegAddr().isSpilled()) {
       var tmp = ASMPhysicReg.availableReg[reg.getRegAddr().getRegIndex()];
-      if(haveCalled && ASMBuilder.callerMap.containsKey(reg.getRegAddr().getRegIndex()) && needStore.get(ASMBuilder.callerMap.get(reg.getRegAddr().getRegIndex()))){
+      if(haveCalled && ASMBuilder.callerMap.containsKey(tmp.getIndex()) && needStore.get(ASMBuilder.callerMap.get(tmp.getIndex()))){
         //the caller saved register
         stmt.addIns(new ASMStoreIns(res,new ASMAddr(ASMPhysicReg.sp,calloffset+4*tmp.getStackOffset())));
         return ;
@@ -208,7 +208,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
   @Override
   public ASMNode visit(IRFuncDef node) throws ErrorBasic {
     usedCallee = new BitSet(ASMPhysicReg.calleeReg.length);
-    usedCallee.set(0,ASMPhysicReg.calleeReg.length);
+//    usedCallee.set(0,ASMPhysicReg.calleeReg.length);
     var func = new ASMFuncDef(node.getName().getName());
     curVarOffset = new TreeMap<>();
     //design for every function, in naive version, all the parameters are stored in the stack
@@ -490,7 +490,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
 
     //store the reg
     needStore = new BitSet(ASMPhysicReg.callerReg.length);
-    needStore.set(0,ASMPhysicReg.callerReg.length);
+//    needStore.set(0,ASMPhysicReg.callerReg.length);
 //    for(int i=0;i<min(node.getArgs().size(),8);i++){
 //      needStore.set(i,true);
 //    }
@@ -498,7 +498,12 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
 //      if(!node.getLiveIn().contains(reg)){
 //        continue;
 //      }
+      //can still optimize
       int id = reg.getRegAddr().getRegIndex();
+
+      if(id != -1){
+        id = ASMPhysicReg.availableReg[id].getIndex();
+      }
       if(callerMap.containsKey(id)){
         needStore.set(callerMap.get(id),true);
       }
