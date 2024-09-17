@@ -7,8 +7,10 @@ import Ir.Item.Item;
 import Ir.Item.RegItem;
 import Ir.Node.IRNode;
 import Ir.Node.def.IRClassDef;
+import Ir.Node.stmt.IRBlockStmt;
 import Utility.error.ErrorBasic;
 
+import java.security.PublicKey;
 import java.util.*;
 
 @lombok.Getter
@@ -16,6 +18,7 @@ import java.util.*;
 public class IRIns extends IRNode {
   HashSet<RegItem> liveIn;
   HashSet<RegItem> liveOut;
+  IRBlockStmt block;
   public void addLiveIn(RegItem reg)
   {
     liveIn.add(reg);
@@ -94,6 +97,24 @@ public class IRIns extends IRNode {
         return ((IRLoadIns) ins).getDest().getRegAddr().isSpilled();
       }
       throw new ErrorBasic("needAlloca error");
+    }
+  }
+  public static RegItem getAllocaReg(IRIns ins)
+  {
+    if(ins instanceof IRAllocIns){
+      return ((IRAllocIns) ins).getDest();
+    }else if(ins instanceof IRArithIns) {
+      return ((IRArithIns) ins).getDest();
+    }else if(ins instanceof IRGetEleIns){
+      return ((IRGetEleIns) ins).getDest();
+    }else if(ins instanceof IRCallIns){
+      return ((IRCallIns) ins).getDest();
+    }else if(ins instanceof IRLoadIns){
+      return ((IRLoadIns) ins).getDest();
+    }else if(ins instanceof IRMoveIns){
+      return ((IRMoveIns) ins).getDest();
+    } else{
+      return null;
     }
   }
   public static String getAllocaName(IRIns ins)

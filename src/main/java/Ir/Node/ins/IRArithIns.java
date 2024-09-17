@@ -63,7 +63,31 @@ public class IRArithIns extends IRIns {
 //      throw new ErrorBasic("Invalid op in IRArithIns");
     }
   }
-
+  public static int calc(String op, int lhs, int rhs){
+    if(op.equals("+")){
+      return lhs + rhs;
+    }else if(op.equals("-")){
+      return lhs - rhs;
+    }else if(op.equals("*")){
+      return lhs * rhs;
+    }else if(op.equals("/")){
+      return lhs / rhs;
+    }else if(op.equals("%")){
+      return lhs % rhs;
+    }else if(op.equals("<<")){
+      return lhs << rhs;
+    }else if(op.equals(">>")){
+      return lhs >> rhs;
+    }else if(op.equals("&")){
+      return lhs & rhs;
+    }else if(op.equals("|")){
+      return lhs | rhs;
+    }else if(op.equals("^")){
+      return lhs ^ rhs;
+    }else{
+      throw new ErrorBasic("Invalid op in IRArithIns");
+    }
+  }
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {
     return visitor.visit(this);
