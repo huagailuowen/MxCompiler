@@ -58,6 +58,7 @@ public class Compiler {
     if(opt){
       new PhiRemover().visit((IRRoot) ir);
     }
+    System.out.println(ir.toString());
     new RubbishBlockRemover().visit((IRRoot) ir);
 
 
@@ -65,7 +66,7 @@ public class Compiler {
 
 
 
-//    System.out.println(ir.toString());
+
 
     ASMNode asm = new ASMBuilder().visit((IRRoot) ir);
     System.out.println(asm);

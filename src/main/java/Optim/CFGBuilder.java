@@ -1,5 +1,6 @@
 package Optim;
 
+import Ir.Item.Item;
 import Ir.Node.IRRoot;
 import Ir.Node.def.IRFuncDef;
 import Ir.Node.ins.IRBranchIns;
@@ -7,12 +8,14 @@ import Ir.Node.ins.IRJmpIns;
 import Ir.Node.ins.IRRetIns;
 import Ir.Node.stmt.IRBlockStmt;
 import Utility.error.ErrorBasic;
+import org.antlr.v4.runtime.misc.Pair;
 
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.TreeMap;
 
 public class CFGBuilder {
+
   public void visit(IRRoot node) {
     visit(node.getInitFunc());
     for (var func : node.getFuncList()) {
@@ -93,6 +96,18 @@ public class CFGBuilder {
         if(succ != null){
           succ.getPred().add(block);
         }
+      }
+    }
+    for(var block : node.getBlockList()){
+      for(var phi : block.getPhi().values()){
+        ArrayList<Pair<Item,String>>newValueList = new ArrayList<>();
+        for(var pair : phi.getValueList()){
+          IRBlockStmt preblock = lable2block.get(pair.b);
+          if(block.getPred().contains(preblock)){
+            newValueList.add(pair);
+          }
+        }
+        phi.setValueList(newValueList);
       }
     }
   }

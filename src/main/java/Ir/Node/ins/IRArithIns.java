@@ -64,27 +64,39 @@ public class IRArithIns extends IRIns {
     }
   }
   public static int calc(String op, int lhs, int rhs){
-    if(op.equals("+")){
+    if(op.equals("add")){
       return lhs + rhs;
-    }else if(op.equals("-")){
+    }else if(op.equals("sub")){
       return lhs - rhs;
-    }else if(op.equals("*")){
+    }else if(op.equals("mul")){
       return lhs * rhs;
-    }else if(op.equals("/")){
+    }else if(op.equals("sdiv")){
       return lhs / rhs;
-    }else if(op.equals("%")){
+    }else if(op.equals("srem")){
       return lhs % rhs;
-    }else if(op.equals("<<")){
+    }else if(op.equals("shl")){
       return lhs << rhs;
-    }else if(op.equals(">>")){
+    }else if(op.equals("ashr")){
       return lhs >> rhs;
-    }else if(op.equals("&")){
+    }else if(op.equals("and")){
       return lhs & rhs;
-    }else if(op.equals("|")){
+    }else if(op.equals("or")){
       return lhs | rhs;
-    }else if(op.equals("^")){
+    }else if(op.equals("xor")){
       return lhs ^ rhs;
-    }else{
+    } else if (op.equals("eq")) {
+      return lhs == rhs ? 1 : 0;
+    } else if (op.equals("ne")) {
+      return lhs != rhs ? 1 : 0;
+    } else if (op.equals("slt")) {
+      return lhs < rhs ? 1 : 0;
+    } else if (op.equals("sgt")) {
+      return lhs > rhs ? 1 : 0;
+    } else if (op.equals("sle")) {
+      return lhs <= rhs ? 1 : 0;
+    } else if (op.equals("sge")) {
+      return lhs >= rhs ? 1 : 0;
+    } else{
       throw new ErrorBasic("Invalid op in IRArithIns");
     }
   }

@@ -113,7 +113,9 @@ public class IRIns extends IRNode {
       return ((IRLoadIns) ins).getDest();
     }else if(ins instanceof IRMoveIns){
       return ((IRMoveIns) ins).getDest();
-    } else{
+    }else if(ins instanceof IRPhiIns){
+      return ((IRPhiIns) ins).getDest();
+    }else{
       return null;
     }
   }
@@ -131,6 +133,8 @@ public class IRIns extends IRNode {
       return ((IRLoadIns) ins).getDest().getName();
     }else if(ins instanceof IRMoveIns){
       return ((IRMoveIns) ins).getDest().getName();
+    } else if(ins instanceof IRPhiIns){
+      return ((IRPhiIns) ins).getDest().getName();
     } else{
       throw new ErrorBasic("getAllocaName error");
     }

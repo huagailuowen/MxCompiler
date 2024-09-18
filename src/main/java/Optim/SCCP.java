@@ -1,6 +1,7 @@
 package Optim;
 
 import Ir.Item.Item;
+import Ir.Item.LiteralItem;
 import Ir.Item.RegItem;
 import Ir.Node.IRRoot;
 import Ir.Node.def.IRFuncDef;
@@ -44,13 +45,15 @@ public class SCCP {
     buildUseDefLink(node);
     updateLattice(node);
     replaceRegs(node);
+    new CFGBuilder().visit(node);
+    new Mem2Reg().calcDom(node);
   }
   void replaceRegs(IRFuncDef node)
   {
     HashMap<RegItem, Item> replaceMap = new HashMap<>();
     for(var item : lattice.entrySet()){
       if(item.getValue().a == Lattice.CONST){
-        replaceMap.put(item.getKey(),new Item(item.getKey().getType(),String.valueOf(item.getValue().b)));
+        replaceMap.put(item.getKey(),new LiteralItem(item.getKey().getType(),item.getValue().b));
       }
     }
     for(var block : node.getBlockList()){
@@ -62,7 +65,7 @@ public class SCCP {
         if(!(branchIns.getCondition() instanceof RegItem)){
           if(branchIns.getCondition().getName().equals("1")){
             block.setExitIns(new IRJmpIns(branchIns.getTrueLabel()));
-          }if(branchIns.getCondition().getName().equals("0")){
+          }else if(branchIns.getCondition().getName().equals("0")){
             block.setExitIns(new IRJmpIns(branchIns.getFalseLabel()));
           }else{
             throw new Error("null pointer");
@@ -123,9 +126,12 @@ public class SCCP {
           tmpVal = lattice.get(item.a).b;
         }else{
           if(item.a.getName().equals("null")){
-            throw new Error("null pointer");
+//            throw new Error("null pointer");
+            tmpVal = 0;
+          }else{
+            tmpVal = Integer.valueOf(item.a.getName());
           }
-          tmpVal = Integer.valueOf(item.a.getName());
+
         }
         if(tmpState == Lattice.BOTTOM) {
           state = Lattice.BOTTOM;
@@ -182,14 +188,16 @@ public class SCCP {
     } else{
       curState = new Pair<>(Lattice.BOTTOM,0);
     }
-    if(curState.a != preState.a || !curState.b.equals(preState.b)){
-      lattice.put(dest,curState);
-      ssaList.addAll(defUse.get(ins));
+    if(curState.a != preState.a || !curState.b.equals(preState.b)) {
+      lattice.put(dest, curState);
+      if (defUse.containsKey(ins)) {
+        ssaList.addAll(defUse.get(ins));
+
+      }
     }
   }
   void updateLattice(IRFuncDef node){
-    marked = new HashMap<>();
-    markedInv = new HashMap<>();
+
     flowList = new LinkedList<>();
     ssaList = new LinkedList<>();
     flowList.add(new Pair<>(null, node.getBlockList().get(0)));
@@ -243,6 +251,10 @@ public class SCCP {
     reg2Ins = new HashMap<>();
     label2Block = new HashMap<>();
     defUse = new HashMap<>();
+    marked = new HashMap<>();
+    markedInv = new HashMap<>();
+    allIns = new HashMap<>();
+    phiflowIns = new HashMap<>();
     for(var block : node.getBlockList()){
       label2Block.put(block.getLableName(),block);
       marked.put(block,new HashSet<>());
@@ -264,6 +276,10 @@ public class SCCP {
       }
 
 
+    }
+    for(int i = 0;i < node.getParamList().size();i++){
+      lattice.put(node.getParamList().get(i),new Pair<>(Lattice.TOP,0));
+      reg2Ins.put(node.getParamList().get(i),null);
     }
     for(var block : node.getBlockList()){
       var allIns = this.allIns.get(block);

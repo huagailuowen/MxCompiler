@@ -14,7 +14,7 @@ public class RegItem extends Item implements java.lang.Comparable<RegItem>{
     int degree;
 
     public String getNameReg() {
-        return name ;//+ " : " + (regAddr== null?" Stack ": regAddr.getRegIndex());
+        return name + " : " + (regAddr== null?" Stack ": regAddr.getRegIndex());
     }
 
     public RegItem(IRBaseType type, String name ,TypeLable realType) {
@@ -34,7 +34,7 @@ public class RegItem extends Item implements java.lang.Comparable<RegItem>{
     @Override
     public String toString() {
 //        return type.getName() + " " + name;
-        return type.getName() + " " + getName();
+        return type.getName() + " " + getNameReg();
 
     }
 

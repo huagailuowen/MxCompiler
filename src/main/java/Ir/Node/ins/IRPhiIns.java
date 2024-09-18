@@ -8,6 +8,8 @@ import Utility.error.ErrorBasic;
 import org.antlr.v4.runtime.misc.Pair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 @lombok.Getter
 @lombok.Setter
 public class IRPhiIns extends IRIns {
@@ -65,6 +67,17 @@ public class IRPhiIns extends IRIns {
     ArrayList<RegItem> ret = new ArrayList<>();
     ret.add(dest);
     return ret;
+  }
+  @Override
+  public void replaceUse(HashMap<RegItem, Item> map) {
+    for(int i = 0;i < valueList.size();i++){
+      if(map.containsKey(valueList.get(i).a)){
+        valueList.set(i, new Pair<>(map.get(valueList.get(i).a), valueList.get(i).b));
+      }
+    }
+  }
+  @Override public void replaceDef(RegItem newReg) {
+    dest = newReg;
   }
   @Override
   public IRPhiIns copy() {

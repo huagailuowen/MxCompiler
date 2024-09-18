@@ -14,5 +14,6 @@ public class IROptimizer {
 //    output.println(root);
     new CFGBuilder().visit(root);
     new Mem2Reg().visit(root);
+    new SCCP().visit(root);
   }
 }
