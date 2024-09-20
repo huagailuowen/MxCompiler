@@ -135,7 +135,7 @@ public class PhiRemover {
       var destList = new ArrayList<RegItem>();
       for(var pair : phi.getValueList()){
         var predBlock = lable2block.get(pair.b);
-        if(predBlock.getSucc().size()>1 && block.getPred().size() >1){
+        if(predBlock.getSucc().size()>1){//&& block.getPred().size() > 1
           var insertblock = new IRBlockStmt(".PHI."+phiCount++);
           insertblock.addPred(predBlock);
           predBlock.getSucc().remove(block);

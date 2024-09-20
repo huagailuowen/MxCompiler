@@ -48,6 +48,7 @@ public class Mem2Reg {
       dom.set(0, blockindex, true);
       domList.add(dom);
     }
+    int totalBlock = blockindex;
     boolean changed = true;
     BitSet visitflag = null;
     while(changed){
@@ -60,11 +61,11 @@ public class Mem2Reg {
       while(!blockQueue.isEmpty()){
         blockindex = blockQueue.poll();
 
-        var tmpdom = new BitSet(blockindex);
+        var tmpdom = new BitSet(totalBlock);
         if(blockindex != 0){
-          tmpdom.set(0, blockindex, true);
+          tmpdom.set(0, totalBlock, true);
         }else{
-          tmpdom.set(0, blockindex, false);
+          tmpdom.set(0, totalBlock, false);
         }
         for(var pred : index2block.get(blockindex).getPred()){
           tmpdom.and(domList.get(pred.getIndex()));
@@ -324,6 +325,7 @@ public class Mem2Reg {
 
   public void calcDom(IRFuncDef node)
   {
+
     for(var block : node.getBlockList()){
       block.setDomChild(new ArrayList<>());
       block.setIDom(null);

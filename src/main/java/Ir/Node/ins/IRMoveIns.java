@@ -6,6 +6,7 @@ import Ir.Item.RegItem;
 import Utility.error.ErrorBasic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @lombok.Getter
 @lombok.Setter
@@ -34,11 +35,29 @@ public class IRMoveIns extends IRIns {
   }
   @Override
   public ArrayList<RegItem> getUseRegs() {
-    throw new ErrorBasic("IRMoveIns getUseRegs error, not SSA");
+//    throw new ErrorBasic("IRMoveIns getUseRegs error, not SSA");
+    ArrayList<RegItem> ret = new ArrayList<>();
+    if(src instanceof RegItem) {
+      ret.add((RegItem) src);
+    }
+    return ret;
   }
   @Override
   public ArrayList<RegItem> getDefRegs() {
-    throw new ErrorBasic("IRMoveIns getUseRegs error, not SSA");
+//    throw new ErrorBasic("IRMoveIns getUseRegs error, not SSA");
+    ArrayList<RegItem> ret = new ArrayList<>();
+    ret.add(dest);
+    return ret;
+  }
+  @Override
+  public void replaceUse(HashMap<RegItem, Item> replaceMap) {
+    if(src instanceof RegItem && replaceMap.containsKey(src)) {
+      src = replaceMap.get(src);
+    }
+  }
+  @Override
+  public void replaceDef(RegItem newReg) {
+    dest = newReg;
   }
   @Override
   public IRMoveIns copy() {

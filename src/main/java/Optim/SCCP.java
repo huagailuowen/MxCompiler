@@ -76,6 +76,11 @@ public class SCCP {
     }
   }
   void visit(IRIns ins){
+    if(ins instanceof IRPhiIns phiIns){
+      if(phiIns.getDest().getName().equals("%i.0._4")){
+        int y =1;
+      }
+    }
     if(ins instanceof IRBranchIns branchIns){
       var State = Lattice.CONST;
       int val = 0;
@@ -91,16 +96,21 @@ public class SCCP {
       if(State == Lattice.BOTTOM){
         flowList.add(new Pair<>(ins.getBlock(), label2Block.get(branchIns.getFalseLabel())));
         flowList.add(new Pair<>(ins.getBlock(), label2Block.get(branchIns.getTrueLabel())));
+        markedInv.get(label2Block.get(branchIns.getFalseLabel())).add(ins.getBlock());
+        markedInv.get(label2Block.get(branchIns.getTrueLabel())).add(ins.getBlock());
       }else if(State == Lattice.CONST){
         if(val == 1){
           flowList.add(new Pair<>(ins.getBlock(), label2Block.get(branchIns.getTrueLabel())));
+          markedInv.get(label2Block.get(branchIns.getTrueLabel())).add(ins.getBlock());
         }else{
           flowList.add(new Pair<>(ins.getBlock(), label2Block.get(branchIns.getFalseLabel())));
+          markedInv.get(label2Block.get(branchIns.getFalseLabel())).add(ins.getBlock());
         }
       }
       return ;
     } else if(ins instanceof IRJmpIns jmpIns){
       flowList.add(new Pair<>(ins.getBlock(), label2Block.get(jmpIns.getLabel()) ));
+      markedInv.get(label2Block.get(jmpIns.getLabel())).add(ins.getBlock());
       return ;
     }
     var dest = IRIns.getAllocaReg(ins);
@@ -122,8 +132,14 @@ public class SCCP {
         Lattice tmpState = Lattice.CONST;
         int tmpVal = 0;
         if(item.a instanceof RegItem){
-          tmpState = lattice.get(item.a).a;
-          tmpVal = lattice.get(item.a).b;
+          if(!lattice.containsKey(item.a)){
+            //must be global
+            tmpState = Lattice.BOTTOM;
+          }else{
+            tmpState = lattice.get(item.a).a;
+            tmpVal = lattice.get(item.a).b;
+          }
+
         }else{
           if(item.a.getName().equals("null")){
 //            throw new Error("null pointer");
@@ -150,6 +166,10 @@ public class SCCP {
           }
         }
       }
+      ins = ins;
+      if(markedInv.get(ins.getBlock()).size() == 0){
+        state = Lattice.TOP;
+      }
       if(state == Lattice.CONST) {
         curState = new Pair<>(Lattice.CONST, val);
       }else{
@@ -172,9 +192,12 @@ public class SCCP {
         rval = lattice.get((RegItem) arithIns.getRhs()).b;
       }else {
         if(arithIns.getRhs().getName().equals("null")){
-          throw new Error("null pointer");
+//          throw new Error("null pointer");
+          rval = 0;
+        }else{
+          rval = Integer.valueOf(arithIns.getRhs().getName());
         }
-        rval = Integer.valueOf(arithIns.getRhs().getName());
+
       }
       if(arithIns.getOp().equals("mul") && (lval == 0 && lState == Lattice.CONST || rval == 0 && rState == Lattice.CONST)){
         curState = new Pair<>(Lattice.CONST,0);
@@ -208,6 +231,7 @@ public class SCCP {
         var pair = flowList.poll();
         var pre = pair.a;
         var cur = pair.b;
+        cur=cur;
         if(pre != null){
           if(marked.get(pre).contains(cur)){
             continue;
@@ -235,12 +259,13 @@ public class SCCP {
       while(!ssaList.isEmpty()){
         var ins = ssaList.poll();
         var block = ins.getBlock();
-        for(var pred : block.getPred()){
-          if(marked.get(pred).contains(block)){
-            visit(ins);
-            break;
-          }
-        }
+        visit(ins);
+//        for(var pred : block.getPred()){
+//          if(marked.get(pred).contains(block)){
+//
+//            break;
+//          }
+//        }
       }
     }
   }
@@ -284,17 +309,15 @@ public class SCCP {
     for(var block : node.getBlockList()){
       var allIns = this.allIns.get(block);
       for(var ins : allIns){
-        RegItem dest = IRIns.getAllocaReg(ins);
-        if(dest != null){
-          var useList = ins.getUseRegs();
-          for(var reg : useList){
-            if(lattice.containsKey(reg)){
-              var regins = reg2Ins.get(reg);
-              defUse.putIfAbsent(regins,new HashSet<>());
-              defUse.get(regins).add(ins);
-            }
+        var useList = ins.getUseRegs();
+        for(var reg : useList){
+          if(lattice.containsKey(reg)){
+            var regins = reg2Ins.get(reg);
+            defUse.putIfAbsent(regins,new HashSet<>());
+            defUse.get(regins).add(ins);
           }
         }
+
       }
     }
   }
