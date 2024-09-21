@@ -303,7 +303,7 @@ public class SCCP {
 
     }
     for(int i = 0;i < node.getParamList().size();i++){
-      lattice.put(node.getParamList().get(i),new Pair<>(Lattice.TOP,0));
+      lattice.put(node.getParamList().get(i),new Pair<>(Lattice.BOTTOM,0));
       reg2Ins.put(node.getParamList().get(i),null);
     }
     for(var block : node.getBlockList()){
