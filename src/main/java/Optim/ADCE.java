@@ -45,7 +45,9 @@ public class ADCE {
       for(var ins : insList)
       {
         if(ins instanceof IRStoreIns
-          || ins instanceof IRCallIns){
+          || ins instanceof IRCallIns
+          || ins instanceof IRRetIns
+          || ins instanceof IRBranchIns){
           liveIns.add(ins);
           workList.add(ins);
         }
@@ -66,7 +68,7 @@ public class ADCE {
       for(var use : ins.getUseRegs())
       {
         var useIns = reg2Ins.get(use);
-        if(!liveIns.contains(useIns))
+        if(useIns != null && !liveIns.contains(useIns))
         {
           liveIns.add(useIns);
           workList.add(useIns);
@@ -88,8 +90,13 @@ public class ADCE {
       }
       block.setPhi(newPhi);
       var newInsList = new ArrayList<IRIns>();
-      for(var ins : allIns.get(block))
+      var insList = allIns.get(block);
+      insList.remove(insList.size()-1);
+      for(var ins : insList)
       {
+        if(ins instanceof IRPhiIns){
+          continue;
+        }
         if(liveIns.contains(ins))
         {
           newInsList.add(ins);

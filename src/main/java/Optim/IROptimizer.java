@@ -16,5 +16,6 @@ public class IROptimizer {
     new Mem2Reg().visit(root);
     new SinglePhiRemover().visit(root);
     new SCCP().visit(root);
+    new ADCE().visit(root);
   }
 }

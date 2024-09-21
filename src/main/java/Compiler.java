@@ -40,9 +40,10 @@ public class Compiler {
     System.out.println(info);
     if(!info.empty())throw new RuntimeException(info.getContent());
     IRNode ir = new IRBuilder().visit((ASTRoot) ast);
-//    System.out.println(ir.toString());
+
     if(opt){
       new IROptimizer().visit((IRRoot) ir);
+//      System.out.println(ir.toString());
       new GraphAllocator().visit((IRRoot) ir);
     }
 
