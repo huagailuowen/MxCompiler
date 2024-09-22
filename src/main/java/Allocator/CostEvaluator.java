@@ -64,8 +64,6 @@ public class CostEvaluator {
   public void calcCost(IRFuncDef node)
   {
     loopFinder(node);
-    ancestors = new HashSet<>();
-    dfsCalcDepth(node.getBlockList().get(0));
     cost = new ArrayList<>();
     size = var2index.size();
     for(int i = 0; i < size; i++)
@@ -160,7 +158,10 @@ public class CostEvaluator {
     for(var block : node.getBlockList())
     {
       block.setLoopEntry(false);
+      block.setTreeDepth(-1);
     }
     dfsLoopFinder(node.getBlockList().get(0),0);
+    ancestors = new HashSet<>();
+    dfsCalcDepth(node.getBlockList().get(0));
   }
 }

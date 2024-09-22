@@ -32,6 +32,15 @@ public class IRIns extends IRNode {
     liveIn = new HashSet<>();
     liveOut = new HashSet<>();
   }
+  public static boolean isPinned(IRIns ins)
+  {
+    if(ins instanceof IRArithIns
+      || ins instanceof IRGetEleIns
+      || ins instanceof IRMoveIns){
+      return false;
+    }
+    return true;
+  }
   public static boolean needAlloca(IRIns ins, BitSet usedCallee)
   {
     if(ins instanceof IRJmpIns
