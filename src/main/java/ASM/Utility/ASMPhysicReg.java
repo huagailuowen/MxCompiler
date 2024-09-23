@@ -14,9 +14,9 @@ public interface ASMPhysicReg {
   public static ASMReg t1= new ASMReg("t1", 6,-1);
   public static ASMReg t2= new ASMReg("t2", 7,-1);
   public static ASMReg t5= new ASMReg("t5", 30,-1);//for addi and sw's big number
-  public static ASMReg t6= new ASMReg("t6", 31,-1);
   //24 available register
-  public static ASMReg ra= new ASMReg("ra", 1,23);
+  public static ASMReg t6= new ASMReg("t6", 31,23);
+  public static ASMReg ra= new ASMReg("ra", 1,24);
   public static ASMReg s0= new ASMReg("s0", 8,11);
   public static ASMReg s1= new ASMReg("s1", 9,12);
   public static ASMReg a0= new ASMReg("a0", 10,1);
@@ -40,9 +40,9 @@ public interface ASMPhysicReg {
   public static ASMReg t3= new ASMReg("t3", 28,9);
   public static ASMReg t4= new ASMReg("t4", 29,10);
 
-  public static ASMReg[] availableReg = {ra, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, t3, t4, t0};
+  public static ASMReg[] availableReg = {ra, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, t3, t4, t6, t0, zero};
 
   public static ASMReg[] calleeReg ={s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11};
-  public static ASMReg[] callerReg ={a0, a1, a2, a3, a4, a5, a6, a7, ra, t3, t4};
+  public static ASMReg[] callerReg ={a0, a1, a2, a3, a4, a5, a6, a7, ra, t3, t4, t6};
 
 }

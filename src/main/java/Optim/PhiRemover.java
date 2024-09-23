@@ -1,5 +1,6 @@
 package Optim;
 
+import Allocator.GraphAllocator;
 import Ir.Item.Item;
 import Ir.Item.RegItem;
 import Ir.Node.IRRoot;
@@ -24,7 +25,7 @@ public class PhiRemover {
   public void visit(IRRoot node)
   {
     tmpReg = new RegItem(IRBaseType.getIntType(), "%..TMP_SWAP..", new TypeLable("int"));
-    tmpReg.setRegAddr(new RegAddr(23));
+    tmpReg.setRegAddr(new RegAddr(GraphAllocator.K));
     //means using the reserved register t0
     visit(node.getInitFunc());
     for(var func : node.getFuncList()){

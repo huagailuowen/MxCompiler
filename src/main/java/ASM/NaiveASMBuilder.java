@@ -70,16 +70,16 @@ public class NaiveASMBuilder implements IRVisitor<ASMNode> {
         throw new ErrorBasic("variable not found");
       }
 //      name = name.substring(1);
-      stmt.addIns(new ASMLoadAddrIns(ASMPhysicReg.t6,name));
+      stmt.addIns(new ASMLoadAddrIns(dest,name));
       //tmp register
-      var addr = new ASMAddr(ASMPhysicReg.t6,0);
-      if(name.startsWith("@string.")){
-        stmt.addIns(new ASMMoveIns(dest,ASMPhysicReg.t6));
-      }else {
-//        stmt.addIns(new ASMLoadRegIns(dest, addr));
-        stmt.addIns(new ASMMoveIns(dest,ASMPhysicReg.t6));
-        //        throw new ErrorBasic("this won't happen");
-      }
+      var addr = new ASMAddr(dest,0);
+//      if(name.startsWith("@string.")){
+//        stmt.addIns(new ASMMoveIns(dest,dest));
+//      }else {
+////        stmt.addIns(new ASMLoadRegIns(dest, addr));
+//        stmt.addIns(new ASMMoveIns(dest,dest));
+//        //        throw new ErrorBasic("this won't happen");
+//      }
       return addr;
     }
   }

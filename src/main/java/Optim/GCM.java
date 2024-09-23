@@ -4,8 +4,7 @@ import Allocator.CostEvaluator;
 import Ir.Item.RegItem;
 import Ir.Node.IRRoot;
 import Ir.Node.def.IRFuncDef;
-import Ir.Node.ins.IRIns;
-import Ir.Node.ins.IRPhiIns;
+import Ir.Node.ins.*;
 import Ir.Node.stmt.IRBlockStmt;
 import org.antlr.v4.runtime.misc.Pair;
 
@@ -43,7 +42,12 @@ public class GCM {
     scheduleEarly(node);
     scheduleLate(node);
     for(var block : node.getBlockList()){
-      block.setInsList(block.getMoveList());
+      block.setInsList(new ArrayList<>());
+      for(int i = block.getMoveList().size()-1; i >= 0;i--){
+        block.addIns(block.getMoveList().get(i));
+      }
+      block.setMoveList(new ArrayList<>());
+
     }
   }
   void scheduleEarly(IRIns node)
@@ -51,10 +55,14 @@ public class GCM {
     if(visited.contains(node))return;
     visited.add(node);
     var early = entryBlock;
-    for(var use : defUse.get(node))
+    for(var use : node.getUseRegs())
     {
-      scheduleEarly(use);
-      var tmp = earlyBlock.get(use);
+      var useIns = reg2Ins.get(use);
+      if(useIns == null){
+        continue;
+      }
+      scheduleEarly(useIns);
+      var tmp = earlyBlock.get(useIns);
       if(tmp.getTreeDepth() > early.getTreeDepth())
       {
         early = tmp;
@@ -64,6 +72,7 @@ public class GCM {
       early = node.getBlock();
     }
     earlyBlock.put(node,early);
+    throw new RuntimeException("GCM: the pinned ins 's order had to be maintained");
   }
   void scheduleEarly(IRFuncDef node)
   {
@@ -102,12 +111,22 @@ public class GCM {
       for(var ins : allIns)
       {
         if(IRIns.isPinned(ins)) {
+          if(visited.contains(ins))continue;
           visited.add(ins);
-          for(var use : defUse.get(ins)) {
-            if (!visited.contains(use)) {
-              scheduleLate(use);
+          if(defUse.containsKey(ins)){
+            for(var use : defUse.get(ins)) {
+              if (!visited.contains(use)) {
+                scheduleLate(use);
+              }
             }
           }
+
+//          if(!(ins instanceof IRPhiIns)
+//            && !(ins instanceof IRBranchIns)
+//            && !(ins instanceof IRJmpIns)
+//            && !(ins instanceof IRRetIns)){
+//            block.getMoveList().add(ins);
+//          }
         }
       }
     }
@@ -117,6 +136,20 @@ public class GCM {
     if(visited.contains(ins))return;
     visited.add(ins);
     IRBlockStmt late = null;
+    if(!defUse.containsKey(ins)){
+      if(IRIns.isPinned(ins)){
+//        late = ins.getBlock();
+//        if(!(ins instanceof IRPhiIns)
+//          && !(ins instanceof IRBranchIns)
+//          && !(ins instanceof IRJmpIns)
+//          && !(ins instanceof IRRetIns)){
+//          late.getMoveList().add(ins);
+//        }
+        return;
+      }else{
+        throw new RuntimeException("GCM: ins not pinned and has no use");
+      }
+    }
     for(var use : defUse.get(ins))
     {
       scheduleLate(use);
@@ -154,9 +187,15 @@ public class GCM {
     }
     if(IRIns.isPinned(ins)){
       best = ins.getBlock();
+      return;
     }
     ins.setBlock(best);
-    best.getMoveList().add(ins);
+    if(!(ins instanceof IRPhiIns)
+      && !(ins instanceof IRBranchIns)
+      && !(ins instanceof IRJmpIns)
+      && !(ins instanceof IRRetIns)){
+      best.getMoveList().add(ins);
+    }
   }
   IRBlockStmt LCA(IRBlockStmt a, IRBlockStmt b)
   {

@@ -11,6 +11,7 @@ import ASM.Node.ins.*;
 import ASM.Node.stmt.ASMBlockStmt;
 import ASM.Node.stmt.ASMStmt;
 import ASM.Utility.ASMPhysicReg;
+import Allocator.GraphAllocator;
 import Ir.IRVisitor;
 import Ir.Item.Item;
 import Ir.Item.LiteralItem;
@@ -79,12 +80,12 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
         throw new ErrorBasic("variable not found");
       }
 //      name = name.substring(1);
-      stmt.addIns(new ASMLoadAddrIns(ASMPhysicReg.t6,name));
+      stmt.addIns(new ASMLoadAddrIns(ASMPhysicReg.t1,name));
       //tmp register
 //      if(!name.startsWith("@string.")){
 //        throw new ErrorBasic("this won't happen");
 //      }
-      var addr = new ASMAddr(ASMPhysicReg.t6,0);
+      var addr = new ASMAddr(ASMPhysicReg.t1,0);
       if(name.startsWith("@string.")) {
         throw new ErrorBasic("this won't happen");
       }
@@ -234,7 +235,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
 
     curStackOffset = 4;
     // the ra
-    curStackOffset += 4*23;
+    curStackOffset += 4* GraphAllocator.K;
     //the first 4 bytes are used to store the return address
     for(var block : node.getBlockList()){
       //the exitIns do not have allocate need
@@ -623,10 +624,10 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
   @Override
   public ASMNode visit(IRLoadIns node) throws ErrorBasic {
     var stmt = new ASMStmt();
-    ASMReg addrdest = ASMPhysicReg.t0;
+    ASMReg addrdest = ASMPhysicReg.t1;
     addrdest = getAddr(node.getAddr(),addrdest,stmt,true);
 //    stmt.addIns(new ASMLoadRegIns(dest,addr));
-    ASMReg tmp = ASMPhysicReg.t1;
+    ASMReg tmp = ASMPhysicReg.t0;
 //    if(addr.getBase().equals(ASMPhysicReg.sp)) {
 //
 //    }

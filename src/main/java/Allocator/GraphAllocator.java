@@ -29,8 +29,8 @@ class ComparablePair implements Comparable<ComparablePair>{
 }
 
 public class GraphAllocator{
+  public static final int K = 24;
   LifeTimeMonitor lifeTimeMonitor;
-  static int K = 23;
   //largest number of registers
   ArrayList<HashSet<Integer>>edge;
   //by index

@@ -114,7 +114,7 @@ public class LifeTimeMonitor extends CostEvaluator{
       cnt++;
       var ins = entry.getValue();
       if(!use.containsKey(reg)){
-        reg.setRegAddr(new RegAddr(-1));
+        reg.setRegAddr(new RegAddr(GraphAllocator.K+1));
         continue;
       }
       var useList = use.get(reg);
