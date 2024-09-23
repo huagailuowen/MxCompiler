@@ -5,9 +5,11 @@ import Ir.Item.RegItem;
 import Ir.Node.IRRoot;
 import Ir.Node.def.IRFuncDef;
 import Ir.Node.ins.IRIns;
+import Ir.Node.ins.IRPhiIns;
 import Ir.Node.stmt.IRBlockStmt;
 import org.antlr.v4.runtime.misc.Pair;
 
+import javax.imageio.ImageReadParam;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +24,7 @@ public class GCM {
   HashMap<String, IRBlockStmt> label2Block;
   HashSet<IRIns> visited;
   HashMap<IRIns, IRBlockStmt> earlyBlock;
+  IRBlockStmt entryBlock;
   public void visit(IRRoot node) {
     visit(node.getInitFunc());
     for(var func : node.getFuncList()){
@@ -30,14 +33,37 @@ public class GCM {
   }
   void visit(IRFuncDef node)
   {//assume that the dominator tree has been built
+    entryBlock = node.getBlockList().get(0);
     new CostEvaluator().loopFinder(node);
     //calculate the cost of each loop
+    buildUseDefLink(node);
+    for(var block : node.getBlockList()){
+      block.setMoveList(new ArrayList<>());
+    }
     scheduleEarly(node);
     scheduleLate(node);
+    for(var block : node.getBlockList()){
+      block.setInsList(block.getMoveList());
+    }
   }
   void scheduleEarly(IRIns node)
   {
-
+    if(visited.contains(node))return;
+    visited.add(node);
+    var early = entryBlock;
+    for(var use : defUse.get(node))
+    {
+      scheduleEarly(use);
+      var tmp = earlyBlock.get(use);
+      if(tmp.getTreeDepth() > early.getTreeDepth())
+      {
+        early = tmp;
+      }
+    }
+    if(IRIns.isPinned(node)){
+      early = node.getBlock();
+    }
+    earlyBlock.put(node,early);
   }
   void scheduleEarly(IRFuncDef node)
   {
@@ -48,22 +74,89 @@ public class GCM {
       var allIns = this.allIns.get(block);
       for(var ins : allIns)
       {
-        earlyBlock.put(ins,block);
+        if(!earlyBlock.containsKey(ins)){
+          earlyBlock.put(ins,block);
+        }
         if(IRIns.isPinned(ins))
         {
           visited.add(ins);
+          for(var use : ins.getUseRegs())
+          {
+            var useIns = reg2Ins.get(use);
+            if(useIns != null )
+            {
+              scheduleEarly(useIns);
+            }
+          }
+        }
+      }
+    }
+
+  }
+  void scheduleLate(IRFuncDef node)
+  {
+    visited = new HashSet<>();
+    for(var block : node.getBlockList())
+    {
+      var allIns = this.allIns.get(block);
+      for(var ins : allIns)
+      {
+        if(IRIns.isPinned(ins)) {
+          visited.add(ins);
           for(var use : defUse.get(ins)) {
             if (!visited.contains(use)) {
-              scheduleEarly(use);
+              scheduleLate(use);
             }
           }
         }
       }
     }
   }
-  void scheduleLate(IRFuncDef node)
+  void scheduleLate(IRIns ins)
   {
-    //TO DO
+    if(visited.contains(ins))return;
+    visited.add(ins);
+    IRBlockStmt late = null;
+    for(var use : defUse.get(ins))
+    {
+      scheduleLate(use);
+      var tmp = use.getBlock();
+      if(use instanceof IRPhiIns phiIns){
+        for(var bb : phiIns.findBlock(IRIns.getAllocaReg(ins))){
+          var block = label2Block.get(bb);
+          if(late == null){
+            late = block;
+          }else {
+            late = LCA(late,block);
+          }
+        }
+      }else{
+        if(late == null){
+          late = tmp;
+        }else{
+          late = LCA(late,tmp);
+        }
+      }
+
+    }
+    var cur = late;
+    var best = late;
+    var early = earlyBlock.get(ins);
+    while(cur.getTreeDepth()>early.getTreeDepth()){
+      if(cur.getLoopDepth() < best.getLoopDepth()){
+        best = cur;
+      }
+      cur = cur.getIDom();
+    }
+    assert cur == early;
+    if(cur.getLoopDepth() < best.getLoopDepth()){
+      best = cur;
+    }
+    if(IRIns.isPinned(ins)){
+      best = ins.getBlock();
+    }
+    ins.setBlock(best);
+    best.getMoveList().add(ins);
   }
   IRBlockStmt LCA(IRBlockStmt a, IRBlockStmt b)
   {
