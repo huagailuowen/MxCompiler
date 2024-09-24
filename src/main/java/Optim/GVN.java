@@ -9,6 +9,7 @@ import Ir.Node.ins.IRGetEleIns;
 import Ir.Node.ins.IRIns;
 import Ir.Node.ins.IRRetIns;
 import Ir.Node.stmt.IRBlockStmt;
+import org.antlr.v4.runtime.misc.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +25,8 @@ public class GVN {
   HashSet<IRBlockStmt>visitedBlock;
   HashMap<RegItem, Item> replaceMap;
   HashMap<String, RegItem> visitedIns;
+
+//  HashMap<RegItem, Pair<RegItem, Integer>> arith
   void dfs(IRBlockStmt block)
   {
     if(visitedBlock.contains(block))return;

@@ -42,12 +42,41 @@ public class GCM {
     scheduleEarly(node);
     scheduleLate(node);
     for(var block : node.getBlockList()){
-      block.setInsList(new ArrayList<>());
+      ArrayList<IRIns> newInsList = new ArrayList<>();
+      for(var ins : block.getInsList()){
+        if(ins.getBlock() == block){
+          newInsList.add(ins);
+        }
+      }
       for(int i = block.getMoveList().size()-1; i >= 0;i--){
-        block.addIns(block.getMoveList().get(i));
+        var ins = block.getMoveList().get(i);
+        HashMap<IRIns, Integer> ins2Index = new HashMap<>();
+        for(int j = 0;j < newInsList.size();j++){
+          ins2Index.put(newInsList.get(j),j);
+        }
+        int earlyIndex = -1, lateIndex = newInsList.size();
+        for(var use : ins.getUseRegs()){
+          var useIns = reg2Ins.get(use);
+          if(useIns != null && ins2Index.containsKey(useIns)){
+            int index = ins2Index.get(useIns);
+            earlyIndex = Math.max(earlyIndex,index);
+          }
+        }
+        if(defUse.containsKey(ins))
+          for(var def : defUse.get(ins)){
+          if(ins2Index.containsKey(def)){
+            int index = ins2Index.get(def);
+            lateIndex = Math.min(lateIndex,index);
+          }
+        }
+        if(earlyIndex >= lateIndex) {
+          throw new RuntimeException("GCM: earlyIndex >= lateIndex");
+        }else{
+          newInsList.add(lateIndex,ins);
+        }
       }
       block.setMoveList(new ArrayList<>());
-
+      block.setInsList(newInsList);
     }
   }
   void scheduleEarly(IRIns node)
@@ -55,6 +84,10 @@ public class GCM {
     if(visited.contains(node))return;
     visited.add(node);
     var early = entryBlock;
+    if(!earlyBlock.containsKey(node)){
+      earlyBlock.put(node,node.getBlock());
+    }
+
     for(var use : node.getUseRegs())
     {
       var useIns = reg2Ins.get(use);
@@ -72,7 +105,7 @@ public class GCM {
       early = node.getBlock();
     }
     earlyBlock.put(node,early);
-    throw new RuntimeException("GCM: the pinned ins 's order had to be maintained");
+//    throw new RuntimeException("GCM: the pinned ins 's order had to be maintained");
   }
   void scheduleEarly(IRFuncDef node)
   {
@@ -187,6 +220,8 @@ public class GCM {
     }
     if(IRIns.isPinned(ins)){
       best = ins.getBlock();
+    }
+    if(best == ins.getBlock()){
       return;
     }
     ins.setBlock(best);

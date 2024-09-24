@@ -19,6 +19,6 @@ public class IROptimizer {
     new ADCE().visit(root);
     //after ADCE, the useless arith and getele ins have been removed
 //    new GVN().visit(root);
-//    new GCM().visit(root);
+    new GCM().visit(root);
   }
 }
