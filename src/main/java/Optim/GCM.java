@@ -48,7 +48,7 @@ public class GCM {
           newInsList.add(ins);
         }
       }
-      for(int i = block.getMoveList().size()-1; i >= 0;i--){
+      for(int i = 0; i < block.getMoveList().size();i++){
         var ins = block.getMoveList().get(i);
         HashMap<IRIns, Integer> ins2Index = new HashMap<>();
         for(int j = 0;j < newInsList.size();j++){
