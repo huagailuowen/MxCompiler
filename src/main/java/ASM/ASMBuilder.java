@@ -85,6 +85,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
 //      if(!name.startsWith("@string.")){
 //        throw new ErrorBasic("this won't happen");
 //      }
+      assert res != ASMPhysicReg.t1;
       var addr = new ASMAddr(ASMPhysicReg.t1,0);
       if(name.startsWith("@string.")) {
         throw new ErrorBasic("this won't happen");
@@ -338,7 +339,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
 
     ASMReg dest = ASMPhysicReg.t0;
     ASMReg src1 = ASMPhysicReg.t1;
-    ASMReg src2 = ASMPhysicReg.t2;
+    ASMReg src2 = ASMPhysicReg.t0;
     Item src1Item = node.getLhs();
     Item src2Item = node.getRhs();
     RegItem destItem = node.getDest();
@@ -515,7 +516,8 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
         stmt.addIns(new ASMStoreIns(reg,new ASMAddr(ASMPhysicReg.sp,4*reg.getStackOffset())));
       index++;
     }
-    stmt.addIns(new ASMUnaryIns("addi",ASMPhysicReg.sp,ASMPhysicReg.sp,-paramSize));
+    if(paramSize>0)
+      stmt.addIns(new ASMUnaryIns("addi",ASMPhysicReg.sp,ASMPhysicReg.sp,-paramSize));
     calloffset = paramSize;
     haveCalled = true;
     var dest = ASMPhysicReg.t0;
@@ -537,7 +539,8 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
       }
     }
     stmt.addIns(new ASMCallIns(node.getFuncName()));
-    stmt.addIns(new ASMUnaryIns("addi",ASMPhysicReg.sp,ASMPhysicReg.sp,paramSize));
+    if(paramSize>0)
+      stmt.addIns(new ASMUnaryIns("addi",ASMPhysicReg.sp,ASMPhysicReg.sp,paramSize));
     calloffset = 0;
     if(node.getDest()!=null){
 //      var addr = getAddr(node.getDest(),stmt);
