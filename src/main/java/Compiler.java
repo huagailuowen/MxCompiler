@@ -59,7 +59,7 @@ public class Compiler {
     if(opt){
       new PhiRemover().visit((IRRoot) ir);
     }
-    System.out.println(ir.toString());
+//    System.out.println(ir.toString());
     new RubbishBlockRemover().visit((IRRoot) ir);
 
 

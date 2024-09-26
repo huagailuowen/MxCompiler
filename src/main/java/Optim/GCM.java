@@ -180,19 +180,12 @@ public class GCM {
     if(visited.contains(ins))return;
     visited.add(ins);
     IRBlockStmt late = null;
+    if(IRIns.isPinned(ins)){
+      return;
+    }
     if(!defUse.containsKey(ins)){
-      if(IRIns.isPinned(ins)){
-//        late = ins.getBlock();
-//        if(!(ins instanceof IRPhiIns)
-//          && !(ins instanceof IRBranchIns)
-//          && !(ins instanceof IRJmpIns)
-//          && !(ins instanceof IRRetIns)){
-//          late.getMoveList().add(ins);
-//        }
-        return;
-      }else{
-        throw new RuntimeException("GCM: ins not pinned and has no use");
-      }
+     throw new RuntimeException("GCM: ins not pinned and has no use");
+
     }
     for(var use : defUse.get(ins))
     {
