@@ -143,6 +143,7 @@ public class GCM {
       var allIns = this.allIns.get(block);
       for(var ins : allIns)
       {
+
         if(IRIns.isPinned(ins)) {
           if(visited.contains(ins))continue;
           visited.add(ins);
@@ -161,6 +162,16 @@ public class GCM {
 //            block.getMoveList().add(ins);
 //          }
         }
+      }
+    }
+    for(var block : node.getBlockList())
+    {
+      var allIns = this.allIns.get(block);
+      for(var ins : allIns)
+      {
+        if(visited.contains(ins))continue;
+
+        scheduleLate(ins);
       }
     }
   }
