@@ -1,2 +1,3 @@
 #!/bin/sh
-testcases/sema/scripts/test.bash 'make run'  testcases/sema
+testcases/sema/scripts/test_all.bash 'make run'  testcases/sema
+#/array-package/array-1.mx
