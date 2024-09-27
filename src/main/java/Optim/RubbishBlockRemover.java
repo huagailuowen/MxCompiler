@@ -9,8 +9,10 @@ import org.antlr.v4.runtime.misc.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class RubbishBlockRemover {
+  HashSet<IRBlockStmt> visited;
   public void visit(IRRoot node) {
     visit(node.getInitFunc());
     for (var func : node.getFuncList()) {
@@ -24,12 +26,19 @@ public class RubbishBlockRemover {
     if(newLables.containsKey(block.getLableName())){
       return newLables.get(block.getLableName());
     }
+    if(visited.contains(block)){
+      newLables.put(block.getLableName(),block.getLableName());
+      return block.getLableName();
+    }
+    visited.add(block);
     var exitIns = block.getExitIns();
     if(exitIns instanceof IRJmpIns jmpIns) {
       if (block.getInsList().isEmpty()) {
         String tmp = dfsDest(lable2Block.get(jmpIns.getLabel()));
-        newLables.put(block.getLableName(), tmp);
-        return tmp;
+        if(!newLables.containsKey(block.getLableName())){
+          newLables.put(block.getLableName(), tmp);
+        }
+        return newLables.get(block.getLableName());
       }
     }
     newLables.put(block.getLableName(),block.getLableName());
@@ -37,6 +46,7 @@ public class RubbishBlockRemover {
   }
   void visit(IRFuncDef node) {
     newLables = new HashMap<>();
+    visited = new HashSet<>();
     lable2Block = new HashMap<>();
     for(var block : node.getBlockList()){
       lable2Block.put(block.getLableName(),block);

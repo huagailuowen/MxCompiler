@@ -71,8 +71,14 @@ public class IRArithIns extends IRIns {
     }else if(op.equals("mul")){
       return lhs * rhs;
     }else if(op.equals("sdiv")){
+      if(rhs == 0){
+        return 0;
+      }
       return lhs / rhs;
     }else if(op.equals("srem")){
+      if(rhs == 0){
+        return 0;
+      }
       return lhs % rhs;
     }else if(op.equals("shl")){
       return lhs << rhs;
