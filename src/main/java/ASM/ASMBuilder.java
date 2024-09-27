@@ -23,6 +23,7 @@ import Ir.Node.def.IRFuncDef;
 import Ir.Node.def.IRGlobalDef;
 import Ir.Node.ins.*;
 import Ir.Node.stmt.IRBlockStmt;
+import Ir.Type.IRBaseType;
 import Ir.Type.IRClassType;
 import Ir.Utility.RegAddr;
 import Utility.error.ErrorBasic;
@@ -542,7 +543,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     if(paramSize>0)
       stmt.addIns(new ASMUnaryIns("addi",ASMPhysicReg.sp,ASMPhysicReg.sp,paramSize));
     calloffset = 0;
-    if(node.getDest()!=null){
+    if(node.getDest()!=null && (node.getDest().getRegAddr() == null || node.getDest().getRegAddr().isSpilled() || node.getDest().getRegAddr().getRegIndex() != GraphAllocator.K + 1)){
 //      var addr = getAddr(node.getDest(),stmt);
 //      stmt.addIns(new ASMStoreIns(ASMPhysicReg.a0,addr));
       storeRes(node.getDest(),stmt,ASMPhysicReg.a0);
@@ -573,46 +574,63 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     }else {
       base = getAddr((RegItem) node.getSrc(), base, stmt,false);
     }
-    boolean first = true;
-    var typename = node.getType();
-    int typesize = 0;
-    if(typename.equals("i32")){
-      typesize = 4;
-    }else if(typename.equals("ptr")){
-      typesize = 4;
-    } else if (typename.equals("i1") || typename.equals("i8")) {
-//      typesize = 1;
-      typesize = 4;
-    } else {
-      typename = typename.substring(7);
-      typesize = memberOffset.get(typename);
+    Item indexItem = null;
+    if(node.getIndexList().size() == 1){
+      indexItem = node.getIndexList().get(0);
+    }else if(node.getIndexList().size() == 2){
+      indexItem = node.getIndexList().get(1);
+    }else{
+      throw new ErrorBasic("GetEleIns index error");
     }
-    for(var indexItem : node.getIndexList()){
-      if(first){
-        first = false;
-        if(indexItem instanceof LiteralItem){
-          stmt.addIns(new ASMLoadImmIns(index,((LiteralItem) indexItem).getValue()));
-        }else{
-//          stmt.addIns(new ASMLoadRegIns(index,getAddr(indexItem.getName())));
-          index = getAddr((RegItem) indexItem,index,stmt,false);
-        }
-        stmt.addIns(new ASMLoadImmIns(dest,typesize));
-        stmt.addIns(new ASMBinaryIns("mul",index,index,dest));
-        stmt.addIns(new ASMBinaryIns("add",dest,base,index));
-      }else{
-        if(indexItem instanceof LiteralItem){
-          stmt.addIns(new ASMLoadImmIns(index,((LiteralItem) indexItem).getValue()));
-        }else{
-//          stmt.addIns(new ASMLoadRegIns(index,getAddr(indexItem.getName())));
-          index = getAddr((RegItem) indexItem,index,stmt,false);
-        }
-
-        stmt.addIns(new ASMLoadImmIns(base,4));
-        //if the alignment is not satisfied, then there is trouble to calculate the real offset dynamically
-        stmt.addIns(new ASMBinaryIns("mul",index,index,base));
-        stmt.addIns(new ASMBinaryIns("add",dest,dest,index));
-      }
+    index = ASMPhysicReg.t0;
+    if(indexItem instanceof LiteralItem) {
+      stmt.addIns(new ASMLoadImmIns(index, ((LiteralItem) indexItem).getValue()));
+    }else {
+      index = getAddr((RegItem) indexItem, index, stmt,false);
     }
+    dest = findAddr(node.getDest(),dest);
+    stmt.addIns(new ASMUnaryIns("slli",dest,index,2));
+    stmt.addIns(new ASMBinaryIns("add",dest,dest,base));
+//    boolean first = true;
+//    var typename = node.getType();
+//    int typesize = 0;
+//    if(typename.equals("i32")){
+//      typesize = 4;
+//    }else if(typename.equals("ptr")){
+//      typesize = 4;
+//    } else if (typename.equals("i1") || typename.equals("i8")) {
+////      typesize = 1;
+//      typesize = 4;
+//    } else {
+//      typename = typename.substring(7);
+//      typesize = memberOffset.get(typename);
+//    }
+//    for(var indexItem : node.getIndexList()){
+//      if(first){
+//        first = false;
+//        if(indexItem instanceof LiteralItem){
+//          stmt.addIns(new ASMLoadImmIns(index,((LiteralItem) indexItem).getValue()));
+//        }else{
+////          stmt.addIns(new ASMLoadRegIns(index,getAddr(indexItem.getName())));
+//          index = getAddr((RegItem) indexItem,index,stmt,false);
+//        }
+//        stmt.addIns(new ASMLoadImmIns(dest,typesize));
+//        stmt.addIns(new ASMBinaryIns("mul",index,index,dest));
+//        stmt.addIns(new ASMBinaryIns("add",dest,base,index));
+//      }else{
+//        if(indexItem instanceof LiteralItem){
+//          stmt.addIns(new ASMLoadImmIns(index,((LiteralItem) indexItem).getValue()));
+//        }else{
+////          stmt.addIns(new ASMLoadRegIns(index,getAddr(indexItem.getName())));
+//          index = getAddr((RegItem) indexItem,index,stmt,false);
+//        }
+//
+//        stmt.addIns(new ASMLoadImmIns(base,4));
+//        //if the alignment is not satisfied, then there is trouble to calculate the real offset dynamically
+//        stmt.addIns(new ASMBinaryIns("mul",index,index,base));
+//        stmt.addIns(new ASMBinaryIns("add",dest,dest,index));
+//      }
+//    }
     storeRes(node.getDest(),stmt,dest);
     return stmt;
   }

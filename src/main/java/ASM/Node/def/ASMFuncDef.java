@@ -23,9 +23,13 @@ public class ASMFuncDef extends ASMNode {
     sb.append("  .globl "+name+"\n");
 //    sb.append("  .text\n");
     sb.append(name+":\n");
-    for (ASMBlockStmt block : blockList)
+    for (int i = 0;i < blockList.size();i++)
     {
-      sb.append(block.toString());
+      var block = blockList.get(i);
+      if(i + 1 != blockList.size())
+        sb.append(block.toString(blockList.get(i+1).getLable()));
+      else
+        sb.append(block.toString());
       sb.append("\n");
     }
     return sb.toString();
