@@ -35,6 +35,31 @@ public class ASMUnaryIns extends ASMIns{
         str = new ASMLoadImmIns(ASMPhysicReg.t5, imm).toString() + "\n";
         str += new ASMBinaryIns("add", dest, src, ASMPhysicReg.t5).toString();
         return str;
+      }else if(opt.equals("slli") && abs(imm) >= 2048){
+        String str = null;
+        str = new ASMLoadImmIns(ASMPhysicReg.t5, imm).toString() + "\n";
+        str += new ASMBinaryIns("sll", dest, src, ASMPhysicReg.t5).toString();
+        return str;
+      }else if(opt.equals("slti") && abs(imm) >= 2048){
+        String str = null;
+        str = new ASMLoadImmIns(ASMPhysicReg.t5, imm).toString() + "\n";
+        str += new ASMBinaryIns("slt", dest, src, ASMPhysicReg.t5).toString();
+        return str;
+      }else if(opt.equals("xori") && abs(imm) >= 2048){
+        String str = null;
+        str = new ASMLoadImmIns(ASMPhysicReg.t5, imm).toString() + "\n";
+        str += new ASMBinaryIns("xor", dest, src, ASMPhysicReg.t5).toString();
+        return str;
+      }else if(opt.equals("andi") && abs(imm) >= 2048){
+        String str = null;
+        str = new ASMLoadImmIns(ASMPhysicReg.t5, imm).toString() + "\n";
+        str += new ASMBinaryIns("and", dest, src, ASMPhysicReg.t5).toString();
+        return str;
+      }else if(opt.equals("ori") && abs(imm) >= 2048) {
+        String str = null;
+        str = new ASMLoadImmIns(ASMPhysicReg.t5, imm).toString() + "\n";
+        str += new ASMBinaryIns("or", dest, src, ASMPhysicReg.t5).toString();
+        return str;
       }
 
       return String.format("%-6s", opt) + " " + dest.toString() + ", " + src.toString() + ", " + imm;

@@ -10,6 +10,6 @@ cd ./src/test/mx
 #./test
 #cp output.s test.s
 export PATH="/usr/local/opt/bin:$PATH"
-ravel test.s builtin.s
-#reimu
+#ravel test.s builtin.s
+reimu
 echo $?
