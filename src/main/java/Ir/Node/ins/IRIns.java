@@ -9,6 +9,7 @@ import Ir.Node.IRNode;
 import Ir.Node.def.IRClassDef;
 import Ir.Node.stmt.IRBlockStmt;
 import Utility.error.ErrorBasic;
+import org.antlr.v4.runtime.misc.Pair;
 
 import java.security.PublicKey;
 import java.util.*;
@@ -147,6 +148,35 @@ public class IRIns extends IRNode {
     } else{
       throw new ErrorBasic("getAllocaName error");
     }
+  }
+  public static void replaceLable(IRIns ins, HashMap<String, String> newLables)
+  {
+    if(ins instanceof IRPhiIns phiIns){
+      for(int i=0;i<phiIns.getValueList().size();i++){
+        var pair = phiIns.getValueList().get(i);
+        if(newLables.containsKey(pair.b)){
+          phiIns.getValueList().set(i,new Pair<>(pair.a,newLables.get(pair.b)));
+        }
+      }
+      return;
+    }
+    if(ins instanceof IRJmpIns jmpIns){
+      if(newLables.containsKey(jmpIns.getLabel())){
+        jmpIns.setLabel(newLables.get(jmpIns.getLabel()));
+      }
+      return;
+    }
+    if(ins instanceof IRBranchIns branchIns){
+      if(newLables.containsKey(branchIns.getTrueLabel())){
+        branchIns.setTrueLabel(newLables.get(branchIns.getTrueLabel()));
+      }
+      if(newLables.containsKey(branchIns.getFalseLabel())){
+        branchIns.setFalseLabel(newLables.get(branchIns.getFalseLabel()));
+      }
+
+      return;
+    }
+    return ;
   }
   @Override
   public <T> T accept(IRVisitor<T> visitor) throws ErrorBasic {

@@ -3,6 +3,7 @@ package Optim;
 import Ir.Node.IRRoot;
 import Ir.Node.def.IRFuncDef;
 import Ir.Node.ins.IRBranchIns;
+import Ir.Node.ins.IRIns;
 import Ir.Node.ins.IRJmpIns;
 import Ir.Node.stmt.IRBlockStmt;
 import org.antlr.v4.runtime.misc.Pair;
@@ -48,6 +49,7 @@ public class RubbishBlockRemover {
     newLables = new HashMap<>();
     visited = new HashSet<>();
     lable2Block = new HashMap<>();
+
     for(var block : node.getBlockList()){
       lable2Block.put(block.getLableName(),block);
     }
@@ -56,26 +58,10 @@ public class RubbishBlockRemover {
     }
     for(var block : node.getBlockList()){
       for(var phiIns : block.getPhi().values()){
-        for(int i=0;i<phiIns.getValueList().size();i++){
-          var pair = phiIns.getValueList().get(i);
-          if(newLables.containsKey(pair.b)){
-            phiIns.getValueList().set(i,new Pair<>(pair.a,newLables.get(pair.b)));
-          }
-        }
+        IRIns.replaceLable(phiIns,newLables);
       }
       var exitIns = block.getExitIns();
-      if(exitIns instanceof IRJmpIns jmpIns){
-        if(newLables.containsKey(jmpIns.getLabel())){
-          jmpIns.setLabel(newLables.get(jmpIns.getLabel()));
-        }
-      }else if(exitIns instanceof IRBranchIns branchIns){
-        if(newLables.containsKey(branchIns.getTrueLabel())){
-          branchIns.setTrueLabel(newLables.get(branchIns.getTrueLabel()));
-        }
-        if(newLables.containsKey(branchIns.getFalseLabel())){
-          branchIns.setFalseLabel(newLables.get(branchIns.getFalseLabel()));
-        }
-      }
+      IRIns.replaceLable(exitIns,newLables);
     }
     var newBlocks = new ArrayList<IRBlockStmt>();
     for(var block : node.getBlockList()){
