@@ -78,7 +78,7 @@ public class SCCP {
   void visit(IRIns ins){
     if(ins instanceof IRPhiIns phiIns){
       if(phiIns.getDest().getName().equals("%i.0._4")){
-        int y =1;
+        int y = 1;
       }
     }
     if(ins instanceof IRBranchIns branchIns){

@@ -38,9 +38,9 @@ public class IRCallIns extends IRIns {
   @Override
   public void replaceUse(HashMap<RegItem, Item> map) {
     for(int i = 0; i < args.size(); i++){
-      if(map.containsKey(dest)){
-        throw new ErrorBasic("IRCallIns replaceUse error");
-      }
+//      if(map.containsKey(dest)){
+//        throw new ErrorBasic("IRCallIns replaceUse error");
+//      }
       if(map.containsKey(args.get(i))){
         args.set(i, map.get(args.get(i)));
       }

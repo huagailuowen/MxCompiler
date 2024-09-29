@@ -15,8 +15,10 @@ public class IROptimizer {
     new CFGBuilder().visit(root);
     new Mem2Reg().visit(root);
     new SinglePhiRemover().visit(root);
+    new Inline().visit(root);
     new SCCP().visit(root);
     new ADCE().visit(root);
+//    new Inline().visit(root);
     //after ADCE, the useless arith and getele ins have been removed
     new GVN().visit(root);
     new GCM().visit(root);

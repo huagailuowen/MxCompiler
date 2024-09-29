@@ -112,11 +112,11 @@ public class Inline {
       IRBlockStmt curBlock = new IRBlockStmt(block.getLableName());
       curBlock.setExitIns(null);
       curBlock.setPhi(block.getPhi());
+      newBlockList.add(curBlock);
       for(var ins : block.getInsList()){
         if(ins instanceof IRCallIns callIns && inlined.contains(name2func.get(callIns.getFuncName()))){
           ArrayList<IRBlockStmt> inlinedBlock = inlineFunc(callIns, name2func.get(callIns.getFuncName()));
           curBlock.setExitIns(new IRJmpIns(inlinedBlock.get(0).getLableName()));
-          newBlockList.add(curBlock);
           newBlockList.addAll(inlinedBlock);
           curBlock = inlinedBlock.get(inlinedBlock.size()-1);
           assert curBlock.getExitIns() == null;
@@ -125,7 +125,7 @@ public class Inline {
         }
       }
       curBlock.setExitIns(block.getExitIns());
-      newBlockList.add(curBlock);
+
       newLables.put(block.getLableName(), curBlock.getLableName());
 
     }
@@ -143,16 +143,19 @@ public class Inline {
     inlineCnt.put(inlined.getName().getName(), cnt+1);
     HashMap<RegItem, Item> replaceMap = new HashMap<>();
     HashMap<String, String> newLables = new HashMap<>();
+    HashMap<String, RegItem> newRegs = new HashMap<>();
     for(int i=0;i<caller.getArgs().size();i++){
       replaceMap.put(inlined.getParamList().get(i), caller.getArgs().get(i));
     }
     for(var block : inlined.getBlockList()){
       IRBlockStmt newBlock = new IRBlockStmt(block.getLableName()+"._"+cnt);
+      newLables.put(block.getLableName(), newBlock.getLableName());
       TreeMap<String, IRPhiIns> newPhi = new TreeMap<>();
       for(var phi : block.getPhi().values()){
         IRPhiIns newPhiIns = phi.copy();
         RegItem newReg = new RegItem(phi.getDest().getType(), phi.getDest().getNameReg()+"._"+cnt, phi.getDest().getRealType());
         newPhiIns.replaceDef(newReg);
+        newRegs.put(phi.getDest().getName(), newReg);
         replaceMap.put(phi.getDest(), newReg);
         newPhi.put(newPhiIns.getDest().getNameReg(), newPhiIns);
       }
@@ -163,6 +166,7 @@ public class Inline {
         if(dest != null){
           RegItem newReg = new RegItem(dest.getType(), dest.getNameReg()+"._"+cnt, dest.getRealType());
           replaceMap.put(dest, newReg);
+          newRegs.put(dest.getName(), newReg);
         }
       }
 
@@ -174,9 +178,9 @@ public class Inline {
     IRRetIns retIns = (IRRetIns) endBlock.getExitIns();
     if(caller.getDest() != null){
       if(retIns.getValue() instanceof RegItem){
-        replaceMap.put(caller.getDest(), (RegItem) retIns.getValue());
+        replaceMap.put(newRegs.get(retIns.getValue().getName()),caller.getDest());
       }else{
-        endBlock.addIns(new IRArithIns(retIns.getValue(), new LiteralItem(retIns.getValue().getType(), 0),caller.getDest(),"+"));
+        endBlock.addIns(new IRArithIns(caller.getDest(), new LiteralItem(caller.getDest().getType(), 0),caller.getDest(),"+"));
       }
     }
     endBlock.setExitIns(null);
