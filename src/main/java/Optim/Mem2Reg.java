@@ -322,7 +322,13 @@ public class Mem2Reg {
     }
     dfsReplace(index2block.get(0), curVarName, null);
   }
-
+  public void calcDom(IRRoot node)
+  {
+    calcDom(node.getInitFunc());
+    for(var func : node.getFuncList()){
+      calcDom(func);
+    }
+  }
   public void calcDom(IRFuncDef node)
   {
 
