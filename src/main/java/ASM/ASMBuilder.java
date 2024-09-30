@@ -248,7 +248,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
         var name = entry.getValue().getDest().getName();
         int id = entry.getValue().getDest().getRegAddr().getRegIndex();
         if(calleeMap.containsKey(id)){
-          usedCallee.set(calleeMap.get(id),1);
+          usedCallee.set(calleeMap.get(id),true);
         }
         if(curVarOffset.containsKey(name)){
           continue;

@@ -38,8 +38,8 @@ public class Inline {
         }
       }
     }
-
-    return callerSize < 200 || addSize < 200;
+//    return false;
+    return addSize < 300;
 
   }
   Tarjan tarjan;
@@ -148,7 +148,13 @@ public class Inline {
       replaceMap.put(inlined.getParamList().get(i), caller.getArgs().get(i));
     }
     for(var block : inlined.getBlockList()){
-      IRBlockStmt newBlock = new IRBlockStmt(block.getLableName()+"._"+cnt);
+      var blockLable = block.getLableName();
+      if(blockLable.equals("entry")){
+        blockLable += "." + inlined.getName().getName() ;
+      }else if(blockLable.equals("defaultStart")){
+        blockLable += "." + inlined.getName().getName() ;
+      }
+      IRBlockStmt newBlock = new IRBlockStmt(blockLable+"._"+cnt);
       newLables.put(block.getLableName(), newBlock.getLableName());
       TreeMap<String, IRPhiIns> newPhi = new TreeMap<>();
       for(var phi : block.getPhi().values()){
@@ -161,12 +167,14 @@ public class Inline {
       }
       newBlock.setPhi(newPhi);
       for(var ins : block.getInsList()){
-        newBlock.addIns(ins.copy());
+        var newIns = ins.copy();
+        newBlock.addIns(newIns);
         RegItem dest = IRIns.getAllocaReg(ins);
         if(dest != null){
           RegItem newReg = new RegItem(dest.getType(), dest.getNameReg()+"._"+cnt, dest.getRealType());
           replaceMap.put(dest, newReg);
           newRegs.put(dest.getName(), newReg);
+          newIns.replaceDef(newReg);
         }
       }
 
@@ -178,7 +186,14 @@ public class Inline {
     IRRetIns retIns = (IRRetIns) endBlock.getExitIns();
     if(caller.getDest() != null){
       if(retIns.getValue() instanceof RegItem){
-        replaceMap.put(newRegs.get(retIns.getValue().getName()),caller.getDest());
+        if(newRegs.containsKey(retIns.getValue().getName())) {
+          replaceMap.put(newRegs.get(retIns.getValue().getName()), caller.getDest());
+          replaceMap.put((RegItem)retIns.getValue(),caller.getDest());
+        }else{
+          endBlock.addIns(new IRMoveIns(  retIns.getValue(),caller.getDest()));
+        }
+
+
       }else{
         endBlock.addIns(new IRArithIns(caller.getDest(), new LiteralItem(caller.getDest().getType(), 0),caller.getDest(),"+"));
       }

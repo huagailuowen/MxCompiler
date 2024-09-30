@@ -183,9 +183,11 @@ public class SCCP {
         lval = lattice.get((RegItem) arithIns.getLhs()).b;
       }else{
         if (arithIns.getLhs().getName().equals("null")){
-          throw new Error("null pointer");
+//          throw new Error("null pointer");
+          lval = 0;
+        }else {
+          lval = Integer.valueOf(arithIns.getLhs().getName());
         }
-        lval = Integer.valueOf(arithIns.getLhs().getName());
       }
       if(arithIns.getRhs() instanceof RegItem){
         rState = lattice.get(arithIns.getRhs()).a;
