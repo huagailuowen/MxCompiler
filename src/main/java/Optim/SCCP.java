@@ -203,6 +203,10 @@ public class SCCP {
       }
       if(arithIns.getOp().equals("mul") && (lval == 0 && lState == Lattice.CONST || rval == 0 && rState == Lattice.CONST)){
         curState = new Pair<>(Lattice.CONST,0);
+      }else if(arithIns.getOp().equals("eq") && (arithIns.getLhs() == arithIns.getRhs())){
+        curState = new Pair<>(Lattice.CONST,1);
+      }else if(arithIns.getOp().equals("ne") && (arithIns.getLhs() == arithIns.getRhs())){
+        curState = new Pair<>(Lattice.CONST,0);
       }else if(lState == Lattice.BOTTOM || rState == Lattice.BOTTOM) {
         curState = new Pair<>(Lattice.BOTTOM, 0);
       }else if(lState == Lattice.CONST && rState == Lattice.CONST) {

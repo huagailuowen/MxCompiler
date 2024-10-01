@@ -210,14 +210,20 @@ public class GraphAllocator{
   public void spillVar(HashSet<RegItem> set)
   {
     var queue = new PriorityQueue<ComparablePair>();
+    int tmp = -1;
+    HashSet<Integer> haveUsed = new HashSet<>();
     for(var var : set){
-      if(var.getRegAddr() !=null && (var.getRegAddr().isSpilled() || var.getRegAddr().getRegIndex() != -1)){
+      if(var.getRegAddr() !=null && (var.getRegAddr().isSpilled() || (tmp = var.getRegAddr().getRegIndex()) != -1)){
+        if(tmp!=-1){
+          haveUsed.add(tmp);
+        }
         continue;
       }
       var index = lifeTimeMonitor.var2index.get(var);
       queue.add(new ComparablePair(lifeTimeMonitor.cost.get(index),var));
     }
-    while (queue.size()>K){
+    int capcity = K - haveUsed.size();
+    while (queue.size() > capcity){
       var var = Objects.requireNonNull(queue.poll()).b;
       var.setRegAddr(new RegAddr());
       var.getRegAddr().setSpilled(true);

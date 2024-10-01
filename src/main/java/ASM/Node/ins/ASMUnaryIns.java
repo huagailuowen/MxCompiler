@@ -30,32 +30,32 @@ public class ASMUnaryIns extends ASMIns{
       return String.format("%-6s", opt) + " " + dest.toString() + ", " + src.toString();
     }else{
 
-      if(opt.equals("addi") && abs(imm) >= 2048){
+      if(opt.equals("addi") && (imm == -2147483648 || abs(imm) >= 2048)){
         String str = null;
         str = new ASMLoadImmIns(ASMPhysicReg.t5, imm).toString() + "\n";
         str += new ASMBinaryIns("add", dest, src, ASMPhysicReg.t5).toString();
         return str;
-      }else if(opt.equals("slli") && abs(imm) >= 2048){
+      }else if(opt.equals("slli") && (imm == -2147483648 || abs(imm) >= 2048)){
         String str = null;
         str = new ASMLoadImmIns(ASMPhysicReg.t5, imm).toString() + "\n";
         str += new ASMBinaryIns("sll", dest, src, ASMPhysicReg.t5).toString();
         return str;
-      }else if(opt.equals("slti") && abs(imm) >= 2048){
+      }else if(opt.equals("slti") && (imm == -2147483648 || abs(imm) >= 2048)){
         String str = null;
         str = new ASMLoadImmIns(ASMPhysicReg.t5, imm).toString() + "\n";
         str += new ASMBinaryIns("slt", dest, src, ASMPhysicReg.t5).toString();
         return str;
-      }else if(opt.equals("xori") && abs(imm) >= 2048){
+      }else if(opt.equals("xori") && (imm == -2147483648 || abs(imm) >= 2048)){
         String str = null;
         str = new ASMLoadImmIns(ASMPhysicReg.t5, imm).toString() + "\n";
         str += new ASMBinaryIns("xor", dest, src, ASMPhysicReg.t5).toString();
         return str;
-      }else if(opt.equals("andi") && abs(imm) >= 2048){
+      }else if(opt.equals("andi") && (imm == -2147483648 || abs(imm) >= 2048)){
         String str = null;
         str = new ASMLoadImmIns(ASMPhysicReg.t5, imm).toString() + "\n";
         str += new ASMBinaryIns("and", dest, src, ASMPhysicReg.t5).toString();
         return str;
-      }else if(opt.equals("ori") && abs(imm) >= 2048) {
+      }else if(opt.equals("ori") && (imm == -2147483648 || abs(imm) >= 2048)) {
         String str = null;
         str = new ASMLoadImmIns(ASMPhysicReg.t5, imm).toString() + "\n";
         str += new ASMBinaryIns("or", dest, src, ASMPhysicReg.t5).toString();
