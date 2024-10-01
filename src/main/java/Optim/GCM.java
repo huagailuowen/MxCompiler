@@ -184,13 +184,17 @@ public class GCM {
       return;
     }
     if(!defUse.containsKey(ins)){
-     throw new RuntimeException("GCM: ins not pinned and has no use");
-
+//     throw new RuntimeException("GCM: ins not pinned and has no use");
+      ins.setBlock(null);
+      return;
     }
     for(var use : defUse.get(ins))
     {
       scheduleLate(use);
       var tmp = use.getBlock();
+      if(tmp == null){
+        continue;
+      }
       if(use instanceof IRPhiIns phiIns){
         for(var bb : phiIns.findBlock(IRIns.getAllocaReg(ins))){
           var block = label2Block.get(bb);

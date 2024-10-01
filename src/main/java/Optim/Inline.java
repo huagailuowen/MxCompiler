@@ -39,7 +39,7 @@ public class Inline {
       }
     }
 //    return false;
-    return addSize < 300;
+    return addSize < 300 && callerSize< 600;
 
   }
   Tarjan tarjan;
