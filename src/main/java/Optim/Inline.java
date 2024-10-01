@@ -90,15 +90,18 @@ public class Inline {
 
   }
   public void visit(IRRoot root) {
-    inlined = new HashSet<>();
-    name2func = new HashMap<>();
-    inlineCnt = new HashMap<>();
-    name2func.put(root.getInitFunc().getName().getName(), root.getInitFunc());
-    inlineCnt.put(root.getInitFunc().getName().getName(), 0);
-    for(var func : root.getFuncList()){
-      name2func.put(func.getName().getName(), func);
-      inlineCnt.put(func.getName().getName(), 0);
+    if(inlined == null){
+      inlined = new HashSet<>();
+      name2func = new HashMap<>();
+      inlineCnt = new HashMap<>();
+      name2func.put(root.getInitFunc().getName().getName(), root.getInitFunc());
+      inlineCnt.put(root.getInitFunc().getName().getName(), 0);
+      for(var func : root.getFuncList()){
+        name2func.put(func.getName().getName(), func);
+        inlineCnt.put(func.getName().getName(), 0);
+      }
     }
+
     buildCallGraph(root);
     bfsInline(root);
     new CFGBuilder().visit(root);
