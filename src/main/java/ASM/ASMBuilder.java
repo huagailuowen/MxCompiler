@@ -10,6 +10,7 @@ import ASM.Node.def.ASMVarDef;
 import ASM.Node.ins.*;
 import ASM.Node.stmt.ASMBlockStmt;
 import ASM.Node.stmt.ASMStmt;
+import ASM.Utility.ASMLable;
 import ASM.Utility.ASMPhysicReg;
 import Allocator.GraphAllocator;
 import Ir.IRVisitor;
@@ -40,6 +41,9 @@ import static java.lang.System.in;
 public class ASMBuilder implements IRVisitor<ASMNode> {
   public static HashMap<Integer,Integer>calleeMap = new HashMap<>();
   public static HashMap<Integer,Integer>callerMap = new HashMap<>();
+  boolean recursiveFlag = false;
+  String recursiveName;
+  String funcName;
   public ASMBuilder(){
     calleeMap = new HashMap<>();
     callerMap = new HashMap<>();
@@ -210,6 +214,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
   BitSet needStore;
   @Override
   public ASMNode visit(IRFuncDef node) throws ErrorBasic {
+    recursiveFlag = false;
     usedCallee = new BitSet(ASMPhysicReg.calleeReg.length);
 //    usedCallee.set(0,ASMPhysicReg.calleeReg.length);
     var func = new ASMFuncDef(node.getName().getName());
@@ -300,8 +305,16 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
         }
         //the put ins order is reversed
         //actually: addi sp,sp,-curStackOffset; sw ra,0(sp)
-        beginList.addAll(blockStmt.getInsList());
+        var recursivePoint = new ASMBlockStmt(node.getName().getName() + "_recursive");
+        recursiveName = recursivePoint.getLable();
+        recursivePoint.setInsList(blockStmt.getInsList());
+        funcName = node.getName().getName();
         blockStmt.setInsList(beginList);
+//        beginList.addAll(blockStmt.getInsList());
+//        assert(blockStmt.getInsList().isEmpty());
+        func.addBlock(blockStmt);
+        func.addBlock(recursivePoint);
+        continue;
       }
       func.addBlock(blockStmt);
     }
@@ -490,7 +503,9 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     }
     //align the stack
     paramSize = (paramSize + 15) / 16 * 16;
-
+    if(paramSize != 0){
+      recursiveFlag = false;
+    }
     //store the reg
     needStore = new BitSet(ASMPhysicReg.callerReg.length);
 //    needStore.set(0,ASMPhysicReg.callerReg.length);
@@ -539,7 +554,11 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
         stmt.addIns(new ASMStoreIns(dest,new ASMAddr(ASMPhysicReg.sp,paramOffset.get(i))));
       }
     }
-    stmt.addIns(new ASMCallIns(node.getFuncName()));
+    if(recursiveFlag){
+      stmt.addIns(new ASMJmpIns(recursiveName));
+    }else{
+      stmt.addIns(new ASMCallIns(node.getFuncName()));
+    }
     if(paramSize>0)
       stmt.addIns(new ASMUnaryIns("addi",ASMPhysicReg.sp,ASMPhysicReg.sp,paramSize));
     calloffset = 0;
@@ -735,8 +754,19 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
   @Override
   public ASMNode visit(IRBlockStmt node) throws ErrorBasic {
     ASMStmt stmt = new ASMBlockStmt(node.getLableName());
-    for(var ins : node.getInsList()){
+    for(int i = 0; i < node.getInsList().size(); i++){
+      var ins = node.getInsList().get(i);
+      if(i+1 ==node.getInsList().size() && node.getExitIns() instanceof IRJmpIns jmpIns){
+        if(jmpIns.getLabel().endsWith(".end") && jmpIns.getLabel().startsWith("func.")) {
+          if(ins instanceof IRCallIns callIns){
+            if(callIns.getFuncName().equals(funcName)){
+              recursiveFlag = true;
+            }
+          }
+        }
+      }
       stmt.addStmt((ASMStmt) ins.accept(this));
+      recursiveFlag = false;
     }
     //do not forget the exitIns
     stmt.addStmt((ASMStmt) node.getExitIns().accept(this));

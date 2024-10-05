@@ -36,6 +36,7 @@ public class GraphAllocator{
   //by index
   ArrayList<IRIns> insList;
   ArrayList<IRIns> blockInsList;
+  HashMap<RegItem, String> originName;
 
   public GraphAllocator() {
     lifeTimeMonitor = new LifeTimeMonitor();
@@ -80,7 +81,7 @@ public class GraphAllocator{
       }
     }
   }
-  public void handleIns(IRIns ins, BitSet used) {
+  public void handleIns(IRIns ins, BitSet used, LinkedList<Integer> available) {
     var liveOutList = ins.getLiveOut();
     var def = ins.getDefRegs();
     var use = ins.getUseRegs();
@@ -95,92 +96,121 @@ public class GraphAllocator{
       }
       if(index != -1){
         used.set(index,false);
+        available.add(index);
       }
     }
     for (var var : def) {
       if(!lifeTimeMonitor.use.containsKey(var)){
-        var.getRegAddr().setSpilled(true);
+        var.getRegAddr().setRegIndex(K + 1);
         //dead variable
       }
       if(var.getRegAddr().isSpilled()){
         continue;
       }
       if(var.getRegAddr().getRegIndex() == -1){
-        int index = used.nextClearBit(0);
+        int index = available.isEmpty() ? K : available.getLast();
         if(index >= K){
           throw new ErrorBasic("No enough registers");
         }
         var.setRegAddr(new RegAddr(index));
 //        var.setRegAddr(new RegAddr(-1));
+        used.set(index);
+        available.removeLast();
+      }else{
+        int index = var.getRegAddr().getRegIndex();
+        used.set(index);
+        for(var item : available){
+          if(item == index){
+            available.remove(item);
+            break;
+          }
+        }
       }
-
-      int index = var.getRegAddr().getRegIndex();
-      used.set(index);
-
     }
   }
-  public void handlePhiIns(IRIns ins, BitSet used) {
-//    var liveOutList = ins.getLiveOut();
+  public void handlePhiIns(IRIns ins, BitSet used ,LinkedList<Integer> available) {
+    var liveOutList = ins.getLiveOut();
     var def = ins.getDefRegs();
-//    var use = ins.getUseRegs();
+    var use = ins.getUseRegs();
+    int preferIndex = -1;
+    for (var var : use) {
+      if(liveOutList.contains(var)){
+        continue;
+      }
+      var index = -1;
+      if(var.getRegAddr().isSpilled()){
+        continue;
+      }
+      index = var.getRegAddr().getRegIndex();
+      if(index == -1 || index >= K || used.get(index)){
+        continue;
+      }
+      preferIndex = index;
+      break;
 
-//    for (var var : use) {
-//      if(liveOutList.contains(var)){
-//        continue;
-//      }
-//      var index = -1;
-//      if(!var.getRegAddr().isSpilled()){
-//        index = var.getRegAddr().getRegIndex();
-//      }
-//      if(index != -1){
-//        used.set(index,false);
-//      }
-//    }
+    }
     for (var var : def) {
       if(!lifeTimeMonitor.use.containsKey(var)){
-        var.getRegAddr().setSpilled(true);
+        var.getRegAddr().setRegIndex(K + 1);
         //dead variable
       }
       if(var.getRegAddr().isSpilled()){
         continue;
       }
+      if(preferIndex != -1){
+        var.getRegAddr().setRegIndex(preferIndex);
+      }
       if(var.getRegAddr().getRegIndex() == -1){
-        int index = used.nextClearBit(0);
+        int index = available.isEmpty() ? K : available.getLast();
         if(index >= K){
           throw new ErrorBasic("No enough registers");
         }
         var.setRegAddr(new RegAddr(index));
 //        var.setRegAddr(new RegAddr(-1));
+        used.set(index);
+        available.removeLast();
+      }else{
+        int index = var.getRegAddr().getRegIndex();
+        used.set(index);
+        for(var item : available){
+          if(item == index){
+            available.remove(item);
+            break;
+          }
+        }
       }
-
-      int index = var.getRegAddr().getRegIndex();
-      used.set(index);
-
     }
   }
   public void dfsGraph(IRBlockStmt block) {
 
     var liveInList = lifeTimeMonitor.firstIns.get(block).getLiveIn();
     var used = new BitSet(K);
+    var available = new LinkedList<Integer>();
     for (var var : liveInList) {
       var index = -1;
       if(!var.getRegAddr().isSpilled()){
         index = var.getRegAddr().getRegIndex();
       }
-      if(index != -1){
+      if(index != -1 && index < K){
         used.set(index);
+      }
+    }
+    for(int i = 0;i < K; i++){
+      if(!used.get(i)){
+        available.add(i);
+        //the s0 -> s11 is in the last, has the priority to be used
       }
     }
     //do we need to add the phi ins?
     for(var entry : block.getPhi().entrySet()){
       var ins = entry.getValue();
-      handlePhiIns(ins,used);
+      handlePhiIns(ins,used,available);
     }
 
     for (var ins : block.getInsList()) {
-      handleIns(ins,used);
+      handleIns(ins,used,available);
     }
-    handleIns(block.getExitIns(),used);
+    handleIns(block.getExitIns(),used,available);
     for(var child : block.getDomChild()){
       dfsGraph(child);
     }
@@ -194,7 +224,7 @@ public class GraphAllocator{
     int cnt = 0;
     for(var param : node.getParamList()){
       if(cnt<8){
-        param.setRegAddr(new RegAddr(cnt+3));
+        param.setRegAddr(new RegAddr(cnt+1));
       }else{
         param.setRegAddr(new RegAddr(-1));
       }
@@ -229,6 +259,16 @@ public class GraphAllocator{
       var.getRegAddr().setSpilled(true);
     }
   }
+//  public void coalition(IRFuncDef node)
+//  {
+//    originName = new HashMap<>();
+//    for(var block : node.getBlockList()){
+//      for(var phi : block.getPhi().values()){
+//
+//      }
+//    }
+//  }
+
   public void insCollect(IRFuncDef node){
     insList = new ArrayList<>();
     for (var block : node.getBlockList()) {
@@ -240,6 +280,7 @@ public class GraphAllocator{
       insList.add(block.getExitIns());
     }
   }
+
   public void visit(IRFuncDef node) {
     insCollect(node);
     lifeTimeMonitor.visit(node);

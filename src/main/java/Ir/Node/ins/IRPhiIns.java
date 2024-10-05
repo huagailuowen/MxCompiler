@@ -55,11 +55,17 @@ public class IRPhiIns extends IRIns {
   @Override
   public ArrayList<RegItem> getUseRegs() {
     ArrayList<RegItem> ret = new ArrayList<>();
+    ArrayList<RegItem> last = new ArrayList<>();
     for(Pair<Item,String> pair : valueList){
       if(pair.a instanceof RegItem){
-        ret.add((RegItem)pair.a);
+        if(pair.b.contains("condition_pre")){
+          last.add((RegItem)pair.a);
+        }else{
+          ret.add((RegItem)pair.a);
+        }
       }
     }
+    ret.addAll(last);
     return ret;
   }
   @Override

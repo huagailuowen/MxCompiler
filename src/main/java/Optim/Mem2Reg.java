@@ -231,6 +231,7 @@ public class Mem2Reg {
             continue;
           }
           var phi = new IRPhiIns(new RegItem(var.getValueType(),varName + "._"+frontier,var.getRealType().getvalType()),var.getValueType());
+//          phi.getDest().setOriginName(varName);
           phi.setTmpreg(new RegItem(phi.getDest().getType(),phi.getDest().getName()+"_tmp",phi.getDest().getRealType()));
           frontierBlock.getPhi().put(varName, phi);
           if(visitFlag.get(frontier)){
