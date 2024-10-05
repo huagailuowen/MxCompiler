@@ -513,7 +513,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
 //      needStore.set(i,true);
 //    }
     for(var reg : node.getLiveIn()){
-//      if(!node.getLiveIn().contains(reg)){
+//      if(!node.getLiveOut().contains(reg)){
 //        continue;
 //      }
       //can still optimize
@@ -756,7 +756,8 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     ASMStmt stmt = new ASMBlockStmt(node.getLableName());
     for(int i = 0; i < node.getInsList().size(); i++){
       var ins = node.getInsList().get(i);
-      if(i+1 ==node.getInsList().size() && node.getExitIns() instanceof IRJmpIns jmpIns){
+      if(i+1 ==node.getInsList().size() || i+2 == node.getInsList().size() && (node.getInsList().get(i+1) instanceof IRMoveIns)){
+      if(node.getExitIns() instanceof IRJmpIns jmpIns){
         if(jmpIns.getLabel().endsWith(".end") && jmpIns.getLabel().startsWith("func.")) {
           if(ins instanceof IRCallIns callIns){
             if(callIns.getFuncName().equals(funcName)){
@@ -764,6 +765,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
             }
           }
         }
+      }
       }
       stmt.addStmt((ASMStmt) ins.accept(this));
       recursiveFlag = false;

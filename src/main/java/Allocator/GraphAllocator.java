@@ -3,6 +3,7 @@ package Allocator;
 import Ir.Item.RegItem;
 import Ir.Node.IRRoot;
 import Ir.Node.def.IRFuncDef;
+import Ir.Node.ins.IRCallIns;
 import Ir.Node.ins.IRIns;
 import Ir.Node.stmt.IRBlockStmt;
 import Ir.Utility.RegAddr;
@@ -30,6 +31,7 @@ class ComparablePair implements Comparable<ComparablePair>{
 
 public class GraphAllocator{
   public static final int K = 24;
+  boolean priorCallee;
   LifeTimeMonitor lifeTimeMonitor;
   //largest number of registers
   ArrayList<HashSet<Integer>>edge;
@@ -96,7 +98,12 @@ public class GraphAllocator{
       }
       if(index != -1){
         used.set(index,false);
-        available.add(index);
+        boolean isCallee = index >= 10;
+        if(isCallee == priorCallee){
+          available.addLast(index);
+        }else {
+          available.addFirst(index);
+        }
       }
     }
     for (var var : def) {
@@ -195,10 +202,19 @@ public class GraphAllocator{
         used.set(index);
       }
     }
-    for(int i = 0;i < K; i++){
-      if(!used.get(i)){
-        available.add(i);
-        //the s0 -> s11 is in the last, has the priority to be used
+    if(priorCallee){
+      for(int i = 0;i < K; i++) {
+        if (!used.get(i)) {
+          available.add(i);
+          //the s0 -> s11 is in the last, has the priority to be used
+        }
+      }
+    }else{
+      for(int i = K - 1;i >= 0; i--) {
+        if (!used.get(i)) {
+          available.add(i);
+          //the s0 -> s11 is in the last, has the priority to be used
+        }
       }
     }
     //do we need to add the phi ins?
@@ -270,11 +286,17 @@ public class GraphAllocator{
 //  }
 
   public void insCollect(IRFuncDef node){
+    priorCallee = false;
     insList = new ArrayList<>();
     for (var block : node.getBlockList()) {
       for(var entry : block.getPhi().entrySet()){
         var ins = entry.getValue();
         insList.add(ins);
+      }
+      for(var ins : block.getInsList()){
+        if(ins instanceof IRCallIns){
+          priorCallee = true;
+        }
       }
       insList.addAll(block.getInsList());
       insList.add(block.getExitIns());
@@ -287,9 +309,9 @@ public class GraphAllocator{
     spillVar(node);
     buildGraph();
     colorGraph(node);
-    for(var var : lifeTimeMonitor.var2index.keySet()){
-      System.err.println(var);
-    }
+//    for(var var : lifeTimeMonitor.var2index.keySet()){
+//      System.err.println(var);
+//    }
   }
   /*TO DO List:
    * 1. Implement the Graph Builder
