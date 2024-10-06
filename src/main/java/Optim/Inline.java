@@ -43,7 +43,7 @@ public class Inline {
 
   }
   Tarjan tarjan;
-  void buildCallGraph(IRRoot root)
+  public void buildCallGraph(IRRoot root)
   {
     HashMap<IRFuncDef, HashSet<IRFuncDef>> callGraph;
     callGraph = new HashMap<>();

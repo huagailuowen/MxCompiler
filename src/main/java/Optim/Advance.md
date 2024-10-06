@@ -7,3 +7,4 @@
 7. load and store optimization
 the global variable is not always the best choice, we can use the register to store the value, and only store it when it is necessary
 without the call, only use store to replace
+8. close the loop's 2 j in small program

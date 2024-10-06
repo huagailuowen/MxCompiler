@@ -13,6 +13,7 @@ public class IROptimizer {
 //    output= new PrintStream(new FileOutputStream("src/test/mx/output.ll"));
 //    output.println(root);
     new CFGBuilder().visit(root);
+    new GlobalKiller().visit(root);
     new Mem2Reg().visit(root);
     new SinglePhiRemover().visit(root);
     var inline = new Inline();
