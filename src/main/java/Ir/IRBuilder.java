@@ -986,7 +986,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     }
   }
     ArrayList<IRIns>insBuilder = new ArrayList<>();
-    for(int i = index_length - 1; i >= 0; i--) {
+    for(int i = index_length - 2; i >= 0; i--) {
       var geteledest = new RegItem(IRBaseType.getPtrType(),"%getele."+String.valueOf(counter.getGeteleIndex()),ptrList.get(i).getRealType().getvalType());
       counter.addGeteleIndex();
       var arithdest = new RegItem(IRBaseType.getIntType(),"%arith."+String.valueOf(counter.getArithIndex()),new TypeLable("bool"));
