@@ -551,6 +551,7 @@ public class IRBuilder implements ASTVisitor<IRNode>{
     }else if(node.getType() == ASTAtomExpr.AtomType.STRING){
       if(counter.queryString(node.getValue()) == null) {
         RegItem stringItem = new RegItem(IRBaseType.getPtrType(),"@string."+String.valueOf(counter.getStringIndex()),new TypeLable("string",1));
+        stringItem.setValueType(IRBaseType.getPtrType());
         counter.addStringIndex();
         counter.addString(node.getValue(),stringItem);
       }

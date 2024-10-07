@@ -38,20 +38,23 @@ public class GlobalKiller {
           recursiveFunc.add(func);
         }
       }
-      for(var def : inst.getDefRegs())
-      {
-        if(def.getName().startsWith("@"))
+      if(inst instanceof IRStoreIns storeIns){
+        if(storeIns.getAddr().getName().startsWith("@")){
+          defSet.add(storeIns.getAddr());
+        }
+        if(storeIns.getValue().getName().startsWith("@")){
+          useSet.add((RegItem) storeIns.getValue());
+        }
+      }else{
+        for(var use : inst.getUseRegs())
         {
-          defSet.add(def);
+          if(use.getName().startsWith("@"))
+          {
+            useSet.add(use);
+          }
         }
       }
-      for(var use : inst.getUseRegs())
-      {
-        if(use.getName().startsWith("@"))
-        {
-          useSet.add(use);
-        }
-      }
+
     }
 
   }
@@ -103,7 +106,7 @@ public class GlobalKiller {
       if(def.contains(var))continue;
 
       var reg = new RegItem(var.getType(), "%"+var.getName().substring(1), var.getRealType());
-      var.setValueType(var.getValueType());
+      reg.setValueType(var.getValueType());
       var ins = new IRAllocIns(var.getType(), reg);
       tmpEntry.add(ins);
       replaceMap.put(var, reg);
@@ -116,7 +119,7 @@ public class GlobalKiller {
         IRIns ins = new IRLoadIns(var, tmp);
         tmpEntry.add(ins);
         ins = new IRStoreIns(reg, tmp);
-        tmpRet.add(ins);
+        tmpEntry.add(ins);
       }
       if(selfDef.contains(var)){
         var reg = (RegItem) replaceMap.get(var);
@@ -124,7 +127,7 @@ public class GlobalKiller {
         IRIns ins = new IRLoadIns(reg, tmp);
         tmpRet.add(ins);
         ins = new IRStoreIns(var, tmp);
-        tmpEntry.add(ins);
+        tmpRet.add(ins);
       }
     }
     for(var block : func.getBlockList())
