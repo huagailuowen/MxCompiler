@@ -58,7 +58,7 @@ public class IRPhiIns extends IRIns {
     ArrayList<RegItem> last = new ArrayList<>();
     for(Pair<Item,String> pair : valueList){
       if(pair.a instanceof RegItem){
-        if(pair.b.contains("condition_pre")){
+        if(pair.b.contains("condition_out")){
           last.add((RegItem)pair.a);
         }else{
           ret.add((RegItem)pair.a);

@@ -104,8 +104,8 @@ public class GlobalKiller {
     {
       if(use.contains(var) && selfDef.contains(var))continue;
       if(def.contains(var))continue;
-
-      var reg = new RegItem(var.getType(), "%"+var.getName().substring(1), var.getRealType());
+      if(var.getName().startsWith("@string."))continue;
+      var reg = new RegItem(var.getType(), "%"+func.getName()+ "." +var.getName().substring(1), var.getRealType());
       reg.setValueType(var.getValueType());
       var ins = new IRAllocIns(var.getType(), reg);
       tmpEntry.add(ins);
@@ -115,7 +115,7 @@ public class GlobalKiller {
       if(!replaceMap.containsKey(var))continue;
       if(selfUse.contains(var)){
         var reg = (RegItem) replaceMap.get(var);
-        var tmp = new RegItem(var.getValueType(), "%L." + var.getName().substring(1), var.getRealType());
+        var tmp = new RegItem(var.getValueType(), "%L."+func.getName() + "." + var.getName().substring(1), var.getRealType());
         IRIns ins = new IRLoadIns(var, tmp);
         tmpEntry.add(ins);
         ins = new IRStoreIns(reg, tmp);
@@ -123,7 +123,7 @@ public class GlobalKiller {
       }
       if(selfDef.contains(var)){
         var reg = (RegItem) replaceMap.get(var);
-        var tmp = new RegItem(var.getValueType(), "%S." + var.getName().substring(1), var.getRealType());
+        var tmp = new RegItem(var.getValueType(), "%S."+func.getName() + "." + var.getName().substring(1), var.getRealType());
         IRIns ins = new IRLoadIns(reg, tmp);
         tmpRet.add(ins);
         ins = new IRStoreIns(var, tmp);
@@ -145,8 +145,7 @@ public class GlobalKiller {
     }
     tmpEntry.addAll(entry.getInsList());
     entry.setInsList(tmpEntry);
-    tmpRet.addAll(ret.getInsList());
-    ret.setInsList(tmpRet);
+    ret.getInsList().addAll(tmpRet);
 
   }
   public void visit(IRRoot root) {
@@ -164,7 +163,7 @@ public class GlobalKiller {
       var useSet = new HashSet<RegItem>();
       var defSet = new HashSet<RegItem>();
       ArrayList<IRFuncDef> funcList = new ArrayList<>(set);
-      boolean flag = scc.size()>1 || recursiveFunc.contains(funcList.get(0));
+      boolean flag = set.size()>1 || recursiveFunc.contains(funcList.get(0));
       for(var callee : graph.get(set)) {
         useSet.addAll(Use.get(callee));
         defSet.addAll(Def.get(callee));

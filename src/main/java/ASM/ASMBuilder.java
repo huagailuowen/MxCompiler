@@ -287,7 +287,8 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
       curVarOffset.put(param.getName(),offset);
     }
     //align the stack
-
+    funcName = node.getName().getName();
+    recursiveName = node.getName().getName() + "_recursive";
     boolean first = true;
     for(var block : node.getBlockList()){
       ASMBlockStmt blockStmt = (ASMBlockStmt) block.accept(this);
@@ -306,9 +307,9 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
         //the put ins order is reversed
         //actually: addi sp,sp,-curStackOffset; sw ra,0(sp)
         var recursivePoint = new ASMBlockStmt(node.getName().getName() + "_recursive");
-        recursiveName = recursivePoint.getLable();
+
         recursivePoint.setInsList(blockStmt.getInsList());
-        funcName = node.getName().getName();
+
         blockStmt.setInsList(beginList);
 //        beginList.addAll(blockStmt.getInsList());
 //        assert(blockStmt.getInsList().isEmpty());
