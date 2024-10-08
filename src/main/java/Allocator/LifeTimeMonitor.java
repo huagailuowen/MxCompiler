@@ -71,6 +71,7 @@ public class LifeTimeMonitor extends CostEvaluator{
     for(var block : node.getBlockList()){
       IRIns lasIns = null;
       block.setPhiDef(new HashSet<>());
+      block.setPhiLiveOut(new HashSet<>());
       lable2Block.put(block.getLableName(),block);
       for(var entry : block.getPhi().entrySet()){
         var ins = entry.getValue();
@@ -153,6 +154,8 @@ public class LifeTimeMonitor extends CostEvaluator{
     if(pre == null){
       //first handle the PHI
       var block = ins2Block.get(ins);
+      block.getPhiLiveOut().add(v);
+
       if(block.getPhiDef().contains(v)){
         //find the def, then handle and return
 //        for(var entry : block.getPhi().entrySet()){
@@ -162,6 +165,7 @@ public class LifeTimeMonitor extends CostEvaluator{
 //        }
         return;
       }
+
       for(var pred : block.getPred()) {
         scanBlock(pred, v);
       }

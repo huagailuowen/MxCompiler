@@ -27,6 +27,7 @@ public class IRBlockStmt extends IRStmt {
   TreeMap<String, IRPhiIns> phi;
   HashSet<RegItem> phiDef;
   HashMap<IRBlockStmt,IRBlockStmt> replacePred;
+  HashSet<RegItem> phiLiveOut;
 
   protected String lableName;
   protected IRIns exitIns;
