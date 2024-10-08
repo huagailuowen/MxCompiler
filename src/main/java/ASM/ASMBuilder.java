@@ -742,6 +742,7 @@ public class ASMBuilder implements IRVisitor<ASMNode> {
     ASMReg src = ASMPhysicReg.t0;
     Item srcItem = node.getSrc();
     if(srcItem instanceof LiteralItem){
+      src = findAddr(node.getDest(),src);
       stmt.addIns(new ASMLoadImmIns(src,((LiteralItem) srcItem).getValue()));
     }else{
       src = getAddr((RegItem) srcItem,src,stmt,true);
