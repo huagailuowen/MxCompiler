@@ -5,6 +5,7 @@
 5. f will it be better if we prior the s0-s11 ?
 6. f coalition of registers
 7. load and store optimization
-the global variable is not always the best choice, we can use the register to store the value, and only store it when it is necessary
-without the call, only use store to replace
-8. close the loop's 2 j in small program
+8. f the global variable is not always the best choice, we can use the register to store the value, and only store it when it is necessary
+   without the call, only use store to replace
+9. close the loop's 2 j in small program
+10. bne and beq use to make faster not use beqz(IRBuilder)

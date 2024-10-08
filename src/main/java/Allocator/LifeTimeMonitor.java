@@ -155,11 +155,11 @@ public class LifeTimeMonitor extends CostEvaluator{
       var block = ins2Block.get(ins);
       if(block.getPhiDef().contains(v)){
         //find the def, then handle and return
-        for(var entry : block.getPhi().entrySet()){
-          var phi = entry.getValue();
-          //the phi assignation happens at the very same time
-          phi.addLiveOut(v);
-        }
+//        for(var entry : block.getPhi().entrySet()){
+//          var phi = entry.getValue();
+//          //the phi assignation happens at the very same time
+//          phi.addLiveOut(v);
+//        }
         return;
       }
       for(var pred : block.getPred()) {

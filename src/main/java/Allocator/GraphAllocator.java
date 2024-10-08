@@ -64,25 +64,25 @@ public class GraphAllocator{
       for (var reg : live) {
         liveIndex.add(lifeTimeMonitor.var2index.get(reg));
       }
-      for (int i = 0; i < live.size(); i++) {
-        for (int j = 0; j < live.size(); j++) {
-          if (i != j) {
-            edge.get(liveIndex.get(i)).add(liveIndex.get(j));
-          }
-        }
-      }
+//      for (int i = 0; i < live.size(); i++) {
+//        for (int j = 0; j < live.size(); j++) {
+//          if (i != j) {
+//            edge.get(liveIndex.get(i)).add(liveIndex.get(j));
+//          }
+//        }
+//      }
       live = new ArrayList<RegItem>(ins.getLiveOut());
       liveIndex = new ArrayList<>();
       for (var reg : live) {
         liveIndex.add(lifeTimeMonitor.var2index.get(reg));
       }
-      for (int i = 0; i < live.size(); i++) {
-        for (int j = 0; j < live.size(); j++) {
-          if (i != j) {
-            edge.get(liveIndex.get(i)).add(liveIndex.get(j));
-          }
-        }
-      }
+//      for (int i = 0; i < live.size(); i++) {
+//        for (int j = 0; j < live.size(); j++) {
+//          if (i != j) {
+//            edge.get(liveIndex.get(i)).add(liveIndex.get(j));
+//          }
+//        }
+//      }
     }
   }
   public void handleIns(IRIns ins, BitSet used, LinkedList<Integer> available) {
@@ -282,6 +282,7 @@ public class GraphAllocator{
     }
     lifeTimeMonitor.loopFinder(node);
     lifeTimeMonitor.calcCost(node);
+
     for(var ins : insList){
       spillVar(ins.getLiveIn());
       spillVar(ins.getLiveOut());
@@ -340,8 +341,12 @@ public class GraphAllocator{
   public void visit(IRFuncDef node) {
     insCollect(node);
     lifeTimeMonitor.visit(node);
+
     spillVar(node);
+    long startTime = System.currentTimeMillis();
     buildGraph();
+    long endTime = System.currentTimeMillis();
+    System.err.println("Time cost: " + (endTime - startTime)/1000 + "s");
     colorGraph(node);
 //    for(var var : lifeTimeMonitor.var2index.keySet()){
 //      System.err.println(var);

@@ -43,9 +43,14 @@ public class Compiler {
     IRNode ir = new IRBuilder().visit((ASTRoot) ast);
 
     if(opt){
+      long startTime = System.currentTimeMillis();
       new IROptimizer().visit((IRRoot) ir);
+      long endTime = System.currentTimeMillis();
+      System.err.println("Optimize Time cost: " + (endTime - startTime)/1000 + "s");
 //      System.out.println(ir.toString());
+
       new GraphAllocator().visit((IRRoot) ir);
+
     }
 
     PrintStream output = null;
@@ -57,15 +62,20 @@ public class Compiler {
 //    System.out.println(ir.toString());
     //------------------------------------------------------------
     //erase the phi
+    long startTime = System.currentTimeMillis();
     if(opt){
       new PhiRemover().visit((IRRoot) ir);
     }
 //    System.out.println(ir.toString());
     new RubbishBlockRemover().visit((IRRoot) ir);
-
+    long endTime = System.currentTimeMillis();
+    System.err.println("Time cost: " + (endTime - startTime)/1000 + "s");
 
     ASMNode asm = new ASMBuilder().visit((IRRoot) ir);
-    System.out.println(asm);
+    if(!fileout){
+      System.out.println(asm);
+    }
+
     if(!opt){
       if(fileout){
         output = new PrintStream(new FileOutputStream("src/test/mx/output.s"));
