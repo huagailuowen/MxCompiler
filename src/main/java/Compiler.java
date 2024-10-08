@@ -26,7 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 public class Compiler {
-  static boolean fileout = true;
+  static boolean fileout = false;
   public static void run(MxparserParser.ProgramContext root, boolean opt) throws FileNotFoundException {
 
     ASTNode ast = new ASTBuilder().visit(root);

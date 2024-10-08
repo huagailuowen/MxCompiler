@@ -20,11 +20,10 @@ public class IROptimizer {
     inline.visit(root);
     new SCCP().visit(root);
     new ADCE().visit(root);
-//    //after ADCE, the useless arith and getele ins have been removed
+////    //after ADCE, the useless arith and getele ins have been removed
     new GVN().visit(root);
     new GCM().visit(root);
     new ADCE().visit(root);
-
 
     inline.visit(root);
     new SCCP().visit(root);
