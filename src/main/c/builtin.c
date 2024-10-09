@@ -5,7 +5,7 @@
 int printf(const char *format, ...);
 int scanf(const char *format, ...);
 int puts(const char *s);
-void *memcpy(void *str1, const void *str2, size_t n)
+void *memcpy(void *str1, const void *str2, int n);
 int sprintf(char *str, const char *format, ...);
 void *malloc(unsigned int size);
 
