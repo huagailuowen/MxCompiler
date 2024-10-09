@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 
 public class IROptimizer {
-  int calcBlockNum(IRRoot root) {
+  public int calcBlockNum(IRRoot root) {
     int cnt = 0;
     cnt += root.getInitFunc().getBlockList().size();
     for (var func : root.getFuncList()) {

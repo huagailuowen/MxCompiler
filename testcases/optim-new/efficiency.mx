@@ -130,7 +130,7 @@ class taskStress {
 
         for (a = 0; a%Z < 100; Z=Z+10) {
             a=b;b=c+6;c=d;d=e+4;e=f+9;f=g;g=h;h=i+1;i=j+4;j=k;k=l+6;l=m;m=n;n=o;o=p+6;p=q;q=r;r=s+2;s=t;t=u;u=v+1;v=w;w=x+1;x=y+4;y=A+9;A=B+8;B=C+9;C=D+8;D=E+6;E=F;F=G;G=H+6;H=I;I=J+7;J=K+5;K=L+1;L=M+7;M=N;N=O;O=P;P=Q+9;Q=R;R=S;S=T+9;T=U+9;U=V;V=W+9;W=X+2;X=Y;Y=Z/2;Z=Z^1;
-             printlnInt(J);
+             //printlnInt(J);
 
         }
         ret = -1;println("%%%%%%%%%%%%%%%%%%%%%%");

@@ -4,6 +4,7 @@ import ASM.ASMBuilder;
 import ASM.NaiveASMBuilder;
 import ASM.Node.ASMNode;
 import Allocator.GraphAllocator;
+import Allocator.NaiveGraphAllocator;
 import Grammar.MxparserLexer;
 import Ir.IRBuilder;
 import Ir.Node.IRNode;
@@ -26,7 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 public class Compiler {
-  static boolean fileout = true;
+  static boolean fileout = false;
   public static void run(MxparserParser.ProgramContext root, boolean opt) throws FileNotFoundException {
     long startTime = System.currentTimeMillis();
 
@@ -49,8 +50,14 @@ public class Compiler {
       long endTime = System.currentTimeMillis();
       System.err.println("Optimize Time cost: " + (endTime - startTime)/1000 + "s");
 //      System.out.println(ir.toString());
-
-      new GraphAllocator().visit((IRRoot) ir);
+      int cnt = new IROptimizer().calcBlockNum((IRRoot) ir);
+      if(cnt>5000){
+        new NaiveGraphAllocator().visit((IRRoot) ir);
+      }
+      else{
+        new GraphAllocator().visit((IRRoot) ir);
+      }
+//      new NaiveGraphAllocator().visit((IRRoot) ir);
 
     }
 

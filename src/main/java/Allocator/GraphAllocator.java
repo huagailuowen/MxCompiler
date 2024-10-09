@@ -114,6 +114,7 @@ public class GraphAllocator{
       if(!lifeTimeMonitor.use.containsKey(var)){
         var.getRegAddr().setRegIndex(K + 1);
         //dead variable
+        continue;
       }
       if(var.getRegAddr().isSpilled()){
         continue;
@@ -123,7 +124,7 @@ public class GraphAllocator{
         if(index>=K ||index<0){
           throw new ErrorBasic("Invalid index");
         }
-        if(!used.get(index)){
+        if(!used.get(index) && var.getRegAddr().getRegIndex()==-1){
           var.getRegAddr().setRegIndex(index);
         }
       }
@@ -140,6 +141,9 @@ public class GraphAllocator{
         int index = var.getRegAddr().getRegIndex();
         if(index >= K){
           continue;
+        }
+        if(used.get(index)){
+          throw new ErrorBasic("Invalid state");
         }
         used.set(index);
         for(var item : available){
@@ -160,11 +164,15 @@ public class GraphAllocator{
         }
       }
     }
+
   }
   public void handlePhiIns(IRIns ins, BitSet used ,LinkedList<Integer> available) {
     var liveOutList = ins.getBlock().getPhiLiveOut();
     var def = ins.getDefRegs();
     var use = ins.getUseRegs();
+    if(((IRPhiIns)ins).getDest().getRegAddr().isSpilled()){
+      return;
+    }
     RegItem prefer = null;
     int preferIndex = -1;
     if(like.containsKey(((IRPhiIns)ins).getDest())){
@@ -184,7 +192,7 @@ public class GraphAllocator{
           continue;
         }
         index = var.getRegAddr().getRegIndex();
-        if(index >= K || (0<=index && index<K && used.get(index))){
+        if(index >= K || (0 <= index && index < K  && used.get(index))){
           continue;
         }
         if(like.containsKey(var)){
@@ -193,7 +201,7 @@ public class GraphAllocator{
         if(index == -1){
           prefer = var;
         }else{
-          if(preferIndex != -1) {
+          if(preferIndex == -1) {
             preferIndex = index;
           }
         }
@@ -212,7 +220,10 @@ public class GraphAllocator{
         continue;
       }
 
-      if(preferIndex != -1){
+      if(preferIndex != -1 ){
+        if(used.get(preferIndex) || var.getRegAddr().getRegIndex()!=-1){
+          throw new ErrorBasic("Invalid state");
+        }
         var.getRegAddr().setRegIndex(preferIndex);
       }
       if(var.getRegAddr().getRegIndex() == -1){
@@ -222,12 +233,18 @@ public class GraphAllocator{
         }
         var.setRegAddr(new RegAddr(index));
 //        var.setRegAddr(new RegAddr(-1));
+        if(used.get(index)){
+          throw new ErrorBasic("Invalid state");
+        }
         used.set(index);
         available.removeLast();
       }else{
         int index = var.getRegAddr().getRegIndex();
         if(index >= K){
           continue;
+        }
+        if(used.get(index)){
+          throw new ErrorBasic("Invalid state");
         }
         used.set(index);
         for(var item : available){
