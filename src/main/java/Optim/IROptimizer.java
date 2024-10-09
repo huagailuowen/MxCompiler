@@ -25,7 +25,7 @@ public class IROptimizer {
     new Mem2Reg().visit(root);
     new SinglePhiRemover().visit(root);
     var inline = new Inline();
-//    if(calcBlockNum(root) < 5000)
+    if(calcBlockNum(root) < 5000)
     {
       inline.visit(root);
       new SCCP().visit(root);
@@ -44,6 +44,12 @@ public class IROptimizer {
       new GCM().visit(root);
       new ADCE().visit(root);
 //    new SinglePhiRemover().visit(root);
+    }else{
+      new SCCP().visit(root);
+      new ADCE().visit(root);
+      new GVN().visit(root);
+      new GCM().visit(root);
+      new ADCE().visit(root);
     }
 
   }

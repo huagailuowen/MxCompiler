@@ -4,11 +4,13 @@
 #define false 0
 int printf(const char *format, ...);
 int scanf(const char *format, ...);
+int puts(const char *s);
+void *memcpy(void *str1, const void *str2, size_t n)
 int sprintf(char *str, const char *format, ...);
 void *malloc(unsigned int size);
 
 void print(char *s) { printf("%s", s); }
-void println(char *s) { printf("%s\n", s); }
+void println(char *s) { puts(s); }
 void printInt(int n) { printf("%d", n); }
 void printlnInt(int n) { printf("%d\n", n); }
 
@@ -66,10 +68,7 @@ char * __string_substring(char *s,int left,int right)
 {
     int len=right-left;
     char *str=(char *)malloc(len+1);
-    for(int i=0;i<len;i++)
-    {
-        str[i]=s[left+i];
-    }
+    memcpy(str,s+left,len);
     str[len]='\0';
     return str;
 }
@@ -144,14 +143,8 @@ void* __string_concat(char *s1,char *s2)
     int len1=__string_length(s1);
     int len2=__string_length(s2);
     char *str=(char *)malloc(len1+len2+1);
-    for(int i=0;i<len1;i++)
-    {
-        str[i]=s1[i];
-    }
-    for(int i=0;i<len2;i++)
-    {
-        str[len1+i]=s2[i];
-    }
+    memcpy(str,s1,len1);
+    memcpy(str+len1,s2,len2);
     str[len1+len2]='\0';
     return str;
 }

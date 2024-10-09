@@ -29,7 +29,7 @@ import java.io.PrintStream;
 public class Compiler {
   static boolean fileout = false;
   public static void run(MxparserParser.ProgramContext root, boolean opt) throws FileNotFoundException {
-    long startTime = System.currentTimeMillis();
+
 
     ASTNode ast = new ASTBuilder().visit(root);
 //    int i=1;
@@ -45,7 +45,7 @@ public class Compiler {
     IRNode ir = new IRBuilder().visit((ASTRoot) ast);
 
     if(opt){
-
+      long startTime = System.currentTimeMillis();
       new IROptimizer().visit((IRRoot) ir);
       long endTime = System.currentTimeMillis();
       System.err.println("Optimize Time cost: " + (endTime - startTime)/1000 + "s");
@@ -96,11 +96,11 @@ public class Compiler {
       output.println(asm);
       output.close();
     }
-    long endTime = System.currentTimeMillis();
-    System.err.println("Time cost: " + (endTime - startTime)/1000 + "s");
+
 
   }
   public static void main(String[] args) throws IOException {
+    long startTime = System.currentTimeMillis();
     boolean opt = false;
     var input = CharStreams.fromStream(System.in);
     var lexer = new MxparserLexer(input);
@@ -117,6 +117,8 @@ public class Compiler {
     //print the builtin
     if(!fileout)
       System.out.println(builtin);
+    long endTime = System.currentTimeMillis();
+    System.err.println("Time cost: " + (endTime - startTime)/1000 + "s");
   }
 }
 /*
