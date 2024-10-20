@@ -78,9 +78,9 @@ public class Compiler {
 
 
     ASMNode asm = new ASMBuilder().visit((IRRoot) ir);
-    if(!fileout){
+    if(!fileout)
       System.out.println(asm);
-    }
+
 
     if(!opt){
       if(fileout){

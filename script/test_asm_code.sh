@@ -1,6 +1,6 @@
 ulimit -s 1000000
 
-#make run < ./tmp/inputcode.in
+make run < ./tmp/inputcode.in
 cd ./src/test/mx
 #clang --target=riscv32-unknown-elf -S builtin.ll -o builtin.s
 #clang  -falign-functions=1   --target=riscv32-unknown-elf -S output.ll -o test.s

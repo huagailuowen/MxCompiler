@@ -25,6 +25,7 @@ public class IROptimizer {
     new Mem2Reg().visit(root);
     new SinglePhiRemover().visit(root);
     var inline = new Inline();
+    if(true)
     if(calcBlockNum(root) < 5000)
     {
       inline.visit(root);

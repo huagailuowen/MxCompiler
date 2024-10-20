@@ -360,6 +360,7 @@ public class Mem2Reg {
         if(phi.getValueList().size()!=num){
           throw new Error("phi error");
         }
+        phi.setBlock(block);
       }
     }
   }
