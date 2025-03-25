@@ -120,6 +120,7 @@ public class Compiler {
     long endTime = System.currentTimeMillis();
     System.err.println("Time cost: " + (endTime - startTime)/1000 + "s");
   }
+
 }
 /*
 Undefined Identifier

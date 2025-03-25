@@ -1,0 +1,151 @@
+declare i32 @buildInArraySize()
+declare void @print(ptr)
+declare void @println(ptr)
+declare void @printInt(i32)
+declare void @printlnInt(i32)
+declare ptr @getString()
+declare i32 @getInt()
+declare ptr @toString(i32)
+declare i32 @__string_length()
+declare ptr @__string_substring(i32, i32)
+declare i32 @__string_parseInt()
+declare i32 @__string_ord(i32)
+declare ptr @__malloc(i32, i32)
+declare ptr @__malloc_array(i32, i32)
+declare i32 @__string_eq(ptr, ptr)
+declare i32 @__string_ne(ptr, ptr)
+declare i32 @__string_lt(ptr, ptr)
+declare i32 @__string_le(ptr, ptr)
+declare i32 @__string_gt(ptr, ptr)
+declare i32 @__string_ge(ptr, ptr)
+declare ptr @__string_concat(ptr, ptr)
+declare ptr @toString_bool(i1)
+@string.2 = private unnamed_addr constant [21 x i8] c"\0Aabbdbdd\5C\5C\22d\22c\5Cadc\22c\00"
+@string.0 = private unnamed_addr constant [21 x i8] c"\22\0Abda\5C\22\0Adbd\5Cc\22\5C\22c\5Cc\22\00"
+@string.1 = private unnamed_addr constant [21 x i8] c"\5Cab\0Aac\22\22add\0A\22\0Aac\0Adb\22\00"
+define void @__init__() {
+entry:
+  br label %defaultStart
+
+defaultStart:
+  ret void
+
+}
+define i32 @main() {
+entry:
+  br label %defaultStart
+
+defaultStart:
+  br label %entry.__init__._0
+
+entry.__init__._0:
+  br label %defaultStart.__init__._0
+
+defaultStart.__init__._0:
+  %arith.8 : 23 = call ptr@__string_concat(ptr @string.2 : -1, ptr @string.1 : -1)
+  %arith.7 : 23 = call ptr@__string_concat(ptr %arith.8 : 23, ptr @string.1 : -1)
+  %arith.6 : 23 = call ptr@__string_concat(ptr %arith.7 : 23, ptr @string.2 : -1)
+  %arith.5 : 23 = call ptr@__string_concat(ptr %arith.6 : 23, ptr @string.2 : -1)
+  %arith.4 : 23 = call ptr@__string_concat(ptr %arith.5 : 23, ptr @string.0 : -1)
+  %arith.3 : 23 = call ptr@__string_concat(ptr %arith.4 : 23, ptr @string.2 : -1)
+  %arith.2 : 23 = call ptr@__string_concat(ptr %arith.3 : 23, ptr @string.1 : -1)
+  %arith.1 : 23 = call ptr@__string_concat(ptr %arith.2 : 23, ptr @string.2 : -1)
+  %arith.0 : 23 = call ptr@__string_concat(ptr %arith.1 : 23, ptr @string.1 : -1)
+  call void @print(ptr %arith.0 : 23)
+  %arith.26 : 23 = call ptr@__string_concat(ptr @string.2 : -1, ptr @string.2 : -1)
+  %arith.25 : 23 = call ptr@__string_concat(ptr %arith.26 : 23, ptr @string.0 : -1)
+  %arith.24 : 23 = call ptr@__string_concat(ptr %arith.25 : 23, ptr @string.0 : -1)
+  %arith.23 : 23 = call ptr@__string_concat(ptr %arith.24 : 23, ptr @string.0 : -1)
+  %arith.22 : 23 = call ptr@__string_concat(ptr %arith.23 : 23, ptr @string.2 : -1)
+  %arith.21 : 23 = call ptr@__string_concat(ptr %arith.22 : 23, ptr @string.2 : -1)
+  %arith.20 : 23 = call ptr@__string_concat(ptr %arith.21 : 23, ptr @string.1 : -1)
+  %arith.19 : 23 = call ptr@__string_concat(ptr %arith.20 : 23, ptr @string.1 : -1)
+  %arith.18 : 23 = call ptr@__string_concat(ptr %arith.19 : 23, ptr @string.1 : -1)
+  call void @print(ptr %arith.18 : 23)
+  %arith.44 : 23 = call ptr@__string_concat(ptr @string.1 : -1, ptr @string.0 : -1)
+  %arith.43 : 23 = call ptr@__string_concat(ptr %arith.44 : 23, ptr @string.2 : -1)
+  %arith.42 : 23 = call ptr@__string_concat(ptr %arith.43 : 23, ptr @string.1 : -1)
+  %arith.41 : 23 = call ptr@__string_concat(ptr %arith.42 : 23, ptr @string.2 : -1)
+  %arith.40 : 23 = call ptr@__string_concat(ptr %arith.41 : 23, ptr @string.2 : -1)
+  %arith.39 : 23 = call ptr@__string_concat(ptr %arith.40 : 23, ptr @string.1 : -1)
+  %arith.38 : 23 = call ptr@__string_concat(ptr %arith.39 : 23, ptr @string.1 : -1)
+  %arith.37 : 23 = call ptr@__string_concat(ptr %arith.38 : 23, ptr @string.0 : -1)
+  %arith.36 : 23 = call ptr@__string_concat(ptr %arith.37 : 23, ptr @string.2 : -1)
+  call void @print(ptr %arith.36 : 23)
+  %arith.62 : 23 = call ptr@__string_concat(ptr @string.1 : -1, ptr @string.0 : -1)
+  %arith.61 : 23 = call ptr@__string_concat(ptr %arith.62 : 23, ptr @string.2 : -1)
+  %arith.60 : 23 = call ptr@__string_concat(ptr %arith.61 : 23, ptr @string.0 : -1)
+  %arith.59 : 23 = call ptr@__string_concat(ptr %arith.60 : 23, ptr @string.0 : -1)
+  %arith.58 : 23 = call ptr@__string_concat(ptr %arith.59 : 23, ptr @string.0 : -1)
+  %arith.57 : 23 = call ptr@__string_concat(ptr %arith.58 : 23, ptr @string.1 : -1)
+  %arith.56 : 23 = call ptr@__string_concat(ptr %arith.57 : 23, ptr @string.1 : -1)
+  %arith.55 : 23 = call ptr@__string_concat(ptr %arith.56 : 23, ptr @string.1 : -1)
+  %arith.54 : 23 = call ptr@__string_concat(ptr %arith.55 : 23, ptr @string.2 : -1)
+  call void @print(ptr %arith.54 : 23)
+  %arith.80 : 23 = call ptr@__string_concat(ptr @string.1 : -1, ptr @string.0 : -1)
+  %arith.79 : 23 = call ptr@__string_concat(ptr %arith.80 : 23, ptr @string.1 : -1)
+  %arith.78 : 23 = call ptr@__string_concat(ptr %arith.79 : 23, ptr @string.0 : -1)
+  %arith.77 : 23 = call ptr@__string_concat(ptr %arith.78 : 23, ptr @string.2 : -1)
+  %arith.76 : 23 = call ptr@__string_concat(ptr %arith.77 : 23, ptr @string.2 : -1)
+  %arith.75 : 23 = call ptr@__string_concat(ptr %arith.76 : 23, ptr @string.2 : -1)
+  %arith.74 : 23 = call ptr@__string_concat(ptr %arith.75 : 23, ptr @string.1 : -1)
+  %arith.73 : 23 = call ptr@__string_concat(ptr %arith.74 : 23, ptr @string.2 : -1)
+  %arith.72 : 23 = call ptr@__string_concat(ptr %arith.73 : 23, ptr @string.0 : -1)
+  call void @print(ptr %arith.72 : 23)
+  %arith.98 : 23 = call ptr@__string_concat(ptr @string.0 : -1, ptr @string.0 : -1)
+  %arith.97 : 23 = call ptr@__string_concat(ptr %arith.98 : 23, ptr @string.2 : -1)
+  %arith.96 : 23 = call ptr@__string_concat(ptr %arith.97 : 23, ptr @string.2 : -1)
+  %arith.95 : 23 = call ptr@__string_concat(ptr %arith.96 : 23, ptr @string.0 : -1)
+  %arith.94 : 23 = call ptr@__string_concat(ptr %arith.95 : 23, ptr @string.2 : -1)
+  %arith.93 : 23 = call ptr@__string_concat(ptr %arith.94 : 23, ptr @string.1 : -1)
+  %arith.92 : 23 = call ptr@__string_concat(ptr %arith.93 : 23, ptr @string.2 : -1)
+  %arith.91 : 23 = call ptr@__string_concat(ptr %arith.92 : 23, ptr @string.2 : -1)
+  %arith.90 : 23 = call ptr@__string_concat(ptr %arith.91 : 23, ptr @string.0 : -1)
+  call void @print(ptr %arith.90 : 23)
+  %arith.116 : 23 = call ptr@__string_concat(ptr @string.1 : -1, ptr @string.1 : -1)
+  %arith.115 : 23 = call ptr@__string_concat(ptr %arith.116 : 23, ptr @string.1 : -1)
+  %arith.114 : 23 = call ptr@__string_concat(ptr %arith.115 : 23, ptr @string.1 : -1)
+  %arith.113 : 23 = call ptr@__string_concat(ptr %arith.114 : 23, ptr @string.2 : -1)
+  %arith.112 : 23 = call ptr@__string_concat(ptr %arith.113 : 23, ptr @string.0 : -1)
+  %arith.111 : 23 = call ptr@__string_concat(ptr %arith.112 : 23, ptr @string.2 : -1)
+  %arith.110 : 23 = call ptr@__string_concat(ptr %arith.111 : 23, ptr @string.1 : -1)
+  %arith.109 : 23 = call ptr@__string_concat(ptr %arith.110 : 23, ptr @string.0 : -1)
+  %arith.108 : 23 = call ptr@__string_concat(ptr %arith.109 : 23, ptr @string.0 : -1)
+  call void @print(ptr %arith.108 : 23)
+  %arith.134 : 23 = call ptr@__string_concat(ptr @string.0 : -1, ptr @string.0 : -1)
+  %arith.133 : 23 = call ptr@__string_concat(ptr %arith.134 : 23, ptr @string.2 : -1)
+  %arith.132 : 23 = call ptr@__string_concat(ptr %arith.133 : 23, ptr @string.1 : -1)
+  %arith.131 : 23 = call ptr@__string_concat(ptr %arith.132 : 23, ptr @string.0 : -1)
+  %arith.130 : 23 = call ptr@__string_concat(ptr %arith.131 : 23, ptr @string.1 : -1)
+  %arith.129 : 23 = call ptr@__string_concat(ptr %arith.130 : 23, ptr @string.2 : -1)
+  %arith.128 : 23 = call ptr@__string_concat(ptr %arith.129 : 23, ptr @string.2 : -1)
+  %arith.127 : 23 = call ptr@__string_concat(ptr %arith.128 : 23, ptr @string.1 : -1)
+  %arith.126 : 23 = call ptr@__string_concat(ptr %arith.127 : 23, ptr @string.1 : -1)
+  call void @print(ptr %arith.126 : 23)
+  %arith.152 : 23 = call ptr@__string_concat(ptr @string.2 : -1, ptr @string.1 : -1)
+  %arith.151 : 23 = call ptr@__string_concat(ptr %arith.152 : 23, ptr @string.0 : -1)
+  %arith.150 : 23 = call ptr@__string_concat(ptr %arith.151 : 23, ptr @string.0 : -1)
+  %arith.149 : 23 = call ptr@__string_concat(ptr %arith.150 : 23, ptr @string.2 : -1)
+  %arith.148 : 23 = call ptr@__string_concat(ptr %arith.149 : 23, ptr @string.1 : -1)
+  %arith.147 : 23 = call ptr@__string_concat(ptr %arith.148 : 23, ptr @string.0 : -1)
+  %arith.146 : 23 = call ptr@__string_concat(ptr %arith.147 : 23, ptr @string.0 : -1)
+  %arith.145 : 23 = call ptr@__string_concat(ptr %arith.146 : 23, ptr @string.2 : -1)
+  %arith.144 : 23 = call ptr@__string_concat(ptr %arith.145 : 23, ptr @string.1 : -1)
+  call void @print(ptr %arith.144 : 23)
+  %arith.170 : 23 = call ptr@__string_concat(ptr @string.0 : -1, ptr @string.2 : -1)
+  %arith.169 : 23 = call ptr@__string_concat(ptr %arith.170 : 23, ptr @string.1 : -1)
+  %arith.168 : 23 = call ptr@__string_concat(ptr %arith.169 : 23, ptr @string.1 : -1)
+  %arith.167 : 23 = call ptr@__string_concat(ptr %arith.168 : 23, ptr @string.1 : -1)
+  %arith.166 : 23 = call ptr@__string_concat(ptr %arith.167 : 23, ptr @string.2 : -1)
+  %arith.165 : 23 = call ptr@__string_concat(ptr %arith.166 : 23, ptr @string.2 : -1)
+  %arith.164 : 23 = call ptr@__string_concat(ptr %arith.165 : 23, ptr @string.2 : -1)
+  %arith.163 : 23 = call ptr@__string_concat(ptr %arith.164 : 23, ptr @string.1 : -1)
+  %arith.162 : 23 = call ptr@__string_concat(ptr %arith.163 : 23, ptr @string.2 : -1)
+  call void @print(ptr %arith.162 : 23)
+  br label %func.main.end
+
+func.main.end:
+  ret i32 0
+
+}
+
