@@ -1,7 +1,7 @@
 #include "co.h"
 #include <setjmp.h>
 
-
+struct co_regedit global_co_regedit;
 struct queue_node * create_queue_node(struct co * co) {
     struct queue_node * node = malloc(sizeof(struct queue_node));
     node->co = co;
@@ -29,29 +29,58 @@ void push_queue_node(struct queue_node * node) {
     }
 }
 struct co* current;
-__attribute__((constructor))
+
 struct co * co_add_task(const char *name, void (*func)(void *), void *arg) {
     if(global_co_regedit.co_num == MAX_CO_NUM) {
         printf("Too many coroutines\n");
         exit(1);
     }
     struct co * handler = (struct co *)malloc(sizeof(struct co));
+    if (!handler) {
+        printf("Failed to allocate memory for coroutine\n");
+        exit(1);
+    }
+    
     global_co_regedit.co_pool[global_co_regedit.co_num] = handler;
     struct queue_node * queue_node = create_queue_node(handler);
     push_queue_node(queue_node);
 
     handler->c_id = global_co_regedit.co_num;
-    handler->name = malloc(strlen(name) + 1);
+    
+    // 安全处理 name 参数
+    if (name != NULL) {
+        handler->name = malloc(strlen(name) + 1);
+        if (handler->name) {
+            strcpy(handler->name, name);
+        } else {
+            handler->name = NULL;
+        }
+    } else {
+        handler->name = malloc(10); // 为默认名称分配空间
+        if (handler->name) {
+            sprintf(handler->name, "co-%d", handler->c_id);
+        } else {
+            handler->name = NULL;
+        }
+    }
+    
     handler->func = func;
     handler->arg = arg;
-    strcpy(handler->name, name);
-
     handler->status = CO_NEW;
     handler->waiter_list_head = NULL;
     handler->stack = malloc(STACK_SIZE);
+    
+    if (!handler->stack) {
+        printf("Failed to allocate stack for coroutine\n");
+        if (handler->name) free(handler->name);
+        free(handler);
+        exit(1);
+    }
+    
     global_co_regedit.co_num++;
     return handler;
 }
+__attribute__((constructor))
 static void co_init() {
     // 在这里添加你的初始化代码
     

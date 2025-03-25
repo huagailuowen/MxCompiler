@@ -40,7 +40,7 @@ struct co_regedit {
     };
     struct queue_node * runable_queue_tail;
     struct queue_node * runable_queue_head;
-}global_co_regedit;
+};
 
 struct co *co_start(const char *name, void (*func)(void *), void *arg);
 void       co_yield();
