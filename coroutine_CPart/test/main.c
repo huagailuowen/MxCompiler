@@ -2,101 +2,8 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
-#include "../src/co.h"
+#include "co-test.h"
 
-#define QUEUE_SIZE 10
-
-// 队列中的元素
-typedef struct Item {
-    char *data;
-} Item;
-
-// 队列实现
-typedef struct Queue {
-    Item* items[QUEUE_SIZE];
-    int front;
-    int rear;
-    int size;
-} Queue;
-
-// 创建新队列
-Queue* q_new();
-
-// 释放队列
-void q_free(Queue* queue);
-
-// 检查队列是否为空
-int q_is_empty(Queue* queue);
-
-// 检查队列是否已满
-int q_is_full(Queue* queue);
-
-// 将元素加入队列
-void q_push(Queue* queue, Item* item);
-
-// 从队列中取出元素
-Item* q_pop(Queue* queue);
-
-Queue* q_new() {
-    Queue* queue = (Queue*)malloc(sizeof(Queue));
-    if (!queue) {
-        fprintf(stderr, "Failed to allocate memory for queue\n");
-        return NULL;
-    }
-    
-    queue->front = 0;
-    queue->rear = -1;
-    queue->size = 0;
-    
-    return queue;
-}
-
-void q_free(Queue* queue) {
-    if (queue) {
-        // 确保队列中所有元素都已被释放
-        while (!q_is_empty(queue)) {
-            Item* item = q_pop(queue);
-            if (item) {
-                if (item->data) {
-                    free(item->data);
-                }
-                free(item);
-            }
-        }
-        free(queue);
-    }
-}
-
-int q_is_empty(Queue* queue) {
-    return queue->size == 0;
-}
-
-int q_is_full(Queue* queue) {
-    return queue->size == QUEUE_SIZE;
-}
-
-void q_push(Queue* queue, Item* item) {
-    if (q_is_full(queue)) {
-        fprintf(stderr, "Queue is full\n");
-        return;
-    }
-    
-    queue->rear = (queue->rear + 1) % QUEUE_SIZE;
-    queue->items[queue->rear] = item;
-    queue->size++;
-}
-
-Item* q_pop(Queue* queue) {
-    if (q_is_empty(queue)) {
-        return NULL;
-    }
-    
-    Item* item = queue->items[queue->front];
-    queue->front = (queue->front + 1) % QUEUE_SIZE;
-    queue->size--;
-    
-    return item;
-}
 int g_count = 0;
 
 static void add_count() {
@@ -134,7 +41,6 @@ static void test_1() {
 // -----------------------------------------------
 
 static int g_running = 1;
- 
 
 static void do_produce(Queue *queue) {
     assert(!q_is_full(queue));
@@ -210,7 +116,68 @@ static void test_2() {
 
     q_free(queue);
 }
+static struct co *suspended_co = NULL;
 
+// 这个协程会在中途暂停
+static void worker(void *arg) {
+    printf("Worker: 开始执行...\n");
+    
+    for (int i = 0; i < 5; i++) {
+        printf("Worker: 步骤 %d\n", i+1);
+        co_yield();
+    }
+    
+    printf("Worker: 暂停，等待被恢复...\n");
+    suspended_co = co_self(); // 保存自己的引用
+    co_yield(); // 让出控制权
+    
+    printf("Worker: 被恢复啦！继续执行...\n");
+    
+    for (int i = 5; i < 10; i++) {
+        printf("Worker: 步骤 %d\n", i+1);
+        co_yield();
+    }
+    
+    printf("Worker: 完成！\n");
+}
+
+// 这个协程会恢复被暂停的协程
+static void manager(void *arg) {
+    printf("Manager: 开始执行...\n");
+    
+    // 等待一段时间
+    for (int i = 0; i < 15; i++) {
+        printf("Manager: 检查中... (%d)\n", i+1);
+        co_yield();
+        
+        // 检查是否有被暂停的协程
+        if (suspended_co != NULL && i >= 10) {
+            printf("Manager: 发现被暂停的协程，准备恢复它...\n");
+            co_resume(suspended_co);
+            suspended_co = NULL; // 清除引用
+            printf("Manager: 已恢复协程\n");
+        }
+    }
+    
+    printf("Manager: 完成！\n");
+}
+
+static void test_3() {
+    printf("\n\nTest #3. 测试协程挂起和恢复\n");
+    
+    // 重置状态
+    suspended_co = NULL;
+    
+    // 创建协程
+    struct co *worker_co = co_start("worker", worker, NULL);
+    struct co *manager_co = co_start("manager", manager, NULL);
+    
+    // 等待两个协程完成
+    co_wait(worker_co);
+    co_wait(manager_co);
+    
+    printf("测试 #3 完成\n");
+}
 int main() {
     setbuf(stdout, NULL);
 
@@ -220,6 +187,8 @@ int main() {
     printf("\n\nTest #2. Expect: (libco-){200, 201, 202, ..., 399}\n");
     test_2();
 
+
+    test_3();
     printf("\n\n");
 
     return 0;
