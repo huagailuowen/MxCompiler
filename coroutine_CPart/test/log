@@ -1,0 +1,1853 @@
+==169876== Memcheck, a memory error detector
+==169876== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==169876== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==169876== Command: ./libco-test-64
+==169876== 
+==169876== Warning: client switching stacks?  SP change: 0x1ffefffdb0 --> 0x4a908b8
+==169876==          to suppress, use: --max-stackframe=137343988984 or greater
+==169876== Invalid write of size 4
+==169876==    at 0x485B839: start_new_wrapper (co.c:126)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90928 is 40 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B84A: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90910 is 16 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B858: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90918 is 24 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x48B0ED4: __sigsetjmp (setjmp.S:33)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90938 is 56 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x48B0EE7: __sigsetjmp (setjmp.S:44)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90940 is 64 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x48B0EEB: __sigsetjmp (setjmp.S:48)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90948 is 72 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x48B0EEF: __sigsetjmp (setjmp.S:49)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90950 is 80 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x48B0EF3: __sigsetjmp (setjmp.S:50)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90958 is 88 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x48B0EF7: __sigsetjmp (setjmp.S:51)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90960 is 96 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x48B0F0D: __sigsetjmp (setjmp.S:56)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90968 is 104 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x48B0F23: __sigsetjmp (setjmp.S:62)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90970 is 112 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid write of size 4
+==169876==    at 0x48B0F64: __sigjmp_save (sigjmp.c:29)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90978 is 120 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B3BF: pop_queue_node (co.c:21)
+==169876==    by 0x485B91C: schedule (co.c:145)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90a58 is 8 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B3FA: pop_queue_node (co.c:25)
+==169876==    by 0x485B91C: schedule (co.c:145)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90a58 is 8 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B407: pop_queue_node (co.c:26)
+==169876==    by 0x485B91C: schedule (co.c:145)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90a58 is 8 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B945: schedule (co.c:151)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90a50 is 0 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 4
+==169876==    at 0x485B948: schedule (co.c:151)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90928 is 40 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B954: schedule (co.c:151)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90a50 is 0 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 4
+==169876==    at 0x485B957: schedule (co.c:151)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90928 is 40 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x485B4B0: push_queue_node (co.c:39)
+==169876==    by 0x485B96A: schedule (co.c:152)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90a60 is 16 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x485B4B8: push_queue_node (co.c:40)
+==169876==    by 0x485B96A: schedule (co.c:152)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90a58 is 8 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485BA4A: co_yield (co.c:178)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x10967F: work_loop (main.c:19)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x109687: work_loop (main.c:19)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109650: work_loop (main.c:20)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x48D55C0: __printf_buffer (vfprintf-process-arg.c:408)
+==169876==    by 0x48D773A: __vfprintf_internal (vfprintf-internal.c:1544)
+==169876==    by 0x48CC1B2: printf (printf.c:33)
+==169876==    by 0x10966A: work_loop (main.c:20)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x484F226: strlen (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x48D6DA7: __printf_buffer (vfprintf-process-arg.c:435)
+==169876==    by 0x48D773A: __vfprintf_internal (vfprintf-internal.c:1544)
+==169876==    by 0x48CC1B2: printf (printf.c:33)
+==169876==    by 0x10966A: work_loop (main.c:20)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x484F234: strlen (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x48D6DA7: __printf_buffer (vfprintf-process-arg.c:435)
+==169876==    by 0x48D773A: __vfprintf_internal (vfprintf-internal.c:1544)
+==169876==    by 0x48CC1B2: printf (printf.c:33)
+==169876==    by 0x10966A: work_loop (main.c:20)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x4852D7E: memmove (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x48CCD87: memcpy (string_fortified.h:29)
+==169876==    by 0x48CCD87: __printf_buffer_write (Xprintf_buffer_write.c:39)
+==169876==    by 0x48D551B: __printf_buffer (vfprintf-process-arg.c:501)
+==169876==    by 0x48D773A: __vfprintf_internal (vfprintf-internal.c:1544)
+==169876==    by 0x48CC1B2: printf (printf.c:33)
+==169876==    by 0x10966A: work_loop (main.c:20)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x4852D8B: memmove (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x48CCD87: memcpy (string_fortified.h:29)
+==169876==    by 0x48CCD87: __printf_buffer_write (Xprintf_buffer_write.c:39)
+==169876==    by 0x48D551B: __printf_buffer (vfprintf-process-arg.c:501)
+==169876==    by 0x48D773A: __vfprintf_internal (vfprintf-internal.c:1544)
+==169876==    by 0x48CC1B2: printf (printf.c:33)
+==169876==    by 0x10966A: work_loop (main.c:20)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x4852D98: memmove (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x48CCD87: memcpy (string_fortified.h:29)
+==169876==    by 0x48CCD87: __printf_buffer_write (Xprintf_buffer_write.c:39)
+==169876==    by 0x48D551B: __printf_buffer (vfprintf-process-arg.c:501)
+==169876==    by 0x48D773A: __vfprintf_internal (vfprintf-internal.c:1544)
+==169876==    by 0x48CC1B2: printf (printf.c:33)
+==169876==    by 0x10966A: work_loop (main.c:20)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x4852DA9: memmove (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x48CCD87: memcpy (string_fortified.h:29)
+==169876==    by 0x48CCD87: __printf_buffer_write (Xprintf_buffer_write.c:39)
+==169876==    by 0x48D551B: __printf_buffer (vfprintf-process-arg.c:501)
+==169876==    by 0x48D773A: __vfprintf_internal (vfprintf-internal.c:1544)
+==169876==    by 0x48CC1B2: printf (printf.c:33)
+==169876==    by 0x10966A: work_loop (main.c:20)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x4852EE0: memmove (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x48CCD87: memcpy (string_fortified.h:29)
+==169876==    by 0x48CCD87: __printf_buffer_write (Xprintf_buffer_write.c:39)
+==169876==    by 0x48D551B: __printf_buffer (vfprintf-process-arg.c:501)
+==169876==    by 0x48D773A: __vfprintf_internal (vfprintf-internal.c:1544)
+==169876==    by 0x48CC1B2: printf (printf.c:33)
+==169876==    by 0x10966A: work_loop (main.c:20)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x4852EE3: memmove (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x48CCD87: memcpy (string_fortified.h:29)
+==169876==    by 0x48CCD87: __printf_buffer_write (Xprintf_buffer_write.c:39)
+==169876==    by 0x48D551B: __printf_buffer (vfprintf-process-arg.c:501)
+==169876==    by 0x48D773A: __vfprintf_internal (vfprintf-internal.c:1544)
+==169876==    by 0x48CC1B2: printf (printf.c:33)
+==169876==    by 0x10966A: work_loop (main.c:20)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x4852EED: memmove (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x48CCD87: memcpy (string_fortified.h:29)
+==169876==    by 0x48CCD87: __printf_buffer_write (Xprintf_buffer_write.c:39)
+==169876==    by 0x48D551B: __printf_buffer (vfprintf-process-arg.c:501)
+==169876==    by 0x48D773A: __vfprintf_internal (vfprintf-internal.c:1544)
+==169876==    by 0x48CC1B2: printf (printf.c:33)
+==169876==    by 0x10966A: work_loop (main.c:20)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485B9D2: schedule (co.c:162)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x485B9D8: schedule (co.c:162)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x48B0FC5: longjmp (longjmp.c:34)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x48B0FCC: longjmp (longjmp.c:34)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x48B1054: __longjmp (__longjmp.S:40)
+==169876==    by 0x48B0FE1: longjmp (longjmp.c:41)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x48B10F4: __longjmp (__longjmp.S:136)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x48B1103: __longjmp (__longjmp.S:140)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485BA49: co_yield (co.c:178)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x48B0ED4: __sigsetjmp (setjmp.S:33)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x48B0F64: __sigjmp_save (sigjmp.c:29)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10967E: work_loop (main.c:22)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x10968B: work_loop (main.c:24)
+==169876==    by 0x1096A8: work (main.c:27)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x10968C: work_loop (main.c:24)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x1096AA: work (main.c:28)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x1096AB: work (main.c:28)
+==169876==    by 0x1FFEFFFF47: ???
+==169876==    by 0x483AAFF: ???
+==169876==    by 0x1FFEFFFDBF: ???
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485B880: start_new_wrapper (co.c:130)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485B886: start_new_wrapper (co.c:132)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485B8BC: start_new_wrapper (co.c:131)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485B8C5: start_new_wrapper (co.c:137)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485B8C6: start_new_wrapper (co.c:137)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485B91D: schedule (co.c:145)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485B941: schedule (co.c:151)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485B96D: schedule (co.c:154)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485B9B6: schedule (co.c:160)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485B9D2: schedule (co.c:162)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x485B9D8: schedule (co.c:162)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485BA03: schedule (co.c:169)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x48B0FC5: longjmp (longjmp.c:34)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x48B0FCC: longjmp (longjmp.c:34)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x48B1054: __longjmp (__longjmp.S:40)
+==169876==    by 0x48B0FE1: longjmp (longjmp.c:41)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x48B10F4: __longjmp (__longjmp.S:136)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485B86B: start_new_wrapper (co.c:128)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Invalid write of size 4
+==169876==    at 0x485B86B: start_new_wrapper (co.c:128)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90928 is 40 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485B87C: start_new_wrapper (co.c:130)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B87C: start_new_wrapper (co.c:130)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4a90930 is 48 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B3BF: pop_queue_node (co.c:21)
+==169876==    by 0x485B91C: schedule (co.c:145)
+==169876==  Address 0x4a90a58 is 8 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B3FA: pop_queue_node (co.c:25)
+==169876==    by 0x485B91C: schedule (co.c:145)
+==169876==  Address 0x4a90a58 is 8 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B407: pop_queue_node (co.c:26)
+==169876==    by 0x485B91C: schedule (co.c:145)
+==169876==  Address 0x4a90a58 is 8 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x485B91D: schedule (co.c:145)
+==169876==  Address 0x4a90820 is 32,608 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1096DA: test_1 (main.c:32)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B921: schedule (co.c:147)
+==169876==  Address 0x4a90820 is 32,608 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1096DA: test_1 (main.c:32)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B941: schedule (co.c:151)
+==169876==  Address 0x4a90820 is 32,608 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1096DA: test_1 (main.c:32)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B945: schedule (co.c:151)
+==169876==  Address 0x4a90a50 is 0 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 4
+==169876==    at 0x485B948: schedule (co.c:151)
+==169876==  Address 0x4a90928 is 40 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B96D: schedule (co.c:154)
+==169876==  Address 0x4a90820 is 32,608 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1096DA: test_1 (main.c:32)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x485B9B6: schedule (co.c:160)
+==169876==  Address 0x4a90828 is 32,616 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1096DA: test_1 (main.c:32)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B9C1: schedule (co.c:161)
+==169876==  Address 0x4a90828 is 32,616 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1096DA: test_1 (main.c:32)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485BA03: schedule (co.c:169)
+==169876==  Address 0x4a90828 is 32,616 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1096DA: test_1 (main.c:32)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Warning: client switching stacks?  SP change: 0x4a98ad8 --> 0x1ffefffdd0
+==169876==          to suppress, use: --max-stackframe=137343955704 or greater
+==169876== Invalid read of size 4
+==169876==    at 0x485BB2E: co_wait (co.c:203)
+==169876==    by 0x10971D: test_1 (main.c:36)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876==  Address 0x4a90928 is 40 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Warning: client switching stacks?  SP change: 0x1ffefffd90 --> 0x4aa0e48
+==169876==          to suppress, use: --max-stackframe=137343921992 or greater
+==169876==          further instances of this message will not be shown.
+==169876== Invalid write of size 8
+==169876==    at 0x48B0ED4: __sigsetjmp (setjmp.S:33)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0ec8 is 56 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x48B0EE7: __sigsetjmp (setjmp.S:44)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0ed0 is 64 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x48B0EEB: __sigsetjmp (setjmp.S:48)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0ed8 is 72 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x48B0EEF: __sigsetjmp (setjmp.S:49)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0ee0 is 80 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x48B0EF3: __sigsetjmp (setjmp.S:50)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0ee8 is 88 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x48B0EF7: __sigsetjmp (setjmp.S:51)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0ef0 is 96 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x48B0F0D: __sigsetjmp (setjmp.S:56)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0ef8 is 104 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x48B0F23: __sigsetjmp (setjmp.S:62)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0f00 is 112 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid write of size 4
+==169876==    at 0x48B0F64: __sigjmp_save (sigjmp.c:29)
+==169876==    by 0x485BA35: co_yield (co.c:175)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0f08 is 120 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B3BF: pop_queue_node (co.c:21)
+==169876==    by 0x485B91C: schedule (co.c:145)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0fe8 is 8 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B3FA: pop_queue_node (co.c:25)
+==169876==    by 0x485B91C: schedule (co.c:145)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0fe8 is 8 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B407: pop_queue_node (co.c:26)
+==169876==    by 0x485B91C: schedule (co.c:145)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0fe8 is 8 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B945: schedule (co.c:151)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0fe0 is 0 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 4
+==169876==    at 0x485B948: schedule (co.c:151)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0eb8 is 40 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B954: schedule (co.c:151)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0fe0 is 0 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 4
+==169876==    at 0x485B957: schedule (co.c:151)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0eb8 is 40 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x485B4B0: push_queue_node (co.c:39)
+==169876==    by 0x485B96A: schedule (co.c:152)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0ff0 is 16 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x485B4B8: push_queue_node (co.c:40)
+==169876==    by 0x485B96A: schedule (co.c:152)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0fe8 is 8 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== 
+==169876== More than 100 errors detected.  Subsequent errors
+==169876== will still be recorded, but in less detail than before.
+==169876== Invalid write of size 8
+==169876==    at 0x485B488: push_queue_node (co.c:37)
+==169876==    by 0x485B96A: schedule (co.c:152)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x109983: consumer (main.c:92)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aa0fe8 is 8 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x10989F: producer (main.c:65)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x1098A3: producer (main.c:65)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109875: producer (main.c:66)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109503: q_is_full (co-test.h:280)
+==169876==    by 0x109880: producer (main.c:66)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x10950A: q_is_full (co-test.h:280)
+==169876==    by 0x109880: producer (main.c:66)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109885: producer (main.c:68)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109503: q_is_full (co-test.h:280)
+==169876==    by 0x10973C: do_produce (main.c:46)
+==169876==    by 0x109890: producer (main.c:68)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x10950A: q_is_full (co-test.h:280)
+==169876==    by 0x10973C: do_produce (main.c:46)
+==169876==    by 0x109890: producer (main.c:68)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109503: q_is_full (co-test.h:280)
+==169876==    by 0x10954C: q_push (co-test.h:288)
+==169876==    by 0x109851: do_produce (main.c:60)
+==169876==    by 0x109890: producer (main.c:68)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x10950A: q_is_full (co-test.h:280)
+==169876==    by 0x10954C: q_push (co-test.h:288)
+==169876==    by 0x109851: do_produce (main.c:60)
+==169876==    by 0x109890: producer (main.c:68)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x10935E: list_add_tail (co-test.h:75)
+==169876==    by 0x10958C: q_push (co-test.h:292)
+==169876==    by 0x109851: do_produce (main.c:60)
+==169876==    by 0x109890: producer (main.c:68)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109321: __list_add (co-test.h:46)
+==169876==    by 0x109374: list_add_tail (co-test.h:75)
+==169876==    by 0x10958C: q_push (co-test.h:292)
+==169876==    by 0x109851: do_produce (main.c:60)
+==169876==    by 0x109890: producer (main.c:68)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109591: q_push (co-test.h:293)
+==169876==    by 0x109851: do_produce (main.c:60)
+==169876==    by 0x109890: producer (main.c:68)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x10959B: q_push (co-test.h:293)
+==169876==    by 0x109851: do_produce (main.c:60)
+==169876==    by 0x109890: producer (main.c:68)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109891: producer (main.c:69)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x48B1103: __longjmp (__longjmp.S:140)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485BA49: co_yield (co.c:178)
+==169876==    by 0x10989E: producer (main.c:71)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x48B1103: __longjmp (__longjmp.S:140)
+==169876==    by 0x109983: consumer (main.c:92)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485BA49: co_yield (co.c:178)
+==169876==    by 0x109983: consumer (main.c:92)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x10995E: consumer (main.c:89)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x1093EA: list_empty (co-test.h:142)
+==169876==    by 0x10952E: q_is_empty (co-test.h:284)
+==169876==    by 0x109969: consumer (main.c:89)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x10996C: consumer (main.c:89)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x10996E: consumer (main.c:90)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x1098C7: do_consume (main.c:76)
+==169876==    by 0x109979: consumer (main.c:90)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x1095BA: q_pop (co-test.h:297)
+==169876==    by 0x1098FC: do_consume (main.c:78)
+==169876==    by 0x109979: consumer (main.c:90)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x1095C7: q_pop (co-test.h:301)
+==169876==    by 0x1098FC: do_consume (main.c:78)
+==169876==    by 0x109979: consumer (main.c:90)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x1095E6: q_pop (co-test.h:304)
+==169876==    by 0x1098FC: do_consume (main.c:78)
+==169876==    by 0x109979: consumer (main.c:90)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x1095F0: q_pop (co-test.h:304)
+==169876==    by 0x1098FC: do_consume (main.c:78)
+==169876==    by 0x109979: consumer (main.c:90)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x10938C: __list_del (co-test.h:87)
+==169876==    by 0x1093C3: list_del (co-test.h:98)
+==169876==    by 0x1095E1: q_pop (co-test.h:302)
+==169876==    by 0x1098FC: do_consume (main.c:78)
+==169876==    by 0x109979: consumer (main.c:90)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x1098A7: producer (main.c:73)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x1098A8: producer (main.c:73)
+==169876== 
+==169876== Invalid read of size 4
+==169876==    at 0x485BB2E: co_wait (co.c:203)
+==169876==    by 0x109A53: test_2 (main.c:106)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4aa0eb8 is 40 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x1099EF: test_2 (main.c:101)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 4
+==169876==    at 0x485BB2E: co_wait (co.c:203)
+==169876==    by 0x109A69: test_2 (main.c:110)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4aa90f8 is 40 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485BAFF: add_waiter (co.c:198)
+==169876==    by 0x485BB4E: co_wait (co.c:206)
+==169876==    by 0x109A69: test_2 (main.c:110)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4aa9100 is 48 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x485BB13: add_waiter (co.c:199)
+==169876==    by 0x485BB4E: co_wait (co.c:206)
+==169876==    by 0x109A69: test_2 (main.c:110)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4aa9100 is 48 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x485B40B: pop_queue_node (co.c:26)
+==169876==    by 0x485B91C: schedule (co.c:145)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x485BB69: co_wait (co.c:208)
+==169876==    by 0x109A69: test_2 (main.c:110)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4aa9230 is 16 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B9B3: schedule (co.c:160)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x485BB69: co_wait (co.c:208)
+==169876==    by 0x109A69: test_2 (main.c:110)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4aa9220 is 0 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 4
+==169876==    at 0x485B9D2: schedule (co.c:162)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x485BB69: co_wait (co.c:208)
+==169876==    by 0x109A69: test_2 (main.c:110)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4aa90f8 is 40 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 4
+==169876==    at 0x48B0FC5: longjmp (longjmp.c:34)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x485BB69: co_wait (co.c:208)
+==169876==    by 0x109A69: test_2 (main.c:110)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4aa9148 is 120 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x48B1054: __longjmp (__longjmp.S:40)
+==169876==    by 0x48B0FE1: longjmp (longjmp.c:41)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x485BB69: co_wait (co.c:208)
+==169876==    by 0x109A69: test_2 (main.c:110)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4aa9138 is 104 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x48B1058: __longjmp (__longjmp.S:41)
+==169876==    by 0x48B0FE1: longjmp (longjmp.c:41)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x485BB69: co_wait (co.c:208)
+==169876==    by 0x109A69: test_2 (main.c:110)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4aa9110 is 64 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x48B105C: __longjmp (__longjmp.S:42)
+==169876==    by 0x48B0FE1: longjmp (longjmp.c:41)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x485BB69: co_wait (co.c:208)
+==169876==    by 0x109A69: test_2 (main.c:110)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4aa9140 is 112 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x48B10F4: __longjmp (__longjmp.S:136)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x485BB69: co_wait (co.c:208)
+==169876==    by 0x109A69: test_2 (main.c:110)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4aa9108 is 56 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x48B10F7: __longjmp (__longjmp.S:137)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x485BB69: co_wait (co.c:208)
+==169876==    by 0x109A69: test_2 (main.c:110)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4aa9118 is 72 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x48B10FB: __longjmp (__longjmp.S:138)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x485BB69: co_wait (co.c:208)
+==169876==    by 0x109A69: test_2 (main.c:110)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4aa9120 is 80 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x48B10FF: __longjmp (__longjmp.S:139)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x485BB69: co_wait (co.c:208)
+==169876==    by 0x109A69: test_2 (main.c:110)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4aa9128 is 88 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x48B1103: __longjmp (__longjmp.S:140)
+==169876==    by 0x485BA17: schedule (co.c:169)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x485BB69: co_wait (co.c:208)
+==169876==    by 0x109A69: test_2 (main.c:110)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4aa9130 is 96 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485BA49: co_yield (co.c:178)
+==169876==    by 0x109983: consumer (main.c:92)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4ab1270 is 32,672 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485BA4A: co_yield (co.c:178)
+==169876==    by 0x109983: consumer (main.c:92)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4ab1278 is 32,680 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x109990: consumer (main.c:94)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4ab12a0 is 32,720 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x109991: consumer (main.c:94)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4ab12a8 is 32,728 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x485B880: start_new_wrapper (co.c:130)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4ab12b0 is 32,736 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B884: start_new_wrapper (co.c:131)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4ab12b0 is 32,736 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B886: start_new_wrapper (co.c:132)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4ab12b0 is 32,736 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x485B88D: start_new_wrapper (co.c:132)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4ab12b8 is 32,744 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B891: start_new_wrapper (co.c:133)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4ab12b0 is 32,736 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x485B899: start_new_wrapper (co.c:133)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4ab12b0 is 32,736 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B89D: start_new_wrapper (co.c:134)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4ab12b8 is 32,744 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B8A8: start_new_wrapper (co.c:135)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4ab12b8 is 32,744 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x485B488: push_queue_node (co.c:37)
+==169876==    by 0x485B8BB: start_new_wrapper (co.c:135)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4ab1468 is 8 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A37: test_2 (main.c:103)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B8BC: start_new_wrapper (co.c:131)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4ab12b0 is 32,736 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B8C5: start_new_wrapper (co.c:137)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4ab12c0 is 32,752 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B8C6: start_new_wrapper (co.c:137)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4ab12c8 is 32,760 bytes inside a block of size 32,768 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B6F2: co_add_task (co.c:96)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A13: test_2 (main.c:102)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485B9B3: schedule (co.c:160)
+==169876==  Address 0x4ab1460 is 0 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A37: test_2 (main.c:103)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 4
+==169876==    at 0x485B9D2: schedule (co.c:162)
+==169876==  Address 0x4ab1338 is 40 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A37: test_2 (main.c:103)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Invalid read of size 4
+==169876==    at 0x485BB2E: co_wait (co.c:203)
+==169876==    by 0x109A75: test_2 (main.c:111)
+==169876==    by 0x109D14: main (main.c:188)
+==169876==  Address 0x4ab1338 is 40 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109A37: test_2 (main.c:103)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x109A92: test_2 (main.c:113)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109495: q_free (co-test.h:272)
+==169876==    by 0x109A9F: test_2 (main.c:117)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x1094E6: q_free (co-test.h:272)
+==169876==    by 0x109A9F: test_2 (main.c:117)
+==169876==    by 0x109D14: main (main.c:188)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109AF1: worker (main.c:125)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x109AF9: worker (main.c:125)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109ACB: worker (main.c:126)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x48D60CB: __printf_buffer (vfprintf-process-arg.c:58)
+==169876==    by 0x48D773A: __vfprintf_internal (vfprintf-internal.c:1544)
+==169876==    by 0x48CC1B2: printf (printf.c:33)
+==169876==    by 0x109AE6: worker (main.c:126)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x48CB0BB: _itoa_word (_itoa.c:183)
+==169876==    by 0x48D5C9B: __printf_buffer (vfprintf-process-arg.c:155)
+==169876==    by 0x48D773A: __vfprintf_internal (vfprintf-internal.c:1544)
+==169876==    by 0x48CC1B2: printf (printf.c:33)
+==169876==    by 0x109AE6: worker (main.c:126)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x48CB0CC: _itoa_word (_itoa.c:183)
+==169876==    by 0x48D5C9B: __printf_buffer (vfprintf-process-arg.c:155)
+==169876==    by 0x48D773A: __vfprintf_internal (vfprintf-internal.c:1544)
+==169876==    by 0x48CC1B2: printf (printf.c:33)
+==169876==    by 0x109AE6: worker (main.c:126)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x48D5D89: __printf_buffer (vfprintf-process-arg.c:186)
+==169876==    by 0x48D773A: __vfprintf_internal (vfprintf-internal.c:1544)
+==169876==    by 0x48CC1B2: printf (printf.c:33)
+==169876==    by 0x109AE6: worker (main.c:126)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x48B1103: __longjmp (__longjmp.S:140)
+==169876==    by 0x109BCC: manager (main.c:151)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x485BA49: co_yield (co.c:178)
+==169876==    by 0x109BCC: manager (main.c:151)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109B34: worker (main.c:136)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109B3D: worker (main.c:137)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109B63: worker (main.c:136)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Conditional jump or move depends on uninitialised value(s)
+==169876==    at 0x109B6B: worker (main.c:136)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109B7D: worker (main.c:142)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876== 
+==169876== Use of uninitialised value of size 8
+==169876==    at 0x109B7E: worker (main.c:142)
+==169876== 
+==169876== Invalid read of size 4
+==169876==    at 0x485BB2E: co_wait (co.c:203)
+==169876==    by 0x109CB4: test_3 (main.c:177)
+==169876==    by 0x109D1E: main (main.c:191)
+==169876==  Address 0x4aca298 is 40 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109C98: test_3 (main.c:173)
+==169876==    by 0x109D1E: main (main.c:191)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x485B460: push_queue_node (co.c:34)
+==169876==    by 0x485B96A: schedule (co.c:152)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x109BCC: manager (main.c:151)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aca3c8 is 8 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109C98: test_3 (main.c:173)
+==169876==    by 0x109D1E: main (main.c:191)
+==169876== 
+==169876== Invalid write of size 8
+==169876==    at 0x485B46C: push_queue_node (co.c:35)
+==169876==    by 0x485B96A: schedule (co.c:152)
+==169876==    by 0x485BA47: co_yield (co.c:176)
+==169876==    by 0x109BCC: manager (main.c:151)
+==169876==    by 0x485B860: start_new_wrapper (co.c:127)
+==169876==    by 0x485B9FD: schedule (co.c:165)
+==169876==  Address 0x4aca3d0 is 16 bytes inside a block of size 24 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B352: create_queue_node (co.c:7)
+==169876==    by 0x485B5E3: co_add_task (co.c:70)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109C98: test_3 (main.c:173)
+==169876==    by 0x109D1E: main (main.c:191)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485BBBA: co_cleanup (co.c:220)
+==169876==    by 0x40010F1: _dl_call_fini (dl-call_fini.c:43)
+==169876==    by 0x4005577: _dl_fini (dl-fini.c:114)
+==169876==    by 0x48B3A75: __run_exit_handlers (exit.c:108)
+==169876==    by 0x48B3BBD: exit (exit.c:138)
+==169876==    by 0x48961D0: (below main) (libc_start_call_main.h:74)
+==169876==  Address 0x4a90908 is 8 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485BBC7: co_cleanup (co.c:221)
+==169876==    by 0x40010F1: _dl_call_fini (dl-call_fini.c:43)
+==169876==    by 0x4005577: _dl_fini (dl-fini.c:114)
+==169876==    by 0x48B3A75: __run_exit_handlers (exit.c:108)
+==169876==    by 0x48B3BBD: exit (exit.c:138)
+==169876==    by 0x48961D0: (below main) (libc_start_call_main.h:74)
+==169876==  Address 0x4a90908 is 8 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485BBD7: co_cleanup (co.c:224)
+==169876==    by 0x40010F1: _dl_call_fini (dl-call_fini.c:43)
+==169876==    by 0x4005577: _dl_fini (dl-fini.c:114)
+==169876==    by 0x48B3A75: __run_exit_handlers (exit.c:108)
+==169876==    by 0x48B3BBD: exit (exit.c:138)
+==169876==    by 0x48961D0: (below main) (libc_start_call_main.h:74)
+==169876==  Address 0x4a90a00 is 256 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485BBE7: co_cleanup (co.c:225)
+==169876==    by 0x40010F1: _dl_call_fini (dl-call_fini.c:43)
+==169876==    by 0x4005577: _dl_fini (dl-fini.c:114)
+==169876==    by 0x48B3A75: __run_exit_handlers (exit.c:108)
+==169876==    by 0x48B3BBD: exit (exit.c:138)
+==169876==    by 0x48961D0: (below main) (libc_start_call_main.h:74)
+==169876==  Address 0x4a90a00 is 256 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== Invalid read of size 8
+==169876==    at 0x485BBFA: co_cleanup (co.c:229)
+==169876==    by 0x40010F1: _dl_call_fini (dl-call_fini.c:43)
+==169876==    by 0x4005577: _dl_fini (dl-fini.c:114)
+==169876==    by 0x48B3A75: __run_exit_handlers (exit.c:108)
+==169876==    by 0x48B3BBD: exit (exit.c:138)
+==169876==    by 0x48961D0: (below main) (libc_start_call_main.h:74)
+==169876==  Address 0x4a90930 is 48 bytes inside a block of size 264 alloc'd
+==169876==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==169876==    by 0x485B595: co_add_task (co.c:63)
+==169876==    by 0x485B818: co_start (co.c:122)
+==169876==    by 0x109701: test_1 (main.c:33)
+==169876==    by 0x109CFB: main (main.c:185)
+==169876== 
+==169876== 
+==169876== HEAP SUMMARY:
+==169876==     in use at exit: 0 bytes in 0 blocks
+==169876==   total heap usage: 448 allocs, 448 frees, 305,634 bytes allocated
+==169876== 
+==169876== All heap blocks were freed -- no leaks are possible
+==169876== 
+==169876== Use --track-origins=yes to see where uninitialised values come from
+==169876== For lists of detected and suppressed errors, rerun with: -s
+==169876== ERROR SUMMARY: 17994 errors from 193 contexts (suppressed: 0 from 0)

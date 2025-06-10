@@ -4,7 +4,7 @@ all: libco-test-64 # libco-test-32
 
 test: libco all
 	@echo "==== TEST 64 bit ===="
-	@LD_LIBRARY_PATH=../src ./libco-test-64
+	@LD_LIBRARY_PATH=../src valgrind ./libco-test-64 2> log
 
 debug: libco all
 	@LD_LIBRARY_PATH=../src gdb ./libco-test-64 -x gdb.init
