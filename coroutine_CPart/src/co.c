@@ -290,7 +290,10 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
 
 
 void start_new_wrapper() {
+    pthread_mutex_lock(&current->wait_mutex);
     current->status = CO_RUNNING;
+    pthread_mutex_unlock(&current->wait_mutex);
+    
     current->func(current->arg);
     pthread_mutex_lock(&current->wait_mutex);
     current->status = CO_DEAD;
@@ -350,8 +353,10 @@ void schedule() {
     if(local_co_regedit->is_resume) {
         is_resume = true;
         local_co_regedit->is_resume = false;
-        struct queue_wrapper *queue = local_co_regedit->resume_co->queue_node_ptr->queue_wrapper;
+        pthread_mutex_lock(&local_co_regedit->resume_co->wait_mutex);
         pthread_mutex_lock(&global_co_regedit.mutex);
+        struct queue_wrapper *queue = local_co_regedit->resume_co->queue_node_ptr->queue_wrapper;
+        
         // 锁住全局调度器才保证resume_co队列位置判断的原子性
         // TODO : 也许要让
         if(queue == &local_co_regedit->runable_queue) {
@@ -365,6 +370,8 @@ void schedule() {
             resume_node = local_co_regedit->runable_queue.head;
         }
         pthread_mutex_unlock(&global_co_regedit.mutex);
+        pthread_mutex_unlock(&local_co_regedit->resume_co->wait_mutex);
+
         if(resume_node != local_co_regedit->runable_queue.head) {
             push_queue_node_front(&local_co_regedit->runable_queue, resume_node);
         }
@@ -431,16 +438,22 @@ void co_yield()
 }
 void co_resume(struct co *co)
 {
+    pthread_mutex_lock(&co->wait_mutex);
     if (co->status == CO_DEAD) {
+        pthread_mutex_unlock(&co->wait_mutex);
         return;
     }
     if(co->status == CO_WAITING) {
         printf("Fatal Error : co is waiting\n");
+        pthread_mutex_unlock(&co->wait_mutex);
+
         exit(1);
     }
     if(co == current) {
+        pthread_mutex_unlock(&co->wait_mutex);
         return;
     }
+    pthread_mutex_unlock(&co->wait_mutex);
     local_co_regedit->is_resume = true;
     local_co_regedit->resume_co = co;
     co_yield();
@@ -460,8 +473,11 @@ void co_wait(struct co *co)
     }
     add_waiter(current, co);
     pthread_mutex_unlock(&co->wait_mutex);
+    
+    pthread_mutex_lock(&current->wait_mutex);
     current->queue_node_ptr->queue_wrapper = NULL; // 清除协程的队列指针
     current->status = CO_WAITING;
+    pthread_mutex_unlock(&current->wait_mutex);
     co_yield();
 }
 
