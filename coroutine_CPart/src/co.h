@@ -1,5 +1,6 @@
 #ifndef CO_H
 #define CO_H
+#include <bits/pthreadtypes.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,6 +9,7 @@
 #include <setjmp.h>
 #include <stdbool.h>
 #include <pthread.h>
+#include <stdatomic.h>
 #define STACK_SIZE 32*1024
 enum co_status {
     CO_NEW = 1, // 新创建，还未执行过
@@ -34,6 +36,7 @@ struct co {
     
     struct queue_node * queue_node_ptr;
     enum co_status status;  // 协程的状态
+    pthread_mutex_t wait_mutex;
     struct linked_list_node * waiter_list_head; // 等待当前协程的协程链表
     jmp_buf        context; // 寄存器现场
     uint8_t *      stack; // 协程的堆栈
@@ -41,28 +44,37 @@ struct co {
 
 #define MAX_CO_NUM 1024 // 最大协程数
 #define MAX_CO_PROCESS_NUM 4 // 最大P线程数
+#define MAX_FETCH_NUM 2 // 每次从可运行队列中获取的协程数
+struct queue_wrapper;
 struct queue_node{
+    unsigned int priority; // 优先级，数值越小优先级越高
     struct co *co;
     struct queue_node *next, *prev;
+    struct queue_wrapper *queue_wrapper; // 指向所在的队列
 };
 struct queue_wrapper {
+    int num; // 队列中的节点数
     struct queue_node *head;
     struct queue_node *tail;
 };
 struct co_regedit {
     unsigned int regedit_id; // P的id,对应创建时local_co_regedit_num
 
-    unsigned int co_num; // 当前协程数
     struct queue_wrapper runable_queue; // 可运行队列
     bool is_resume;
     struct co * resume_co;
+    pthread_mutex_t mutex;
 };
 struct global_co_regedit {
     struct co *co_pool[MAX_CO_NUM*MAX_CO_PROCESS_NUM]; // 全局协程池
+    struct co *co_main; // main协程
+    struct queue_node *co_main_queue_node; // main协程的队列节点
+    bool is_main_available; // 主协程是否已经准备好
+    // 全局协程调度相关
     unsigned int co_num; // 当前总创建协程数
     struct queue_wrapper runable_queue; // 可运行队列
 
-    enum global_co_schedule_status status; // 全局协程调度状态
+    _Atomic(enum global_co_schedule_status) status; // 全局协程调度状态
     
     struct co_regedit *local_co_regedit[MAX_CO_PROCESS_NUM<<1]; // 每个P线程的协程注册表
     // main 默认位于0号
@@ -72,7 +84,8 @@ struct global_co_regedit {
 
     // 用于全局调度的互斥锁
     pthread_mutex_t mutex;
-    pthread_cond_t work_available;
+    pthread_cond_t work_available; // 用于通知饥饿线程有可运行的协程
+    pthread_cond_t main_available; // 用于唤醒主协程
 };
 
 struct co *co_start(const char *name, void (*func)(void *), void *arg);
