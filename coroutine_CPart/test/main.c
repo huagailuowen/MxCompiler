@@ -107,7 +107,10 @@ static void test_2() {
 
     g_running = 0;
 
+    // fprintf(stdout, "second last consumer wait\n");
     co_wait(thd3);
+    // fprintf(stdout, "last consumer wait\n");
+
     co_wait(thd4);
 
     while (!q_is_empty(queue)) {
@@ -189,7 +192,7 @@ int main() {
 
 
     test_3();
-    printf("\n\n");
+    printf("Finished\n\n");
 
     return 0;
 }

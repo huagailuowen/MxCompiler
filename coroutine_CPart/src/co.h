@@ -1,6 +1,5 @@
 #ifndef CO_H
 #define CO_H
-#include <bits/pthreadtypes.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +9,7 @@
 #include <stdbool.h>
 #include <pthread.h>
 #include <stdatomic.h>
+#include <bits/pthreadtypes.h>
 #define STACK_SIZE 32*1024
 enum co_status {
     CO_NEW = 1, // 新创建，还未执行过
@@ -40,7 +40,7 @@ struct co {
     struct linked_list_node * waiter_list_head; // 等待当前协程的协程链表
     jmp_buf        context; // 寄存器现场
     uint8_t *      stack; // 协程的堆栈
-};
+} __attribute__((aligned(16)));              // 确保16字节对齐
 
 #define MAX_CO_NUM 1024 // 最大协程数
 #define MAX_CO_PROCESS_NUM 4 // 最大P线程数
@@ -50,7 +50,7 @@ struct queue_node{
     unsigned int priority; // 优先级，数值越小优先级越高
     struct co *co;
     struct queue_node *next, *prev;
-    struct queue_wrapper *queue_wrapper; // 指向所在的队列
+    _Atomic(struct queue_wrapper *) queue_wrapper; // 指向所在的队列
 };
 struct queue_wrapper {
     int num; // 队列中的节点数
@@ -66,7 +66,7 @@ struct co_regedit {
     pthread_mutex_t mutex;
 };
 struct global_co_regedit {
-    struct co *co_pool[MAX_CO_NUM*MAX_CO_PROCESS_NUM]; // 全局协程池
+    struct co *co_pool[MAX_CO_NUM*(MAX_CO_PROCESS_NUM+1)]; // 全局协程池
     struct co *co_main; // main协程
     struct queue_node *co_main_queue_node; // main协程的队列节点
     bool is_main_available; // 主协程是否已经准备好

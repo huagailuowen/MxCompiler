@@ -24,11 +24,17 @@ void set_schedule_status(enum global_co_schedule_status new_status) {
 }
 
 // 原子比较并交换
-bool compare_and_swap_status(enum global_co_schedule_status expected, 
-                            enum global_co_schedule_status desired) {
-    return atomic_compare_exchange_strong(&global_co_regedit.status, &expected, desired);
-}
+// bool compare_and_swap_status(enum global_co_schedule_status expected, 
+//                             enum global_co_schedule_status desired) {
+//     return atomic_compare_exchange_strong(&global_co_regedit.status, &expected, desired);
+// }
 
+struct queue_wrapper *get_queue_wrapper(struct queue_node *node) {
+    return atomic_load(&node->queue_wrapper);
+}
+void set_queue_wrapper(struct queue_node *node, struct queue_wrapper *queue) {
+    atomic_store(&node->queue_wrapper, queue);
+}
 struct queue_node * create_queue_node(struct co * co) {
     struct queue_node * node = malloc(sizeof(struct queue_node));
     node->co = co;
@@ -38,7 +44,7 @@ struct queue_node * create_queue_node(struct co * co) {
     if(co != NULL) {
         co->queue_node_ptr = node;
     }
-    node->queue_wrapper = NULL; // 初始化队列指针为NULL
+    set_queue_wrapper(node, NULL); // 初始化队列指针为NULL
     return node;
 }
 struct queue_node * pop_queue_node(struct queue_wrapper * queue) {
@@ -54,7 +60,7 @@ struct queue_node * pop_queue_node(struct queue_wrapper * queue) {
         head->next->prev = NULL;
     }
     queue->num--;
-    head->queue_wrapper = NULL; // 清除队列指针
+    set_queue_wrapper(head, NULL); // 清除队列指针
     return head;
 }
 struct queue_node * pop_queue_node_back(struct queue_wrapper * queue) {
@@ -70,7 +76,7 @@ struct queue_node * pop_queue_node_back(struct queue_wrapper * queue) {
         tail->prev->next = NULL;
     }
     queue->num--;
-    tail->queue_wrapper = NULL; // 清除队列指针
+    set_queue_wrapper(tail, NULL); // 清除队列指针
 
     return tail;
 }
@@ -86,7 +92,7 @@ void push_queue_node(struct queue_wrapper * queue, struct queue_node * node) {
         node->prev = queue->tail;
         node->next = NULL;
     }
-    node->queue_wrapper = queue; // 设置队列指针
+    set_queue_wrapper(node, queue); // 设置队列指针
     queue->num++;
 }
 void push_queue_node_front(struct queue_wrapper * queue, struct queue_node * node) {
@@ -101,7 +107,7 @@ void push_queue_node_front(struct queue_wrapper * queue, struct queue_node * nod
         queue->head = node;
         node->prev = NULL;
     }
-    node->queue_wrapper = queue; // 设置队列指针
+    set_queue_wrapper(node, queue); // 设置队列指针
     queue->num++;
 }
 struct queue_node * fetch_queue_node(struct queue_wrapper * queue, struct queue_node * node) {
@@ -118,7 +124,8 @@ struct queue_node * fetch_queue_node(struct queue_wrapper * queue, struct queue_
     } else {
         queue->tail = node->prev;
     }
-    node->queue_wrapper = NULL; // 清除队列指针
+    set_queue_wrapper(node, NULL); // 清除队列指针
+    queue->num--;
     return node;
 }
 void free_queue(struct queue_wrapper * queue) {
@@ -166,6 +173,11 @@ void fetch_co_task()
             }
         }
     }while(local_co_regedit->runable_queue.num == 0 && get_schedule_status() == GLOBAL_CO_SCHEDULE_RUNNING);
+    if(get_schedule_status() == GLOBAL_CO_SCHEDULE_STOPPED) {
+        pthread_mutex_unlock(&global_co_regedit.mutex);
+        pthread_exit(NULL);
+
+    }
     bool is_available_work = global_co_regedit.runable_queue.num > 0 || global_co_regedit.is_main_available;
     pthread_mutex_unlock(&global_co_regedit.mutex);
     if(is_available_work) {
@@ -227,7 +239,7 @@ void assign_co_task(struct queue_node *node) {
 }
 
 struct co * co_add_task(const char *name, void (*func)(void *), void *arg, bool is_main) {
-    if(global_co_regedit.co_num == MAX_CO_NUM*MAX_CO_PROCESS_NUM) {
+    if(global_co_regedit.co_num == MAX_CO_NUM*(MAX_CO_PROCESS_NUM+1)) {
         printf("Too many coroutines\n");
         exit(1);
     }
@@ -237,14 +249,16 @@ struct co * co_add_task(const char *name, void (*func)(void *), void *arg, bool 
         exit(1);
     }
     
-    global_co_regedit.co_pool[global_co_regedit.co_num] = handler;
     struct queue_node * queue_node = create_queue_node(handler);
+    pthread_mutex_lock(&global_co_regedit.mutex);
+    global_co_regedit.co_pool[global_co_regedit.co_num] = handler;
     handler->c_id = global_co_regedit.co_num++;
     if(is_main){
         global_co_regedit.co_main = handler; // 设置全局main协程
     }
-    assign_co_task(queue_node); // 分配协程任务到当前P线程的可运行队列
+    pthread_mutex_unlock(&global_co_regedit.mutex);
 
+    
     
     // 安全处理 name 参数
     if (name != NULL) {
@@ -278,6 +292,7 @@ struct co * co_add_task(const char *name, void (*func)(void *), void *arg, bool 
     }
     
     
+    assign_co_task(queue_node); // 分配协程任务到当前P线程的可运行队列
     return handler;
 }
 
@@ -296,12 +311,15 @@ void start_new_wrapper() {
     
     current->func(current->arg);
     pthread_mutex_lock(&current->wait_mutex);
+    printf("Coroutine %s finished\n", current->name ? current->name : "unknown");
     current->status = CO_DEAD;
     struct linked_list_node * node = current->waiter_list_head;
     while(node != NULL) {
         struct co * waiter = node->waiter;
         node = node->next;
+        pthread_mutex_lock(&waiter->wait_mutex);
         waiter->status = CO_RUNNING;
+        pthread_mutex_unlock(&waiter->wait_mutex);
         assign_co_task(waiter->queue_node_ptr); // 将等待的协程重新加入可运行队列
     }
     pthread_mutex_unlock(&current->wait_mutex);
@@ -313,8 +331,9 @@ struct co_regedit * co_P_init() { //init for P
         exit(1);
     }
     pthread_mutex_lock(&global_co_regedit.mutex);
-    global_co_regedit.local_co_regedit[co_regedit->regedit_id] = co_regedit;
     co_regedit->regedit_id = global_co_regedit.P_num++;
+    printf("Creating P thread registry with ID %d\n", co_regedit->regedit_id);
+    global_co_regedit.local_co_regedit[co_regedit->regedit_id] = co_regedit;
     pthread_mutex_unlock(&global_co_regedit.mutex);
     co_regedit->runable_queue.num = 0;
     co_regedit->runable_queue.head = NULL;
@@ -339,7 +358,7 @@ void schedule() {
             fprintf(stderr, "Fatal Error : schedule must not be called in main thread after global_co_regedit.status is GLOBAL_CO_SCHEDULE_STOPPED\n");
             exit(1);
         }
-        return;
+        pthread_exit(NULL);
     }
     struct queue_node * node;
     struct queue_node * resume_node;
@@ -350,13 +369,13 @@ void schedule() {
         fprintf(stderr, "Warning: Coroutine %d is not the current coroutine\n", node->co->c_id);
         exit(1);
     }
+
     if(local_co_regedit->is_resume) {
         is_resume = true;
         local_co_regedit->is_resume = false;
-        pthread_mutex_lock(&local_co_regedit->resume_co->wait_mutex);
+        // pthread_mutex_lock(&local_co_regedit->resume_co->wait_mutex);
         pthread_mutex_lock(&global_co_regedit.mutex);
-        struct queue_wrapper *queue = local_co_regedit->resume_co->queue_node_ptr->queue_wrapper;
-        
+        struct queue_wrapper *queue = get_queue_wrapper(local_co_regedit->resume_co->queue_node_ptr);
         // 锁住全局调度器才保证resume_co队列位置判断的原子性
         // TODO : 也许要让
         if(queue == &local_co_regedit->runable_queue) {
@@ -370,7 +389,7 @@ void schedule() {
             resume_node = local_co_regedit->runable_queue.head;
         }
         pthread_mutex_unlock(&global_co_regedit.mutex);
-        pthread_mutex_unlock(&local_co_regedit->resume_co->wait_mutex);
+        // pthread_mutex_unlock(&local_co_regedit->resume_co->wait_mutex);
 
         if(resume_node != local_co_regedit->runable_queue.head) {
             push_queue_node_front(&local_co_regedit->runable_queue, resume_node);
@@ -383,7 +402,7 @@ void schedule() {
         fprintf(stderr, "Warning: Coroutine %d is not the current coroutine, but resume_node is not NULL\n", resume_node->co->c_id);
         exit(1);
     }
-    if(node == NULL) {
+    if(node == NULL || (resume_node == NULL && node->co->status != CO_RUNNING && node->co->status != CO_NEW)) {
         // 真的全空了向全局索要
         fetch_co_task();
         pthread_mutex_lock(&global_co_regedit.mutex);
@@ -396,8 +415,12 @@ void schedule() {
         // 此时node是NULL，之前没有运行过的协程
     }
     if(resume_node == NULL) {
-        fprintf(stderr, "Fatal Error : no coroutine to run after fetching!\n");
-        exit(-1);
+        if(!node || node->co->status == CO_DEAD || node->co->status == CO_WAITING) {
+            // 如果没有可运行的协程，且当前协程已经死亡，说明所有协程都已经结束
+            printf("No runnable coroutines available, exiting...\n");
+            exit(0);
+        }
+        resume_node = node; // 如果没有resume_node，使用node
     }
     
     if(node && node->co->status != CO_DEAD && node->co->status != CO_WAITING) {
@@ -474,9 +497,12 @@ void co_wait(struct co *co)
     add_waiter(current, co);
     pthread_mutex_unlock(&co->wait_mutex);
     
+    set_queue_wrapper(current->queue_node_ptr, NULL);
     pthread_mutex_lock(&current->wait_mutex);
-    current->queue_node_ptr->queue_wrapper = NULL; // 清除协程的队列指针
     current->status = CO_WAITING;
+    // printf("Coroutine %s is waiting for coroutine %s\n", current->name ? current->name : "unknown", co->name ? co->name : "unknown");
+    // printf("%d",local_co_regedit->is_resume);
+        
     pthread_mutex_unlock(&current->wait_mutex);
     co_yield();
 }
@@ -501,7 +527,9 @@ static void co_global_init() {
         pthread_cond_destroy(&global_co_regedit.work_available);
         exit(1);
     }
-    
+    if(MAX_CO_PROCESS_NUM == 0){
+        printf("Warning: MAX_CO_PROCESS_NUM is set to 0, destructor will fail for the global variable will first be destroyed.\n");
+    }
 
     global_co_regedit.co_num = 0;
     global_co_regedit.runable_queue.num = 0;
@@ -531,21 +559,24 @@ static void co_global_init() {
 
 __attribute__((destructor))
 static void co_cleanup() {
+    // printf("Some M destructor");
+    if(!is_main_thread){
+        // printf("Fatal Error : co_cleanup must be called in main thread\n");
+        // exit(1);
+        return; // 如果不是主线程，直接返回 
+    }
     printf("Cleaning up coroutine system resources...\n");
 
     // 设置停止标志
     pthread_mutex_lock(&global_co_regedit.mutex);
     set_schedule_status(GLOBAL_CO_SCHEDULE_STOPPED);
-    if(!is_main_thread){
-        printf("Fatal Error : co_cleanup must be called in main thread\n");
-        exit(1);
-    }
     pthread_mutex_unlock(&global_co_regedit.mutex);
     pthread_cond_broadcast(&global_co_regedit.work_available); // 唤醒所有等待的线程
-    
+    printf("Waiting for all threads to finish...\n");
     for (int i = 0; i < global_co_regedit.M_num; i++) {
         pthread_join(global_co_regedit.threads[i], NULL);
     }
+    printf("All threads have finished\n");
     for (int i = 0; i < global_co_regedit.co_num; i++) {
         struct co *co = global_co_regedit.co_pool[i];
         if (co) {
@@ -574,16 +605,19 @@ static void co_cleanup() {
             free(co);
         }
     }
-    
+    printf("All coroutines have been cleaned up\n");
     // 释放可运行队列中的节点
     // free_queue(&global_co_regedit.runable_queue);
+    printf("%d",global_co_regedit.P_num);
     for (int i = 0; i < global_co_regedit.P_num; i++) {
         struct co_regedit *regedit = global_co_regedit.local_co_regedit[i];
         if (regedit) {
+            pthread_mutex_destroy(&regedit->mutex); // 销毁P线程的互斥锁
             // free_queue(&regedit->runable_queue);
             free(regedit);
         }
     }
+    printf("All P thread registries have been cleaned up\n");
     pthread_mutex_destroy(&global_co_regedit.mutex);
     pthread_cond_destroy(&global_co_regedit.work_available);
     pthread_cond_destroy(&global_co_regedit.main_available);
