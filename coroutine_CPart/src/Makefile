@@ -1,5 +1,5 @@
 NAME := libco
-CFLAGS += -U_FORTIFY_SOURCE -g #-O0 -fsanitize=address -fsanitize=undefined,address
+CFLAGS += -U_FORTIFY_SOURCE -g -O0# -fsanitize=address -fsanitize=undefined,address
 SRCS := co.c
 DEPS := $(SRCS)
 

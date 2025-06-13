@@ -62,7 +62,7 @@ static void do_produce(Queue *queue) {
 
 static void producer(void *arg) {
     Queue *queue = (Queue*)arg;
-    for (int i = 0; i < 100; ) {
+    for (int i = 0; i < 40; ) {
         if (!q_is_full(queue)) {
             // co_yield();
             do_produce(queue);
@@ -99,19 +99,41 @@ static void test_2() {
 
     struct co *thd1 = co_start("producer-1", producer, queue);
     struct co *thd2 = co_start("producer-2", producer, queue);
-    struct co *thd3 = co_start("consumer-1", consumer, queue);
-    struct co *thd4 = co_start("consumer-2", consumer, queue);
+    struct co *thd3 = co_start("producer-3", producer, queue);
+    struct co *thd4 = co_start("producer-4", producer, queue);
+    struct co *thd5 = co_start("producer-5", producer, queue);
+    struct co *thd6 = co_start("producer-6", producer, queue);
+    struct co *thd7 = co_start("producer-7", producer, queue);
+
+    struct co *thd8 = co_start("consumer-1", consumer, queue);
+    struct co *thd9 = co_start("consumer-2", consumer, queue);
+    struct co *thd10 = co_start("consumer-3", consumer, queue);
+    struct co *thd11 = co_start("consumer-4", consumer, queue);
+    struct co *thd12 = co_start("consumer-5", consumer, queue);
+    struct co *thd13 = co_start("consumer-6", consumer, queue);
+    struct co *thd14 = co_start("consumer-7", consumer, queue);
 
     co_wait(thd1);
     co_wait(thd2);
+    co_wait(thd3);
+    co_wait(thd4);
+    co_wait(thd5);
+    co_wait(thd6);
+    co_wait(thd7);
+
 
     g_running = 0;
 
     // fprintf(stdout, "second last consumer wait\n");
-    co_wait(thd3);
-    // fprintf(stdout, "last consumer wait\n");
 
-    co_wait(thd4);
+    co_wait(thd8);
+    co_wait(thd9);
+    co_wait(thd10);
+    co_wait(thd11);
+    co_wait(thd12);
+    co_wait(thd13);
+    co_wait(thd14);
+
 
     while (!q_is_empty(queue)) {
         do_consume(queue);

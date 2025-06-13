@@ -43,8 +43,8 @@ struct co {
 } __attribute__((aligned(16)));              // 确保16字节对齐
 
 #define MAX_CO_NUM 1024 // 最大协程数
-#define MAX_CO_PROCESS_NUM 4 // 最大P线程数
-#define MAX_FETCH_NUM 2 // 每次从可运行队列中获取的协程数
+#define MAX_CO_PROCESS_NUM 0 // 最大P线程数
+#define MAX_FETCH_NUM 3 // 每次从可运行队列中获取的协程数
 struct queue_wrapper;
 struct queue_node{
     unsigned int priority; // 优先级，数值越小优先级越高
