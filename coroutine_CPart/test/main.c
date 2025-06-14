@@ -67,6 +67,7 @@ static void producer(void *arg) {
             // co_yield();
             do_produce(queue);
             i += 1;
+            // printf("%d",i);
         }
         co_yield();
     }
@@ -116,6 +117,7 @@ static void test_2() {
     co_wait(thd1);
     co_wait(thd2);
     co_wait(thd3);
+    co_resume(thd4); // 恢复thd4
     co_wait(thd4);
     co_wait(thd5);
     co_wait(thd6);

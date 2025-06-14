@@ -1,4 +1,7 @@
 #include <co.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <pthread.h>
 
 //===============================================================
 // COPY FROM: https://isis.poly.edu/kulesh/stuff/src/klist/list.h
@@ -248,6 +251,7 @@ typedef struct Queue_t {
     struct list_head list;
     int sz;
     int cap;
+    pthread_mutex_t mutex;  // Add mutex for thread safety
 } Queue;
 
 typedef struct Item_t {
@@ -261,46 +265,159 @@ static inline Queue* q_new() {
         fprintf(stderr, "New queue failure\n");
         exit(1);
     }
-    queue->cap = 100;
+    queue->cap = 2000;
     queue->sz = 0;
     INIT_LIST_HEAD(&queue->list);
+    
+    // Initialize mutex
+    if (pthread_mutex_init(&queue->mutex, NULL) != 0) {
+        fprintf(stderr, "Mutex initialization failed\n");
+        free(queue);
+        exit(1);
+    }
+    
     return queue;
 }
 
 static inline void q_free(Queue *queue) {
-    Item *pos, *next;
-    list_for_each_entry_safe(pos, next, &queue->list, link) {
-        list_del(&pos->link);
-        free(pos);
+    if (!queue) return;
+    
+    // Lock before cleanup
+    pthread_mutex_lock(&queue->mutex);
+    
+    // Manually iterate through the list to free items
+    struct list_head *pos = queue->list.next;
+    while (pos != &queue->list) {
+        struct list_head *next = pos->next;
+        Item *item = list_entry(pos, Item, link);
+        list_del(pos);
+        free(item);
+        pos = next;
     }
+    
+    // Unlock before destroying mutex
+    pthread_mutex_unlock(&queue->mutex);
+    
+    // Destroy mutex
+    pthread_mutex_destroy(&queue->mutex);
+    
     free(queue);
 }
 
 static inline int q_is_full(Queue *queue) {
-    return queue->sz == queue->cap;
+    if (!queue) return 1;
+    
+    pthread_mutex_lock(&queue->mutex);
+    int result = (queue->sz == queue->cap);
+    pthread_mutex_unlock(&queue->mutex);
+    
+    return result;
 }
 
 static inline int q_is_empty(Queue *queue) {
-    return list_empty(&queue->list);
+    if (!queue) return 1;
+    
+    pthread_mutex_lock(&queue->mutex);
+    int result = list_empty(&queue->list);
+    pthread_mutex_unlock(&queue->mutex);
+    
+    return result;
 }
 
 static inline void q_push(Queue *queue, Item *item) {
-    if (q_is_full(queue)) {
+    if (!queue || !item) return;
+    
+    pthread_mutex_lock(&queue->mutex);
+    
+    if (queue->sz >= queue->cap) {
+        pthread_mutex_unlock(&queue->mutex);
         fprintf(stderr, "Push queue failure\n");
         return;
     }
+    
     list_add_tail(&item->link, &queue->list);
     queue->sz += 1;
+    
+    pthread_mutex_unlock(&queue->mutex);
 }
 
 static inline Item* q_pop(Queue *queue) {
-    if (q_is_empty(queue)) {
+    if (!queue) return NULL;
+    
+    pthread_mutex_lock(&queue->mutex);
+    
+    if (list_empty(&queue->list)) {
+        pthread_mutex_unlock(&queue->mutex);
         return NULL;
     }
 
     Item *item = list_entry(queue->list.next, Item, link);
     list_del(&item->link);
-
     queue->sz -= 1;
+    
+    pthread_mutex_unlock(&queue->mutex);
+    
     return item;
+}
+
+// Additional thread-safe helper functions for queue operations
+static inline int q_size(Queue *queue) {
+    if (!queue) return 0;
+    
+    pthread_mutex_lock(&queue->mutex);
+    int size = queue->sz;
+    pthread_mutex_unlock(&queue->mutex);
+    
+    return size;
+}
+
+static inline int q_capacity(Queue *queue) {
+    if (!queue) return 0;
+    
+    pthread_mutex_lock(&queue->mutex);
+    int capacity = queue->cap;
+    pthread_mutex_unlock(&queue->mutex);
+    
+    return capacity;
+}
+
+// Thread-safe queue clear function
+static inline void q_clear(Queue *queue) {
+    if (!queue) return;
+    
+    pthread_mutex_lock(&queue->mutex);
+    
+    // Manually iterate through the list to free items
+    struct list_head *pos = queue->list.next;
+    while (pos != &queue->list) {
+        struct list_head *next = pos->next;
+        Item *item = list_entry(pos, Item, link);
+        list_del(pos);
+        free(item);
+        pos = next;
+    }
+    
+    queue->sz = 0;
+    INIT_LIST_HEAD(&queue->list);
+    
+    pthread_mutex_unlock(&queue->mutex);
+}
+
+// Thread-safe function to create a new item
+static inline Item* q_item_new(void *data) {
+    Item *item = (Item*)malloc(sizeof(Item));
+    if (!item) {
+        fprintf(stderr, "Failed to allocate memory for queue item\n");
+        return NULL;
+    }
+    item->data = data;
+    INIT_LIST_HEAD(&item->link);
+    return item;
+}
+
+// Thread-safe function to free an item
+static inline void q_item_free(Item *item) {
+    if (item) {
+        free(item);
+    }
 }

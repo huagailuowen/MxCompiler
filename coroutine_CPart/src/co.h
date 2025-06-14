@@ -7,6 +7,7 @@
 #include <string.h>
 #include <setjmp.h>
 #include <stdbool.h>
+#include <time.h>
 #include <pthread.h>
 #include <stdatomic.h>
 #include <bits/pthreadtypes.h>
@@ -43,7 +44,7 @@ struct co {
 } __attribute__((aligned(16)));              // 确保16字节对齐
 
 #define MAX_CO_NUM 1024 // 最大协程数
-#define MAX_CO_PROCESS_NUM 0 // 最大P线程数
+#define MAX_CO_PROCESS_NUM 2 // 最大P线程数
 #define MAX_FETCH_NUM 3 // 每次从可运行队列中获取的协程数
 struct queue_wrapper;
 struct queue_node{
@@ -59,7 +60,7 @@ struct queue_wrapper {
 };
 struct co_regedit {
     unsigned int regedit_id; // P的id,对应创建时local_co_regedit_num
-
+    unsigned int schedule_count; // 当前P线程调度的协程数
     struct queue_wrapper runable_queue; // 可运行队列
     bool is_resume;
     struct co * resume_co;

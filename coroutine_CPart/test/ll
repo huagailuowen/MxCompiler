@@ -1,0 +1,606 @@
+cd ../src && make
+make[1]: Entering directory '/mnt/d/周宸源/大学/学习/程序/MxCompiler/coroutine_CPart/src'
+rm -f libco-*.so
+gcc -fPIC -shared -m64 -U_FORTIFY_SOURCE -g -O0 co.c -o libco-64.so 
+make[1]: Leaving directory '/mnt/d/周宸源/大学/学习/程序/MxCompiler/coroutine_CPart/src'
+==== TEST 64 bit ====
+Warning: MAX_CO_PROCESS_NUM is set to 0, destructor will fail for the global variable will first be destroyed.
+Creating P thread registry with ID 0
+Creating coroutine main with ID 0
+Coroutine system initialized
+Test #1. Expect: (X|Y){0, 1, 2, ..., 199}
+Creating coroutine thread-1 with ID 1
+Creating coroutine thread-2 with ID 2
+Switching to coroutine thread-1 with ID 1  1
+X0  Switching to coroutine thread-2 with ID 2  1
+Y1  Switching to coroutine thread-1 with ID 1  2
+X2  Switching to coroutine thread-2 with ID 2  2
+Y3  Switching to coroutine thread-1 with ID 1  2
+X4  Switching to coroutine thread-2 with ID 2  2
+Y5  Switching to coroutine thread-1 with ID 1  2
+X6  Switching to coroutine thread-2 with ID 2  2
+Y7  Switching to coroutine thread-1 with ID 1  2
+X8  Switching to coroutine thread-2 with ID 2  2
+Y9  Switching to coroutine thread-1 with ID 1  2
+X10  Switching to coroutine thread-2 with ID 2  2
+Y11  Switching to coroutine thread-1 with ID 1  2
+X12  Switching to coroutine thread-2 with ID 2  2
+Y13  Switching to coroutine thread-1 with ID 1  2
+X14  Switching to coroutine thread-2 with ID 2  2
+Y15  Switching to coroutine thread-1 with ID 1  2
+X16  Switching to coroutine thread-2 with ID 2  2
+Y17  Switching to coroutine thread-1 with ID 1  2
+X18  Switching to coroutine thread-2 with ID 2  2
+Y19  Switching to coroutine thread-1 with ID 1  2
+X20  Switching to coroutine thread-2 with ID 2  2
+Y21  Switching to coroutine thread-1 with ID 1  2
+X22  Switching to coroutine thread-2 with ID 2  2
+Y23  Switching to coroutine thread-1 with ID 1  2
+X24  Switching to coroutine thread-2 with ID 2  2
+Y25  Switching to coroutine thread-1 with ID 1  2
+X26  Switching to coroutine thread-2 with ID 2  2
+Y27  Switching to coroutine thread-1 with ID 1  2
+X28  Switching to coroutine thread-2 with ID 2  2
+Y29  Switching to coroutine thread-1 with ID 1  2
+X30  Switching to coroutine thread-2 with ID 2  2
+Y31  Switching to coroutine thread-1 with ID 1  2
+X32  Switching to coroutine thread-2 with ID 2  2
+Y33  Switching to coroutine thread-1 with ID 1  2
+X34  Switching to coroutine thread-2 with ID 2  2
+Y35  Switching to coroutine thread-1 with ID 1  2
+X36  Switching to coroutine thread-2 with ID 2  2
+Y37  Switching to coroutine thread-1 with ID 1  2
+X38  Switching to coroutine thread-2 with ID 2  2
+Y39  Switching to coroutine thread-1 with ID 1  2
+X40  Switching to coroutine thread-2 with ID 2  2
+Y41  Switching to coroutine thread-1 with ID 1  2
+X42  Switching to coroutine thread-2 with ID 2  2
+Y43  Switching to coroutine thread-1 with ID 1  2
+X44  Switching to coroutine thread-2 with ID 2  2
+Y45  Switching to coroutine thread-1 with ID 1  2
+X46  Switching to coroutine thread-2 with ID 2  2
+Y47  Switching to coroutine thread-1 with ID 1  2
+X48  Switching to coroutine thread-2 with ID 2  2
+Y49  Switching to coroutine thread-1 with ID 1  2
+X50  Switching to coroutine thread-2 with ID 2  2
+Y51  Switching to coroutine thread-1 with ID 1  2
+X52  Switching to coroutine thread-2 with ID 2  2
+Y53  Switching to coroutine thread-1 with ID 1  2
+X54  Switching to coroutine thread-2 with ID 2  2
+Y55  Switching to coroutine thread-1 with ID 1  2
+X56  Switching to coroutine thread-2 with ID 2  2
+Y57  Switching to coroutine thread-1 with ID 1  2
+X58  Switching to coroutine thread-2 with ID 2  2
+Y59  Switching to coroutine thread-1 with ID 1  2
+X60  Switching to coroutine thread-2 with ID 2  2
+Y61  Switching to coroutine thread-1 with ID 1  2
+X62  Switching to coroutine thread-2 with ID 2  2
+Y63  Switching to coroutine thread-1 with ID 1  2
+X64  Switching to coroutine thread-2 with ID 2  2
+Y65  Switching to coroutine thread-1 with ID 1  2
+X66  Switching to coroutine thread-2 with ID 2  2
+Y67  Switching to coroutine thread-1 with ID 1  2
+X68  Switching to coroutine thread-2 with ID 2  2
+Y69  Switching to coroutine thread-1 with ID 1  2
+X70  Switching to coroutine thread-2 with ID 2  2
+Y71  Switching to coroutine thread-1 with ID 1  2
+X72  Switching to coroutine thread-2 with ID 2  2
+Y73  Switching to coroutine thread-1 with ID 1  2
+X74  Switching to coroutine thread-2 with ID 2  2
+Y75  Switching to coroutine thread-1 with ID 1  2
+X76  Switching to coroutine thread-2 with ID 2  2
+Y77  Switching to coroutine thread-1 with ID 1  2
+X78  Switching to coroutine thread-2 with ID 2  2
+Y79  Switching to coroutine thread-1 with ID 1  2
+X80  Switching to coroutine thread-2 with ID 2  2
+Y81  Switching to coroutine thread-1 with ID 1  2
+X82  Switching to coroutine thread-2 with ID 2  2
+Y83  Switching to coroutine thread-1 with ID 1  2
+X84  Switching to coroutine thread-2 with ID 2  2
+Y85  Switching to coroutine thread-1 with ID 1  2
+X86  Switching to coroutine thread-2 with ID 2  2
+Y87  Switching to coroutine thread-1 with ID 1  2
+X88  Switching to coroutine thread-2 with ID 2  2
+Y89  Switching to coroutine thread-1 with ID 1  2
+X90  Switching to coroutine thread-2 with ID 2  2
+Y91  Switching to coroutine thread-1 with ID 1  2
+X92  Switching to coroutine thread-2 with ID 2  2
+Y93  Switching to coroutine thread-1 with ID 1  2
+X94  Switching to coroutine thread-2 with ID 2  2
+Y95  Switching to coroutine thread-1 with ID 1  2
+X96  Switching to coroutine thread-2 with ID 2  2
+Y97  Switching to coroutine thread-1 with ID 1  2
+X98  Switching to coroutine thread-2 with ID 2  2
+Y99  Switching to coroutine thread-1 with ID 1  2
+X100  Switching to coroutine thread-2 with ID 2  2
+Y101  Switching to coroutine thread-1 with ID 1  2
+X102  Switching to coroutine thread-2 with ID 2  2
+Y103  Switching to coroutine thread-1 with ID 1  2
+X104  Switching to coroutine thread-2 with ID 2  2
+Y105  Switching to coroutine thread-1 with ID 1  2
+X106  Switching to coroutine thread-2 with ID 2  2
+Y107  Switching to coroutine thread-1 with ID 1  2
+X108  Switching to coroutine thread-2 with ID 2  2
+Y109  Switching to coroutine thread-1 with ID 1  2
+X110  Switching to coroutine thread-2 with ID 2  2
+Y111  Switching to coroutine thread-1 with ID 1  2
+X112  Switching to coroutine thread-2 with ID 2  2
+Y113  Switching to coroutine thread-1 with ID 1  2
+X114  Switching to coroutine thread-2 with ID 2  2
+Y115  Switching to coroutine thread-1 with ID 1  2
+X116  Switching to coroutine thread-2 with ID 2  2
+Y117  Switching to coroutine thread-1 with ID 1  2
+X118  Switching to coroutine thread-2 with ID 2  2
+Y119  Switching to coroutine thread-1 with ID 1  2
+X120  Switching to coroutine thread-2 with ID 2  2
+Y121  Switching to coroutine thread-1 with ID 1  2
+X122  Switching to coroutine thread-2 with ID 2  2
+Y123  Switching to coroutine thread-1 with ID 1  2
+X124  Switching to coroutine thread-2 with ID 2  2
+Y125  Switching to coroutine thread-1 with ID 1  2
+X126  Switching to coroutine thread-2 with ID 2  2
+Y127  Switching to coroutine thread-1 with ID 1  2
+X128  Switching to coroutine thread-2 with ID 2  2
+Y129  Switching to coroutine thread-1 with ID 1  2
+X130  Switching to coroutine thread-2 with ID 2  2
+Y131  Switching to coroutine thread-1 with ID 1  2
+X132  Switching to coroutine thread-2 with ID 2  2
+Y133  Switching to coroutine thread-1 with ID 1  2
+X134  Switching to coroutine thread-2 with ID 2  2
+Y135  Switching to coroutine thread-1 with ID 1  2
+X136  Switching to coroutine thread-2 with ID 2  2
+Y137  Switching to coroutine thread-1 with ID 1  2
+X138  Switching to coroutine thread-2 with ID 2  2
+Y139  Switching to coroutine thread-1 with ID 1  2
+X140  Switching to coroutine thread-2 with ID 2  2
+Y141  Switching to coroutine thread-1 with ID 1  2
+X142  Switching to coroutine thread-2 with ID 2  2
+Y143  Switching to coroutine thread-1 with ID 1  2
+X144  Switching to coroutine thread-2 with ID 2  2
+Y145  Switching to coroutine thread-1 with ID 1  2
+X146  Switching to coroutine thread-2 with ID 2  2
+Y147  Switching to coroutine thread-1 with ID 1  2
+X148  Switching to coroutine thread-2 with ID 2  2
+Y149  Switching to coroutine thread-1 with ID 1  2
+X150  Switching to coroutine thread-2 with ID 2  2
+Y151  Switching to coroutine thread-1 with ID 1  2
+X152  Switching to coroutine thread-2 with ID 2  2
+Y153  Switching to coroutine thread-1 with ID 1  2
+X154  Switching to coroutine thread-2 with ID 2  2
+Y155  Switching to coroutine thread-1 with ID 1  2
+X156  Switching to coroutine thread-2 with ID 2  2
+Y157  Switching to coroutine thread-1 with ID 1  2
+X158  Switching to coroutine thread-2 with ID 2  2
+Y159  Switching to coroutine thread-1 with ID 1  2
+X160  Switching to coroutine thread-2 with ID 2  2
+Y161  Switching to coroutine thread-1 with ID 1  2
+X162  Switching to coroutine thread-2 with ID 2  2
+Y163  Switching to coroutine thread-1 with ID 1  2
+X164  Switching to coroutine thread-2 with ID 2  2
+Y165  Switching to coroutine thread-1 with ID 1  2
+X166  Switching to coroutine thread-2 with ID 2  2
+Y167  Switching to coroutine thread-1 with ID 1  2
+X168  Switching to coroutine thread-2 with ID 2  2
+Y169  Switching to coroutine thread-1 with ID 1  2
+X170  Switching to coroutine thread-2 with ID 2  2
+Y171  Switching to coroutine thread-1 with ID 1  2
+X172  Switching to coroutine thread-2 with ID 2  2
+Y173  Switching to coroutine thread-1 with ID 1  2
+X174  Switching to coroutine thread-2 with ID 2  2
+Y175  Switching to coroutine thread-1 with ID 1  2
+X176  Switching to coroutine thread-2 with ID 2  2
+Y177  Switching to coroutine thread-1 with ID 1  2
+X178  Switching to coroutine thread-2 with ID 2  2
+Y179  Switching to coroutine thread-1 with ID 1  2
+X180  Switching to coroutine thread-2 with ID 2  2
+Y181  Switching to coroutine thread-1 with ID 1  2
+X182  Switching to coroutine thread-2 with ID 2  2
+Y183  Switching to coroutine thread-1 with ID 1  2
+X184  Switching to coroutine thread-2 with ID 2  2
+Y185  Switching to coroutine thread-1 with ID 1  2
+X186  Switching to coroutine thread-2 with ID 2  2
+Y187  Switching to coroutine thread-1 with ID 1  2
+X188  Switching to coroutine thread-2 with ID 2  2
+Y189  Switching to coroutine thread-1 with ID 1  2
+X190  Switching to coroutine thread-2 with ID 2  2
+Y191  Switching to coroutine thread-1 with ID 1  2
+X192  Switching to coroutine thread-2 with ID 2  2
+Y193  Switching to coroutine thread-1 with ID 1  2
+X194  Switching to coroutine thread-2 with ID 2  2
+Y195  Switching to coroutine thread-1 with ID 1  2
+X196  Switching to coroutine thread-2 with ID 2  2
+Y197  Switching to coroutine thread-1 with ID 1  2
+X198  Switching to coroutine thread-2 with ID 2  2
+Y199  Switching to coroutine thread-1 with ID 1  2
+Coroutine thread-1 finished
+Main coroutine main is now running
+Switching to coroutine thread-2 with ID 2  2
+Coroutine thread-2 finished
+Switching to coroutine main with ID 0  2
+
+
+Test #2. Expect: (libco-){200, 201, 202, ..., 399}
+Creating coroutine producer-1 with ID 3
+Creating coroutine producer-2 with ID 4
+Creating coroutine producer-3 with ID 5
+Creating coroutine producer-4 with ID 6
+Creating coroutine producer-5 with ID 7
+Creating coroutine producer-6 with ID 8
+Creating coroutine producer-7 with ID 9
+Creating coroutine consumer-1 with ID 10
+Creating coroutine consumer-2 with ID 11
+Creating coroutine consumer-3 with ID 12
+Creating coroutine consumer-4 with ID 13
+Creating coroutine consumer-5 with ID 14
+Creating coroutine consumer-6 with ID 15
+Creating coroutine consumer-7 with ID 16
+Switching to coroutine producer-1 with ID 3  1
+1Switching to coroutine producer-2 with ID 4  1
+1Switching to coroutine producer-3 with ID 5  1
+1Switching to coroutine producer-4 with ID 6  1
+1Switching to coroutine producer-5 with ID 7  1
+1Switching to coroutine producer-1 with ID 3  2
+2Switching to coroutine producer-2 with ID 4  2
+2Switching to coroutine producer-3 with ID 5  2
+2Switching to coroutine producer-4 with ID 6  2
+2Switching to coroutine producer-5 with ID 7  2
+2Switching to coroutine producer-1 with ID 3  2
+3Switching to coroutine producer-2 with ID 4  2
+3Switching to coroutine producer-3 with ID 5  2
+3Switching to coroutine producer-4 with ID 6  2
+3Switching to coroutine producer-5 with ID 7  2
+3Switching to coroutine producer-1 with ID 3  2
+4Switching to coroutine producer-2 with ID 4  2
+4Switching to coroutine producer-3 with ID 5  2
+4Switching to coroutine producer-4 with ID 6  2
+4Switching to coroutine producer-5 with ID 7  2
+4Switching to coroutine producer-1 with ID 3  2
+5Switching to coroutine producer-2 with ID 4  2
+5Switching to coroutine producer-3 with ID 5  2
+5Switching to coroutine producer-4 with ID 6  2
+5Switching to coroutine producer-5 with ID 7  2
+5Switching to coroutine producer-1 with ID 3  2
+6Switching to coroutine producer-2 with ID 4  2
+6Switching to coroutine producer-3 with ID 5  2
+6Switching to coroutine producer-4 with ID 6  2
+6Switching to coroutine producer-5 with ID 7  2
+6Switching to coroutine producer-1 with ID 3  2
+7Switching to coroutine producer-2 with ID 4  2
+7Switching to coroutine producer-3 with ID 5  2
+7Switching to coroutine producer-4 with ID 6  2
+7Switching to coroutine producer-5 with ID 7  2
+7Switching to coroutine producer-1 with ID 3  2
+8Switching to coroutine producer-2 with ID 4  2
+8Switching to coroutine producer-3 with ID 5  2
+8Switching to coroutine producer-4 with ID 6  2
+8Switching to coroutine producer-5 with ID 7  2
+8Switching to coroutine producer-1 with ID 3  2
+9Switching to coroutine producer-2 with ID 4  2
+9Switching to coroutine producer-3 with ID 5  2
+9Switching to coroutine producer-4 with ID 6  2
+9Switching to coroutine producer-5 with ID 7  2
+9Switching to coroutine producer-1 with ID 3  2
+10Switching to coroutine producer-2 with ID 4  2
+10Switching to coroutine producer-3 with ID 5  2
+10Switching to coroutine producer-4 with ID 6  2
+10Switching to coroutine producer-5 with ID 7  2
+10Switching to coroutine producer-1 with ID 3  2
+11Switching to coroutine producer-2 with ID 4  2
+11Switching to coroutine producer-3 with ID 5  2
+11Switching to coroutine producer-4 with ID 6  2
+11Switching to coroutine producer-5 with ID 7  2
+11Switching to coroutine producer-1 with ID 3  2
+12Switching to coroutine producer-2 with ID 4  2
+12Switching to coroutine producer-3 with ID 5  2
+12Switching to coroutine consumer-7 with ID 16  1
+libco-200  Switching to coroutine consumer-6 with ID 15  1
+libco-201  Switching to coroutine consumer-5 with ID 14  1
+libco-202  Switching to coroutine producer-1 with ID 3  2
+13Switching to coroutine producer-2 with ID 4  2
+13Switching to coroutine producer-3 with ID 5  2
+13Switching to coroutine consumer-7 with ID 16  2
+libco-203  Switching to coroutine consumer-6 with ID 15  2
+libco-204  Switching to coroutine consumer-5 with ID 14  2
+libco-205  Switching to coroutine producer-1 with ID 3  2
+14Switching to coroutine producer-2 with ID 4  2
+14Switching to coroutine producer-3 with ID 5  2
+14Switching to coroutine consumer-7 with ID 16  2
+libco-206  Switching to coroutine consumer-6 with ID 15  2
+libco-207  Switching to coroutine consumer-5 with ID 14  2
+libco-208  Switching to coroutine producer-1 with ID 3  2
+15Switching to coroutine producer-2 with ID 4  2
+15Switching to coroutine producer-3 with ID 5  2
+15Switching to coroutine consumer-7 with ID 16  2
+libco-209  Switching to coroutine consumer-6 with ID 15  2
+libco-210  Switching to coroutine consumer-5 with ID 14  2
+libco-211  Switching to coroutine producer-1 with ID 3  2
+16Switching to coroutine producer-2 with ID 4  2
+16Switching to coroutine producer-3 with ID 5  2
+16Switching to coroutine consumer-7 with ID 16  2
+libco-212  Switching to coroutine consumer-6 with ID 15  2
+libco-213  Switching to coroutine consumer-5 with ID 14  2
+libco-214  Switching to coroutine producer-1 with ID 3  2
+17Switching to coroutine producer-2 with ID 4  2
+17Switching to coroutine producer-3 with ID 5  2
+17Switching to coroutine consumer-7 with ID 16  2
+libco-215  Switching to coroutine consumer-6 with ID 15  2
+libco-216  Switching to coroutine consumer-5 with ID 14  2
+libco-217  Switching to coroutine producer-1 with ID 3  2
+18Switching to coroutine producer-2 with ID 4  2
+18Switching to coroutine producer-3 with ID 5  2
+18Switching to coroutine consumer-7 with ID 16  2
+libco-218  Switching to coroutine consumer-6 with ID 15  2
+libco-219  Switching to coroutine consumer-5 with ID 14  2
+libco-220  Switching to coroutine producer-1 with ID 3  2
+19Switching to coroutine producer-2 with ID 4  2
+19Switching to coroutine producer-3 with ID 5  2
+19Switching to coroutine consumer-7 with ID 16  2
+libco-221  Switching to coroutine consumer-6 with ID 15  2
+libco-222  Switching to coroutine consumer-5 with ID 14  2
+libco-223  Switching to coroutine producer-1 with ID 3  2
+20Switching to coroutine producer-2 with ID 4  2
+20Switching to coroutine producer-3 with ID 5  2
+20Switching to coroutine consumer-7 with ID 16  2
+libco-224  Switching to coroutine consumer-6 with ID 15  2
+libco-225  Switching to coroutine consumer-5 with ID 14  2
+libco-226  Switching to coroutine producer-1 with ID 3  2
+21Switching to coroutine producer-2 with ID 4  2
+21Switching to coroutine producer-3 with ID 5  2
+21Switching to coroutine consumer-7 with ID 16  2
+libco-227  Switching to coroutine consumer-6 with ID 15  2
+libco-228  Switching to coroutine consumer-5 with ID 14  2
+libco-229  Switching to coroutine producer-1 with ID 3  2
+22Switching to coroutine producer-2 with ID 4  2
+22Switching to coroutine producer-3 with ID 5  2
+22Switching to coroutine consumer-7 with ID 16  2
+libco-230  Switching to coroutine consumer-6 with ID 15  2
+libco-231  Switching to coroutine consumer-5 with ID 14  2
+libco-232  Switching to coroutine producer-1 with ID 3  2
+23Switching to coroutine producer-2 with ID 4  2
+23Switching to coroutine producer-3 with ID 5  2
+23Switching to coroutine consumer-7 with ID 16  2
+libco-233  Switching to coroutine consumer-6 with ID 15  2
+libco-234  Switching to coroutine consumer-5 with ID 14  2
+libco-235  Switching to coroutine producer-1 with ID 3  2
+24Switching to coroutine producer-2 with ID 4  2
+24Switching to coroutine producer-3 with ID 5  2
+24Switching to coroutine consumer-7 with ID 16  2
+libco-236  Switching to coroutine consumer-6 with ID 15  2
+libco-237  Switching to coroutine consumer-5 with ID 14  2
+libco-238  Switching to coroutine producer-1 with ID 3  2
+25Switching to coroutine producer-2 with ID 4  2
+25Switching to coroutine producer-3 with ID 5  2
+25Switching to coroutine consumer-7 with ID 16  2
+libco-239  Switching to coroutine consumer-6 with ID 15  2
+libco-240  Switching to coroutine consumer-5 with ID 14  2
+libco-241  Switching to coroutine producer-1 with ID 3  2
+26Switching to coroutine producer-2 with ID 4  2
+26Switching to coroutine producer-3 with ID 5  2
+26Switching to coroutine consumer-7 with ID 16  2
+libco-242  Switching to coroutine consumer-6 with ID 15  2
+libco-243  Switching to coroutine consumer-5 with ID 14  2
+libco-244  Switching to coroutine producer-1 with ID 3  2
+27Switching to coroutine producer-2 with ID 4  2
+27Switching to coroutine producer-3 with ID 5  2
+27Switching to coroutine consumer-7 with ID 16  2
+libco-245  Switching to coroutine consumer-6 with ID 15  2
+libco-246  Switching to coroutine consumer-5 with ID 14  2
+libco-247  Switching to coroutine producer-1 with ID 3  2
+28Switching to coroutine producer-2 with ID 4  2
+28Switching to coroutine producer-3 with ID 5  2
+28Switching to coroutine consumer-7 with ID 16  2
+libco-248  Switching to coroutine consumer-6 with ID 15  2
+libco-249  Switching to coroutine consumer-5 with ID 14  2
+libco-250  Switching to coroutine producer-1 with ID 3  2
+29Switching to coroutine producer-2 with ID 4  2
+29Switching to coroutine producer-3 with ID 5  2
+29Switching to coroutine consumer-7 with ID 16  2
+libco-251  Switching to coroutine consumer-6 with ID 15  2
+libco-252  Switching to coroutine consumer-5 with ID 14  2
+libco-253  Switching to coroutine producer-1 with ID 3  2
+30Switching to coroutine producer-2 with ID 4  2
+30Switching to coroutine producer-3 with ID 5  2
+30Switching to coroutine consumer-7 with ID 16  2
+libco-254  Switching to coroutine consumer-6 with ID 15  2
+libco-255  Switching to coroutine consumer-5 with ID 14  2
+libco-256  Switching to coroutine producer-1 with ID 3  2
+31Switching to coroutine producer-2 with ID 4  2
+31Switching to coroutine producer-3 with ID 5  2
+31Switching to coroutine consumer-7 with ID 16  2
+libco-257  Switching to coroutine consumer-6 with ID 15  2
+libco-258  Switching to coroutine consumer-5 with ID 14  2
+libco-259  Switching to coroutine producer-1 with ID 3  2
+32Switching to coroutine producer-2 with ID 4  2
+32Switching to coroutine producer-3 with ID 5  2
+32Switching to coroutine consumer-7 with ID 16  2
+libco-260  Switching to coroutine consumer-6 with ID 15  2
+libco-261  Switching to coroutine consumer-5 with ID 14  2
+libco-262  Switching to coroutine producer-1 with ID 3  2
+33Switching to coroutine producer-2 with ID 4  2
+33Switching to coroutine producer-3 with ID 5  2
+33Switching to coroutine consumer-7 with ID 16  2
+libco-263  Switching to coroutine consumer-6 with ID 15  2
+libco-264  Switching to coroutine consumer-5 with ID 14  2
+libco-265  Switching to coroutine producer-5 with ID 7  2
+12Switching to coroutine producer-4 with ID 6  2
+12Switching to coroutine consumer-4 with ID 13  1
+libco-266  Switching to coroutine consumer-7 with ID 16  2
+libco-267  Switching to coroutine consumer-6 with ID 15  2
+libco-268  Switching to coroutine consumer-5 with ID 14  2
+libco-269  Switching to coroutine producer-5 with ID 7  2
+13Switching to coroutine producer-4 with ID 6  2
+13Switching to coroutine consumer-4 with ID 13  2
+libco-270  Switching to coroutine consumer-7 with ID 16  2
+libco-271  Switching to coroutine consumer-6 with ID 15  2
+libco-272  Switching to coroutine consumer-5 with ID 14  2
+libco-273  Switching to coroutine producer-5 with ID 7  2
+14Switching to coroutine producer-4 with ID 6  2
+14Switching to coroutine consumer-4 with ID 13  2
+libco-274  Switching to coroutine consumer-7 with ID 16  2
+libco-275  Switching to coroutine consumer-6 with ID 15  2
+libco-276  Switching to coroutine consumer-5 with ID 14  2
+libco-277  Switching to coroutine producer-5 with ID 7  2
+15Switching to coroutine producer-4 with ID 6  2
+15Switching to coroutine consumer-4 with ID 13  2
+libco-278  Switching to coroutine consumer-7 with ID 16  2
+libco-279  Switching to coroutine consumer-6 with ID 15  2
+libco-280  Switching to coroutine consumer-5 with ID 14  2
+libco-281  Switching to coroutine producer-5 with ID 7  2
+16Switching to coroutine producer-4 with ID 6  2
+16Switching to coroutine consumer-4 with ID 13  2
+libco-282  Switching to coroutine consumer-7 with ID 16  2
+libco-283  Switching to coroutine consumer-6 with ID 15  2
+libco-284  Switching to coroutine consumer-5 with ID 14  2
+libco-285  Switching to coroutine producer-5 with ID 7  2
+17Switching to coroutine producer-4 with ID 6  2
+17Switching to coroutine consumer-4 with ID 13  2
+libco-286  Switching to coroutine consumer-7 with ID 16  2
+libco-287  Switching to coroutine consumer-6 with ID 15  2
+libco-288  Switching to coroutine consumer-5 with ID 14  2
+libco-289  Switching to coroutine producer-5 with ID 7  2
+18Switching to coroutine producer-4 with ID 6  2
+18Switching to coroutine consumer-4 with ID 13  2
+libco-290  Switching to coroutine consumer-7 with ID 16  2
+libco-291  Switching to coroutine consumer-6 with ID 15  2
+libco-292  Switching to coroutine consumer-5 with ID 14  2
+libco-293  Switching to coroutine producer-5 with ID 7  2
+19Switching to coroutine producer-4 with ID 6  2
+19Switching to coroutine consumer-4 with ID 13  2
+libco-294  Switching to coroutine consumer-7 with ID 16  2
+libco-295  Switching to coroutine consumer-6 with ID 15  2
+libco-296  Switching to coroutine consumer-5 with ID 14  2
+libco-297  Switching to coroutine producer-5 with ID 7  2
+20Switching to coroutine producer-4 with ID 6  2
+20Switching to coroutine consumer-4 with ID 13  2
+libco-298  Switching to coroutine consumer-7 with ID 16  2
+libco-299  Switching to coroutine consumer-6 with ID 15  2
+libco-300  Switching to coroutine consumer-5 with ID 14  2
+libco-301  Switching to coroutine producer-5 with ID 7  2
+21Switching to coroutine producer-4 with ID 6  2
+21Switching to coroutine consumer-4 with ID 13  2
+libco-302  Switching to coroutine consumer-7 with ID 16  2
+libco-303  Switching to coroutine consumer-6 with ID 15  2
+libco-304  Switching to coroutine consumer-5 with ID 14  2
+libco-305  Switching to coroutine producer-5 with ID 7  2
+22Switching to coroutine producer-4 with ID 6  2
+22Switching to coroutine consumer-4 with ID 13  2
+libco-306  Switching to coroutine consumer-7 with ID 16  2
+libco-307  Switching to coroutine consumer-6 with ID 15  2
+libco-308  Switching to coroutine consumer-5 with ID 14  2
+libco-309  Switching to coroutine producer-5 with ID 7  2
+23Switching to coroutine producer-4 with ID 6  2
+23Switching to coroutine consumer-4 with ID 13  2
+libco-310  Switching to coroutine consumer-7 with ID 16  2
+libco-311  Switching to coroutine consumer-6 with ID 15  2
+libco-312  Switching to coroutine consumer-5 with ID 14  2
+libco-313  Switching to coroutine producer-5 with ID 7  2
+24Switching to coroutine producer-4 with ID 6  2
+24Switching to coroutine consumer-4 with ID 13  2
+libco-314  Switching to coroutine consumer-7 with ID 16  2
+libco-315  Switching to coroutine consumer-6 with ID 15  2
+libco-316  Switching to coroutine consumer-5 with ID 14  2
+libco-317  Switching to coroutine producer-5 with ID 7  2
+25Switching to coroutine producer-4 with ID 6  2
+25Switching to coroutine consumer-4 with ID 13  2
+libco-318  Switching to coroutine consumer-7 with ID 16  2
+libco-319  Switching to coroutine consumer-6 with ID 15  2
+libco-320  Switching to coroutine consumer-5 with ID 14  2
+libco-321  Switching to coroutine producer-5 with ID 7  2
+26Switching to coroutine producer-4 with ID 6  2
+26Switching to coroutine consumer-4 with ID 13  2
+libco-322  Switching to coroutine consumer-7 with ID 16  2
+libco-323  Switching to coroutine consumer-6 with ID 15  2
+libco-324  Switching to coroutine consumer-5 with ID 14  2
+libco-325  Switching to coroutine producer-5 with ID 7  2
+27Switching to coroutine producer-4 with ID 6  2
+27Switching to coroutine consumer-4 with ID 13  2
+libco-326  Switching to coroutine consumer-7 with ID 16  2
+libco-327  Switching to coroutine consumer-6 with ID 15  2
+libco-328  Switching to coroutine consumer-5 with ID 14  2
+libco-329  Switching to coroutine producer-5 with ID 7  2
+28Switching to coroutine producer-4 with ID 6  2
+28Switching to coroutine consumer-4 with ID 13  2
+libco-330  Switching to coroutine consumer-7 with ID 16  2
+libco-331  Switching to coroutine consumer-6 with ID 15  2
+libco-332  Switching to coroutine consumer-5 with ID 14  2
+libco-333  Switching to coroutine producer-5 with ID 7  2
+29Switching to coroutine producer-4 with ID 6  2
+29Switching to coroutine consumer-4 with ID 13  2
+libco-334  Switching to coroutine consumer-7 with ID 16  2
+libco-335  Switching to coroutine consumer-6 with ID 15  2
+libco-336  Switching to coroutine consumer-5 with ID 14  2
+libco-337  Switching to coroutine producer-5 with ID 7  2
+30Switching to coroutine producer-4 with ID 6  2
+30Switching to coroutine consumer-4 with ID 13  2
+libco-338  Switching to coroutine consumer-7 with ID 16  2
+libco-339  Switching to coroutine consumer-6 with ID 15  2
+libco-340  Switching to coroutine consumer-5 with ID 14  2
+libco-341  Switching to coroutine producer-5 with ID 7  2
+31Switching to coroutine producer-4 with ID 6  2
+31Switching to coroutine consumer-4 with ID 13  2
+libco-342  Switching to coroutine consumer-7 with ID 16  2
+libco-343  Switching to coroutine consumer-6 with ID 15  2
+libco-344  Switching to coroutine consumer-5 with ID 14  2
+libco-345  Switching to coroutine producer-5 with ID 7  2
+32Switching to coroutine producer-4 with ID 6  2
+32Switching to coroutine consumer-4 with ID 13  2
+libco-346  Switching to coroutine consumer-7 with ID 16  2
+libco-347  Switching to coroutine consumer-6 with ID 15  2
+libco-348  Switching to coroutine consumer-5 with ID 14  2
+libco-349  Switching to coroutine producer-5 with ID 7  2
+33Switching to coroutine producer-4 with ID 6  2
+33Switching to coroutine producer-3 with ID 5  2
+34Switching to coroutine producer-2 with ID 4  2
+34Switching to coroutine producer-1 with ID 3  2
+34Switching to coroutine consumer-5 with ID 14  2
+libco-350  Switching to coroutine producer-5 with ID 7  2
+34Switching to coroutine producer-4 with ID 6  2
+34Switching to coroutine producer-3 with ID 5  2
+35Switching to coroutine producer-2 with ID 4  2
+35Switching to coroutine producer-1 with ID 3  2
+35Switching to coroutine consumer-5 with ID 14  2
+libco-351  Switching to coroutine producer-5 with ID 7  2
+35Switching to coroutine producer-4 with ID 6  2
+35Switching to coroutine producer-3 with ID 5  2
+36Switching to coroutine producer-2 with ID 4  2
+36Switching to coroutine producer-1 with ID 3  2
+36Switching to coroutine consumer-5 with ID 14  2
+libco-352  Switching to coroutine producer-5 with ID 7  2
+36Switching to coroutine producer-4 with ID 6  2
+36Switching to coroutine producer-3 with ID 5  2
+37Switching to coroutine producer-2 with ID 4  2
+37Switching to coroutine producer-1 with ID 3  2
+37Switching to coroutine consumer-5 with ID 14  2
+libco-353  Switching to coroutine producer-5 with ID 7  2
+37Switching to coroutine producer-4 with ID 6  2
+37Switching to coroutine producer-3 with ID 5  2
+38Switching to coroutine producer-2 with ID 4  2
+38Switching to coroutine producer-1 with ID 3  2
+38Switching to coroutine consumer-5 with ID 14  2
+libco-354  Switching to coroutine producer-5 with ID 7  2
+38Switching to coroutine producer-4 with ID 6  2
+38Switching to coroutine producer-3 with ID 5  2
+39Switching to coroutine producer-2 with ID 4  2
+39Switching to coroutine producer-1 with ID 3  2
+39Switching to coroutine consumer-5 with ID 14  2
+libco-355  Switching to coroutine producer-5 with ID 7  2
+39Switching to coroutine producer-4 with ID 6  2
+39Switching to coroutine producer-3 with ID 5  2
+40Switching to coroutine producer-2 with ID 4  2
+40Switching to coroutine producer-1 with ID 3  2
+40Switching to coroutine consumer-5 with ID 14  2
+libco-356  Switching to coroutine producer-5 with ID 7  2
+40Switching to coroutine producer-4 with ID 6  2
+40Switching to coroutine producer-3 with ID 5  2
+Coroutine producer-3 finished
+Switching to coroutine producer-2 with ID 4  2
+Coroutine producer-2 finished
+Switching to coroutine producer-1 with ID 3  2
+Coroutine producer-1 finished
+Main coroutine main is now running
+Switching to coroutine consumer-5 with ID 14  2
+libco-357  Switching to coroutine producer-5 with ID 7  2
+Coroutine producer-5 finished
+Switching to coroutine producer-4 with ID 6  2
+Coroutine producer-4 finished
+Switching to coroutine main with ID 0  2
