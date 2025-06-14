@@ -180,15 +180,15 @@ void steal_co_task()
         // 如果全局协程调度已停止，直接返回
         return;
     }
-    return;
+    // return;
     int i = 0, P_num;
     // pthread_mutex_lock(&global_co_regedit.mutex);
     P_num = global_co_regedit.P_num;
     // pthread_mutex_unlock(&global_co_regedit.mutex);
     
     int start = rand() % P_num;
-    fprintf(stdout,"Stealing tasks from P threads, start index: %d\n", start);
-    for (i = 0; i < P_num; i++) {
+    // fprintf(stdout,"Stealing tasks from P threads, start index: %d\n", start);
+    for (i = 0; i < (P_num + 1 )>>1; i++) {
         int idx = (start + i) % P_num;
         struct co_regedit *target = global_co_regedit.local_co_regedit[idx];
         if (target && pthread_mutex_trylock(&target->mutex) == 0) {
@@ -198,7 +198,7 @@ void steal_co_task()
             //     continue;
             // }
             // continue;
-            if (target->runable_queue.num > 1) {
+            if (target->runable_queue.num > MAX_CO_NUM>>1) {
                 int fetch_num = getmin(MAX_FETCH_NUM, target->runable_queue.num>>1);
                 transmit_queue(&target->runable_queue, &local_co_regedit->runable_queue, fetch_num);
                 pthread_mutex_unlock(&target->mutex);
@@ -296,10 +296,10 @@ void assign_co_task(struct queue_node *node) {
         }
         return;
     }
-    if (local_co_regedit->runable_queue.num >= MAX_FETCH_NUM<<1 || (local_co_regedit->runable_queue.num >= MAX_FETCH_NUM && node->priority > 128)) {
+    if (local_co_regedit->runable_queue.num >= MAX_FETCH_NUM<<1 || (local_co_regedit->runable_queue.num >= MAX_FETCH_NUM && node->priority > 64)) {
         // 如果当前P线程的可运行队列已满，则尝试将协程任务分配给全局可运行队列
         pthread_mutex_lock(&global_co_regedit.mutex);
-        push_queue_node(&global_co_regedit.runable_queue, node);
+        push_queue_node_front(&global_co_regedit.runable_queue, node);
         node->priority = 0; // 设置优先级为0，表示全局队列
         bool is_available_work = global_co_regedit.runable_queue.num > 0;MAX_FETCH_NUM;
         pthread_mutex_unlock(&global_co_regedit.mutex);
@@ -528,8 +528,8 @@ void schedule() {
         printf("All coroutines are dead\n");
         exit(-1);
     }
-    if(local_co_regedit->schedule_count%128 == 0){
-        fetch_co_task(); // 每128次调度尝试从全局获取任务
+    if(local_co_regedit->schedule_count % 64 == 0 && local_co_regedit->runable_queue.num < MAX_FETCH_NUM ) {
+        fetch_co_task(); 
     }
     pthread_mutex_unlock(&local_co_regedit->mutex);
     resume_node->priority++; // 每运行一次优先级下降
