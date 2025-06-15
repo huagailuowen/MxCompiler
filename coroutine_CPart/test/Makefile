@@ -1,6 +1,6 @@
-.PHONY: test libco
+.PHONY: test libco clean debug
 
-all: libco-test-64 # libco-test-32
+all: libco-test-64
 
 test: libco all
 	@echo "==== TEST 64 bit ===="
@@ -10,13 +10,11 @@ debug: libco all
 	@LD_LIBRARY_PATH=../src gdb ./libco-test-64 -x gdb.init
 
 libco:
-	cd ../src && make
+	cd ../src && make clean && make CFLAGS="-g3 -O0 -fno-omit-frame-pointer"
 
 libco-test-64: main.c
-	gcc -I../src -L../src -m64 main.c -o $@ -g -lco-64
-
-# libco-test-32: main.c
-# 	gcc -I.. -L.. -m32 main.c -o $@ -g -lco-32 
+	gcc -I../src -L../src -m64 main.c -o $@ -g3 -O0 -fno-omit-frame-pointer -lco-64
 
 clean:
-	rm -f libco-test-*
+	rm -f libco-test-* core* valgrind.log test.out
+	cd ../src && make clean
