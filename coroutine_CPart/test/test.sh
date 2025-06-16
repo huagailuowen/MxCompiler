@@ -3,7 +3,7 @@
 # Test script that runs make test repeatedly until error or 100 times
 # Enhanced to capture segfault and core dump information
 
-max_iterations=1000
+max_iterations=10000
 current_iteration=0
 
 # Enable core dumps

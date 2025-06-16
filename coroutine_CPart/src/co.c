@@ -234,9 +234,9 @@ void fetch_co_task()
             // 如果运行队列还为空，等待其他线程添加任务
             // pthread_mutex_lock(&global_co_regedit.mutex);
             if(is_main_thread) {
-                fprintf(stderr,"11ddfadfadfad6\n");
+                // fprintf(stderr,"11ddfadfadfad6\n");
                 pthread_cond_wait(&global_co_regedit.main_available, &global_co_regedit.mutex);
-                fprintf(stderr,("START\n"));
+                // fprintf(stderr,("START\n"));
             } else {
                 pthread_cond_wait(&global_co_regedit.work_available, &global_co_regedit.mutex);
             }
@@ -449,11 +449,12 @@ struct co_regedit * co_P_init() { //init for P
 }
 
 void start_new_context(void *sp, void (*entry)(void)) {
+    
     asm volatile (
         "mov %0, %%rsp\n"
         "jmp *%1\n"
         :
-        : "r"(sp), "r"(entry)
+        : "r"(sp - 8), "r"(entry)
         : "rsp", "memory"
     );
 }

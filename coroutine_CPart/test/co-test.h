@@ -255,7 +255,7 @@ typedef struct Queue_t {
 } Queue;
 
 typedef struct Item_t {
-    void *data;
+    char *data;
     struct list_head link;
 } Item;
 

@@ -208,7 +208,7 @@ static void test_3() {
 
 
 #define ITER 1000
-#define MAX_CO 400
+#define MAX_CO 1000
 
 void simple_work(void *arg) {
     int id = (int)(size_t)arg; // 将 void* 转换为 int
