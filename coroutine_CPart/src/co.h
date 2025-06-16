@@ -66,6 +66,7 @@ struct co_regedit {
     bool is_kick;
     struct co * resume_co;
     pthread_mutex_t mutex;
+    jmp_buf        origin_context; // 寄存器现场
 };
 struct global_co_regedit {
     struct co *co_pool[MAX_CO_NUM*(MAX_CO_PROCESS_NUM+1)]; // 全局协程池
@@ -78,7 +79,7 @@ struct global_co_regedit {
 
     _Atomic(enum global_co_schedule_status) status; // 全局协程调度状态
     
-    struct co_regedit *local_co_regedit[MAX_CO_PROCESS_NUM<<1]; // 每个P线程的协程注册表
+    struct co_regedit *local_co_regedit[MAX_CO_PROCESS_NUM<<1|1]; // 每个P线程的协程注册表
     // main 默认位于0号
     unsigned int P_num; // 当前P线程的协程注册表数
     pthread_t threads[MAX_CO_PROCESS_NUM<<1]; // M(系统)线程数组

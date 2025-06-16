@@ -234,9 +234,9 @@ void fetch_co_task()
             // 如果运行队列还为空，等待其他线程添加任务
             // pthread_mutex_lock(&global_co_regedit.mutex);
             if(is_main_thread) {
-                printf("11ddfadfadfad6\n");
+                fprintf(stderr,"11ddfadfadfad6\n");
                 pthread_cond_wait(&global_co_regedit.main_available, &global_co_regedit.mutex);
-                printf("START\n");
+                fprintf(stderr,("START\n"));
             } else {
                 pthread_cond_wait(&global_co_regedit.work_available, &global_co_regedit.mutex);
             }
@@ -246,7 +246,7 @@ void fetch_co_task()
     if(get_schedule_status() == GLOBAL_CO_SCHEDULE_STOPPED) {
         pthread_mutex_unlock(&global_co_regedit.mutex);
         pthread_mutex_unlock(&local_co_regedit->mutex);
-        pthread_exit(NULL);
+        longjmp(local_co_regedit->origin_context, 1); // 返回到P线程的初始状态
         
     }
     // pthread_mutex_lock(&global_co_regedit.mutex);
@@ -297,10 +297,10 @@ void assign_co_task(struct queue_node *node) {
             } 
             global_co_regedit.co_main_queue_node = node; // 保存主协程的队列节点
             global_co_regedit.is_main_available = true; // 标记主协程已准备好
-            printf("Main coroutine %s is now available\n", node->co->name ? node->co->name : "unknown");
+            // printf("Main coroutine %s is now available\n", node->co->name ? node->co->name : "unknown");
             pthread_cond_signal(&global_co_regedit.main_available); // 唤醒主线程
             pthread_mutex_unlock(&global_co_regedit.mutex);
-            printf("send signal to main thread\n");
+            // printf("send signal to main thread\n");
         }
         return;
     }
@@ -328,14 +328,14 @@ void assign_co_task(struct queue_node *node) {
 struct co * co_add_task(const char *name, void (*func)(void *), void *arg, bool is_main) {
     struct co * handler = (struct co *)malloc(sizeof(struct co));
     if (!handler) {
-        printf("Failed to allocate memory for coroutine\n");
+        fprintf(stderr, "Failed to allocate memory for coroutine\n");
         exit(1);
     }
     // printf("Creating coroutine %s with ID %d\n", name ? name : "unknown", global_co_regedit.co_num);
     struct queue_node * queue_node = create_queue_node(handler);
     pthread_mutex_lock(&global_co_regedit.mutex);
     if(global_co_regedit.co_num == MAX_CO_NUM*(MAX_CO_PROCESS_NUM+1)) {
-        printf("Too many coroutines\n");
+        fprintf(stderr, "Too many coroutines\n");
         exit(1);
     }
     global_co_regedit.co_pool[global_co_regedit.co_num] = handler;
@@ -410,7 +410,7 @@ void start_new_wrapper() {
         pthread_mutex_lock(&waiter->wait_mutex);
         waiter->status = CO_RUNNING;
         if(waiter == global_co_regedit.co_main) {
-            printf("Main coroutine %s is now running\n", waiter->name ? waiter->name : "unknown");
+            // printf("Main coroutine %s is now running\n", waiter->name ? waiter->name : "unknown");
             // printf("%d",waiter->queue_node_ptr==NULL);
         }
         pthread_mutex_unlock(&waiter->wait_mutex);
@@ -418,16 +418,19 @@ void start_new_wrapper() {
     }
     pthread_mutex_unlock(&current->wait_mutex);
     pthread_mutex_unlock(&local_co_regedit->mutex);
+    //返回最初调用他的schedule, 并设置状态为 CO_DEAD
 }
 struct co_regedit * co_P_init() { //init for P
     struct co_regedit *co_regedit = malloc(sizeof(struct co_regedit));
     if (!co_regedit) {
-        printf("Failed to allocate memory for coroutine registry\n");
+        fprintf(stderr, "Failed to allocate memory for coroutine registry\n");
         exit(1);
     }
     pthread_mutex_lock(&global_co_regedit.mutex);
     co_regedit->regedit_id = global_co_regedit.P_num++;
-    fprintf(stdout,"Creating P thread registry with ID %d\n", co_regedit->regedit_id);
+
+
+    // printf(stdout,"Creating P thread registry with ID %d\n", co_regedit->regedit_id);
     global_co_regedit.local_co_regedit[co_regedit->regedit_id] = co_regedit;
     pthread_mutex_unlock(&global_co_regedit.mutex);
     co_regedit->runable_queue.num = 0;
@@ -445,9 +448,28 @@ struct co_regedit * co_P_init() { //init for P
     return co_regedit;
 }
 
+void start_new_context(void *sp, void (*entry)(void)) {
+    asm volatile (
+        "mov %0, %%rsp\n"
+        "jmp *%1\n"
+        :
+        : "r"(sp), "r"(entry)
+        : "rsp", "memory"
+    );
+}
+
+void schedule(); // 前向声明
+
+__attribute__((noreturn)) void trampoline_wrapper() {
+    void (*entry)(void) = start_new_wrapper;  // 直接赋值，不从栈读
+    // printf("trampoline_wrapper: entry = %p\n", entry);
+    entry();    
+    schedule();
+    __builtin_unreachable();
+}
+
 void schedule() {
-    Start:
-    while(1){
+    
     int is_kick = local_co_regedit->is_kick;
     local_co_regedit->is_kick = false; // 重置kick状态
     pthread_mutex_lock(&local_co_regedit->mutex);
@@ -459,7 +481,7 @@ void schedule() {
             exit(1);
         }
         pthread_mutex_unlock(&local_co_regedit->mutex);
-        pthread_exit(NULL);
+        longjmp(local_co_regedit->origin_context, 1); // 返回到P线程的初始状态
     }
     struct queue_node * node = NULL;
     struct queue_node * resume_node;
@@ -520,7 +542,7 @@ void schedule() {
         if(get_schedule_status() == GLOBAL_CO_SCHEDULE_STOPPED) {
             pthread_mutex_unlock(&global_co_regedit.mutex);
             pthread_mutex_unlock(&local_co_regedit->mutex);
-            pthread_exit(NULL);
+            longjmp(local_co_regedit->origin_context, 1); // 返回到P线程的初始状态
         }
         pthread_mutex_unlock(&global_co_regedit.mutex);
 
@@ -556,27 +578,40 @@ void schedule() {
     // printf("Switching to coroutine %s with ID %d  %d\n", co->name ? co->name : "unknown", co->c_id,current->status);
     if(current->status == CO_NEW) {
         //if co being spill to the stack by the compiler, the error may occur
-        asm volatile("mov %0, %%rsp" : : "g"(current->stack + STACK_SIZE));
-        start_new_wrapper();
+        // asm volatile("mov %0, %%rsp" : : "g"(current->stack + STACK_SIZE) : "rsp", "memory");
+        
+        uint8_t *sp = (uint8_t *)current->stack + STACK_SIZE;
+        sp = (uint8_t *)((uintptr_t)sp & ~0xF); // 16字节对齐
+
+        // sp -= sizeof(void *);
+        // *(void **)sp = (void *)start_new_wrapper; // 将被 trampoline_wrapper 取出
+        start_new_context(sp, trampoline_wrapper);
+
+
+        // start_new_wrapper();
         // goto Start;
     } else {
         //must be CO_RUNNING
         longjmp(co->context, 1);
     }
-    }
+    
     // never reach here
 }
 void* co_M_create() {
     local_co_regedit = co_P_init();
     is_main_thread = false; // 设置为非主线程
     current = NULL;
-    schedule();
+    if(setjmp(local_co_regedit->origin_context) != 0) {
+        // 如果是从协程中返回，直接开始调度
+        schedule();
+    }
     return NULL;
 }
 
 void co_yield()
 {
     if (setjmp(current->context) == 0) {
+        // asm volatile("mov %0, %%rsp" : : "g"(global_co_regedit.co_pool[0]->stack + STACK_SIZE));
         schedule();
     }
 }
@@ -616,11 +651,12 @@ void co_wait(struct co *co)
         return;
     }
     add_waiter(current, co);
-    pthread_mutex_unlock(&co->wait_mutex);
-    
-    set_queue_wrapper(current->queue_node_ptr, NULL);
     pthread_mutex_lock(&current->wait_mutex);
     current->status = CO_WAITING;
+    set_queue_wrapper(current->queue_node_ptr, NULL);
+    pthread_mutex_unlock(&current->wait_mutex);
+    pthread_mutex_unlock(&co->wait_mutex);
+    
     local_co_regedit->is_kick = true; // 标记当前协程被挂起
     // if(current == global_co_regedit.co_main){
     //     global_co_regedit.co_main_queue_node = current->queue_node_ptr; // 如果当前协程是主协程，更新主协程队列节点
@@ -629,7 +665,6 @@ void co_wait(struct co *co)
     // printf("Coroutine %s is waiting for coroutine %s\n", current->name ? current->name : "unknown", co->name ? co->name : "unknown");
     // printf("%d",local_co_regedit->is_resume);
         
-    pthread_mutex_unlock(&current->wait_mutex);
     co_yield();
 }
 

@@ -221,12 +221,14 @@ void simple_work(void *arg) {
 
 void omain() {
     printf("Starting G-P-M scheduler test\n");
+    // fprintf(stderr, "AAAA\n");
     struct co *g[MAX_CO];
 
 
     for (int i = 0; i < MAX_CO; i++) {
         char name[20];
-        snprintf(name, sizeof(name), "Worker-%d", i + 1);
+        // snprintf(name, sizeof(name), "Worker-%d", i + 1);
+        name[0]=name[1] = '3'; name[2] = '0'; name[3] = '0'; name[4] = '\0';
         g[i] = co_start(name, simple_work, (void*)(size_t)i);
     }
 
@@ -249,18 +251,18 @@ void test4()
 int main() {
     setbuf(stdout, NULL);
 
-    // printf("Test #1. Expect: (X|Y){0, 1, 2, ..., 199}\n");
-    // test_1();
+    printf("Test #1. Expect: (X|Y){0, 1, 2, ..., 199}\n");
+    test_1();
 
-    // printf("\n\nTest #2. Expect: (libco-){200, 201, 202, ..., 399}\n");
-    // test_2();
+    printf("\n\nTest #2. Expect: (libco-){200, 201, 202, ..., 399}\n");
+    test_2();
 
 
-    // test_3();
+    test_3();
 
     test4();
 
-    fprintf(stderr,"Finished\n\n");
+    fprintf(stdout,"Finished\n\n");
 
     return 0;
 }

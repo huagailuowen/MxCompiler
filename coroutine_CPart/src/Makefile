@@ -1,4 +1,4 @@
-CC = gcc
+CC = clang
 CFLAGS ?= -g3 -O0 -fno-omit-frame-pointer -Wall -Wextra
 LDFLAGS = -shared -fPIC
 
