@@ -12,8 +12,11 @@ debug: libco all
 libco:
 	cd ../src && make clean && make CFLAGS="-g3 -O0 -fno-omit-frame-pointer"
 
-libco-test-64: main.c
-	$(CC) -I../src -L../src -m64 main.c -o $@ -g3 -O0 -fno-omit-frame-pointer -lco-64
+# libco-test-64: main.c
+# 	$(CC) -I../src -L../src -m64 main.c -o $@ -g3 -O0 -fno-omit-frame-pointer -lco-64
+
+libco-test-64: compute_graph.c
+	$(CC) -I../src -L../src -m64 compute_graph.c -o $@ -g3 -O0 -fno-omit-frame-pointer -lco-64
 
 clean:
 	rm -f libco-test-* core* valgrind.log test.out

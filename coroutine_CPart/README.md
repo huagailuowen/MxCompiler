@@ -12,4 +12,6 @@ LD_LIBRARY_PATH=../src ./libco-test-64
 
 LD_LIBRARY_PATH=../src coredumpctl debug libco-test-64 --debugger=lldb
 No match found.
+
+dot -Tpng graph.out -o graph.png
 ```

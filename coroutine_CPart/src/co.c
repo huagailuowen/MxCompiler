@@ -259,7 +259,7 @@ void fetch_co_task()
     pthread_mutex_unlock(&global_co_regedit.mutex);
     if((local_co_regedit->runable_queue.head == NULL) !=( local_co_regedit->runable_queue.num==0)){
         fprintf(stderr, "Fatal Error : local_co_regedit->runable_queue.head is NULL but num is %d\n", local_co_regedit->runable_queue.num);
-        exit(1);
+        abort();
     }
     // printf("[%d,%d]", local_co_regedit->runable_queue.head == NULL, local_co_regedit->runable_queue.num);
     
@@ -282,7 +282,7 @@ void assign_co_task(struct queue_node *node) {
     
     if (node == NULL || node->co == NULL) {
         printf("Fatal Error : node or co is NULL\n");
-        exit(1);
+        abort();
     }
     if(node->co == global_co_regedit.co_main) {
         // printf("%d",is_main_thread);
@@ -329,14 +329,14 @@ struct co * co_add_task(const char *name, void (*func)(void *), void *arg, bool 
     struct co * handler = (struct co *)malloc(sizeof(struct co));
     if (!handler) {
         fprintf(stderr, "Failed to allocate memory for coroutine\n");
-        exit(1);
+        abort();
     }
     // printf("Creating coroutine %s with ID %d\n", name ? name : "unknown", global_co_regedit.co_num);
     struct queue_node * queue_node = create_queue_node(handler);
     pthread_mutex_lock(&global_co_regedit.mutex);
     if(global_co_regedit.co_num == MAX_CO_NUM*(MAX_CO_PROCESS_NUM+1)) {
         fprintf(stderr, "Too many coroutines\n");
-        exit(1);
+        abort();
     }
     global_co_regedit.co_pool[global_co_regedit.co_num] = handler;
     handler->c_id = global_co_regedit.co_num++;
@@ -375,7 +375,7 @@ struct co * co_add_task(const char *name, void (*func)(void *), void *arg, bool 
         printf("Failed to allocate stack for coroutine\n");
         if (handler->name) free(handler->name);
         free(handler);
-        exit(1);
+        abort();
     }
     pthread_mutex_lock(&local_co_regedit->mutex);
     assign_co_task(queue_node); // 分配协程任务到当前P线程的可运行队列
@@ -424,7 +424,7 @@ struct co_regedit * co_P_init() { //init for P
     struct co_regedit *co_regedit = malloc(sizeof(struct co_regedit));
     if (!co_regedit) {
         fprintf(stderr, "Failed to allocate memory for coroutine registry\n");
-        exit(1);
+        abort();
     }
     pthread_mutex_lock(&global_co_regedit.mutex);
     co_regedit->regedit_id = global_co_regedit.P_num++;
@@ -443,7 +443,7 @@ struct co_regedit * co_P_init() { //init for P
     if(pthread_mutex_init(&co_regedit->mutex, NULL) != 0) {
         fprintf(stderr, "Failed to initialize mutex\n");
         free(co_regedit);
-        exit(1);
+        abort();
     }
     return co_regedit;
 }
@@ -479,7 +479,7 @@ void schedule() {
         // 如果不是主线程且全局协程调度已停止，直接返回
         if(is_main_thread) {
             fprintf(stderr, "Fatal Error : schedule must not be called in main thread after global_co_regedit.status is GLOBAL_CO_SCHEDULE_STOPPED\n");
-            exit(1);
+            abort();
         }
         pthread_mutex_unlock(&local_co_regedit->mutex);
         longjmp(local_co_regedit->origin_context, 1); // 返回到P线程的初始状态
@@ -493,7 +493,7 @@ void schedule() {
     if(node != NULL){
         if(node->co != current){
             fprintf(stderr, "Warning: Coroutine %d is not the current coroutine\n", node->co->c_id);
-            exit(1);
+            abort();
         }
     }
 
@@ -529,7 +529,7 @@ void schedule() {
     // node 为空 resume必为空
     if(!node && resume_node){
         fprintf(stderr, "Warning: Coroutine %d is not the current coroutine, but resume_node is not NULL\n", resume_node->co->c_id);
-        exit(1);
+        abort();
     }
     if(node == NULL || (resume_node == NULL && is_kick)) {
         // 真的全空了向全局索要
@@ -554,7 +554,7 @@ void schedule() {
             // 如果没有可运行的协程，且当前协程已经死亡，不正常
             printf("%d",local_co_regedit->runable_queue.head==NULL);
             printf("No runnable coroutines available, exiting...\n");
-            exit(1);
+            abort();
         }
         resume_node = node; // 如果没有resume_node，使用node
     }
@@ -627,7 +627,7 @@ void co_resume(struct co *co)
         printf("Fatal Error : co is waiting\n");
         pthread_mutex_unlock(&co->wait_mutex);
 
-        exit(1);
+        abort();
     }
     if(co == current) {
         pthread_mutex_unlock(&co->wait_mutex);
@@ -676,18 +676,18 @@ static void co_global_init() {
     // global_co_regedit.mutex = temp_mutex;
     if (pthread_mutex_init(&global_co_regedit.mutex, NULL) != 0) {
         fprintf(stderr, "Failed to initialize mutex\n");
-        exit(1);
+        abort();
     }
     if (pthread_cond_init(&global_co_regedit.work_available, NULL) != 0) {
         fprintf(stderr, "Failed to initialize work_available condition variable\n");
         pthread_mutex_destroy(&global_co_regedit.mutex);
-        exit(1);
+        abort();
     }
     if(pthread_cond_init(&global_co_regedit.main_available, NULL) != 0) {
         fprintf(stderr, "Failed to initialize main_available condition variable\n");
         pthread_mutex_destroy(&global_co_regedit.mutex);
         pthread_cond_destroy(&global_co_regedit.work_available);
-        exit(1);
+        abort();
     }
     if(MAX_CO_PROCESS_NUM == 0){
         printf("Warning: MAX_CO_PROCESS_NUM is set to 0, destructor will fail for the global variable will first be destroyed.\n");
@@ -711,7 +711,7 @@ static void co_global_init() {
     for(int i = 0; i < MAX_CO_PROCESS_NUM; i++) {
         if (pthread_create(&global_co_regedit.threads[i], NULL, co_M_create, NULL) != 0) {
             fprintf(stderr, "Failed to create thread %d\n", i);
-            exit(1);
+            abort();
         }
     }
     global_co_regedit.M_num = MAX_CO_PROCESS_NUM; // 设置当前线程数为最大线程数
@@ -724,7 +724,7 @@ static void co_cleanup() {
     printf("Some M destructor");
     if(!is_main_thread){
         // printf("Fatal Error : co_cleanup must be called in main thread\n");
-        // exit(1);
+        // abort();
         return; // 如果不是主线程，直接返回 
     }
     printf("Cleaning up coroutine system resources...\n");
