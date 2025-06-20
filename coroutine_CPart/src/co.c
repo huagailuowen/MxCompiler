@@ -248,12 +248,13 @@ void free_queue(struct queue_wrapper * queue) {
 }
 
 
-void co_signal_init(struct co_signal *signal)
+void co_signal_init(struct co_signal *signal, unsigned int initial_count)
 {
-    signal->waiter_list_head = NULL;
-    signal->count = 0;
-    pthread_mutex_init(&signal->mutex, NULL);
+    signal->waiter_list_head = NULL; // 初始化等待队列为空
+    signal->count = initial_count; // 设置初始信号计数
+    pthread_mutex_init(&signal->mutex, NULL); // 初始化互斥锁
 }
+
 void co_signal_destroy(struct co_signal *signal)
 {
     pthread_mutex_destroy(&signal->mutex);
@@ -276,7 +277,6 @@ void co_signal_wait(struct co_signal *signal)
         node->waiter = get_current(); // 获取当前协程
         pthread_mutex_lock(&node->waiter->wait_mutex); // 锁定当前协程的互斥锁
         node->waiter->status = CO_WAITING; // 设置当前协程状态为等待
-        pthread_mutex_unlock(&node->waiter->wait_mutex); // 解锁当前协程的互斥锁
         
         pthread_mutex_lock(&local_co_regedit->mutex);
         local_co_regedit->is_kick = true;
@@ -436,19 +436,18 @@ void fetch_co_task()
         cnt += local_co_regedit->runable_queue.num - origin_num; // 计算获取的任务数
         // pthread_mutex_unlock(&global_co_regedit.mutex);
         if (cnt == 0) {
-            // steal_co_task(); // 尝试从其他线程窃取任务
+            steal_co_task(); // 尝试从其他线程窃取任务
         }
         if (local_co_regedit->runable_queue.num == 0) {
             // 如果运行队列还为空，等待其他线程添加任务
             // pthread_mutex_lock(&global_co_regedit.mutex);
             if(is_main_thread) {
-                // fprintf(stderr,"11ddfadfadfad6\n");
                 global_co_regedit.running_num--;
                 if(global_co_regedit.running_num == 0) {
-                    abort();
+                    fprintf(stderr,"11ddfadfadfad6\n");
+                    // abort();
                 }
                 pthread_cond_wait(&global_co_regedit.main_available, &global_co_regedit.mutex);
-                // fprintf(stderr,("START\n"));
             } else {
                 global_co_regedit.running_num--;
                 if(global_co_regedit.running_num == 0 ) {
@@ -456,7 +455,8 @@ void fetch_co_task()
                         pthread_cond_signal(&global_co_regedit.main_available); // 唤醒主线程
                     }
                     else{
-                        abort();
+                        fprintf(stderr,("START\n"));
+                        // abort();
                     }
                 }
                 pthread_cond_wait(&global_co_regedit.work_available, &global_co_regedit.mutex);
@@ -473,9 +473,7 @@ void fetch_co_task()
     }
     // pthread_mutex_lock(&global_co_regedit.mutex);
     bool is_available_work = global_co_regedit.runable_queue.num > MAX_FETCH_NUM  || get_schedule_status() == GLOBAL_CO_SCHEDULE_STOPPED;
-    #ifndef DEBUG
-    is_available_work = is_available_work || global_co_regedit.runable_queue.num>0;
-    #endif
+    is_available_work = is_available_work || global_co_regedit.runable_queue.num>0 && global_co_regedit.running_num < (MAX_CO_PROCESS_NUM>>2|1);
     if(is_available_work) {
         // 唤醒其他等待的线程
         pthread_cond_signal(&global_co_regedit.work_available);
@@ -542,9 +540,7 @@ void assign_co_task(struct queue_node *node) {
         node->priority = 0; // 设置优先级为0，表示全局队列
         bool is_available_work = global_co_regedit.runable_queue.num >MAX_FETCH_NUM || global_co_regedit.running_num < MAX_CO_PROCESS_NUM>>1 || get_schedule_status() == GLOBAL_CO_SCHEDULE_STOPPED; // 检查全局队列是否有可运行的协程
         // 唤醒其他等待的线程
-        #ifndef DEBUG
-        is_available_work = is_available_work || global_co_regedit.runable_queue.num>0;
-        #endif
+        is_available_work = is_available_work || global_co_regedit.runable_queue.num>0 && global_co_regedit.running_num < (MAX_CO_PROCESS_NUM>>2|1);
         if(is_available_work){
             pthread_cond_signal(&global_co_regedit.work_available); 
         }
@@ -641,7 +637,7 @@ void start_new_wrapper() {
     pthread_mutex_lock(&local_co_regedit->mutex);
     pop_queue_node(&local_co_regedit->runable_queue);
 
-    pthread_mutex_lock(&current->wait_mutex);
+    pthread_mutex_lock(&get_current()->wait_mutex);
     current->status = CO_DEAD;
     local_co_regedit->is_kick = true;
     #ifdef DEBUG
@@ -660,7 +656,6 @@ void start_new_wrapper() {
         pthread_mutex_unlock(&waiter->wait_mutex);
         assign_co_task(waiter->queue_node_ptr); // 将等待的协程重新加入可运行队列
     }
-    pthread_mutex_unlock(&current->wait_mutex);
     pthread_mutex_lock(&global_co_regedit.mutex);
     global_co_regedit.alive_num--; // 减少全局存活协程数
     pthread_mutex_unlock(&global_co_regedit.mutex);
@@ -742,6 +737,8 @@ void schedule() {
             pthread_mutex_lock(&local_co_regedit->mutex);
             node = pop_queue_node(&local_co_regedit->runable_queue);
         }else {
+            pthread_mutex_unlock(&current->wait_mutex);
+
             #ifdef DEBUG
             if(!is_lock_held(&local_co_regedit->mutex)){
                 fprintf(stderr, "Fatal Error : local_co_regedit->mutex must be held before calling schedule\n");
@@ -953,8 +950,8 @@ void co_wait(struct co *co)
         return;
     }
     pop_queue_node(&local_co_regedit->runable_queue);
-    add_waiter(current, co);
     pthread_mutex_lock(&current->wait_mutex);
+    add_waiter(current, co);
     current->status = CO_WAITING;
     set_queue_wrapper(current->queue_node_ptr, NULL);
     #ifdef DEBUG
@@ -962,12 +959,8 @@ void co_wait(struct co *co)
         fprintf(stderr, "Fatal Error : local_co_regedit->mutex must be held before calling co_wait\n");
         abort();
     }
-    pthread_mutex_unlock(&current->wait_mutex);
     int ps = is_lock_held(&local_co_regedit->mutex);
-    if(!is_lock_held(&local_co_regedit->mutex)) {
-        fprintf(stderr, "Fatal Error : local_co_regedit->mutex must be held before calling co_wait\n");
-        abort();
-    }
+    
     int uu = held_lock_count;
     const pthread_mutex_t* tt = held_locks[0];
     const pthread_mutex_t* tt1 = held_locks[1];
@@ -993,9 +986,6 @@ void co_wait(struct co *co)
     // }
     // printf("Coroutine %s is waiting for coroutine %s\n", current->name ? current->name : "unknown", co->name ? co->name : "unknown");
     // printf("%d",local_co_regedit->is_resume);
-    #ifndef DEBUG
-    pthread_mutex_unlock(&current->wait_mutex);
-    #endif
     co_yield();
 }
 void co_free(struct co *co)

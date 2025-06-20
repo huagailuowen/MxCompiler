@@ -46,7 +46,7 @@ struct co {
 #define MAX_CO_NUM 1024<<4 // 最大协程数
 
 #define MAX_CO_PROCESS_NUM 10 // 最大P线程数
-#define MAX_FETCH_NUM 10 // 每次从可运行队列中获取的协程数
+#define MAX_FETCH_NUM 30 // 每次从可运行队列中获取的协程数
 struct queue_wrapper;
 struct queue_node{
     unsigned int priority; // 优先级，数值越小优先级越高
@@ -106,7 +106,7 @@ void       co_resume(struct co *co);
 void       co_free(struct co *co);
 struct co *co_self(); 
 
-void co_signal_init(struct co_signal *signal);
+void co_signal_init(struct co_signal *signal, unsigned int initial_count);
 void co_signal_wait(struct co_signal *signal);
 void co_signal_notify(struct co_signal *signal);
 void co_signal_destroy(struct co_signal *signal);

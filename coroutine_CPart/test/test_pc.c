@@ -44,7 +44,7 @@ void producer(void *arg) {
         co_signal_notify(&signal_full);
         co_yield();
     }
-    co_exit();
+    // co_exit();
 }
 
 void consumer(void *arg) {
@@ -61,10 +61,12 @@ void consumer(void *arg) {
         co_signal_notify(&signal_empty);
         co_yield();
     }
-    co_exit();
+    // co_exit();
 }
 
 int main() {
+    struct timespec start, end;
+    clock_gettime(CLOCK_MONOTONIC, &start);
     co_signal_init(&signal_empty, BUF_SIZE);
     co_signal_init(&signal_full, 0);
     co_signal_init(&signal_mutex, 1);
@@ -89,5 +91,9 @@ int main() {
     }
 
     printf("Finished. Final buffer count = %d\n", count);
+    // time cost
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    double sec = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+    printf("Total time: %.3f s\n", sec);
     return 0;
 }
